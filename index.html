@@ -97,6 +97,70 @@ nav a{font-size:12px}
 #coaching .coaching-body .coaching-quote{padding:10px 0 28px}
 .personal-quote blockquote{font-size:24px}
 }
+
+/* Modern surfaces with a restrained personal palette. */
+:root{--paper:#F6F8F7;--ink:#20332E;--muted:#5C6D66;--line:#DFE7E2;--blue:#31664F;--orange:#31664F;--surface:#FFF}
+body{background:radial-gradient(ellipse 65% 420px at 85% 0%,#E2EEE8 0%,transparent 100%),var(--paper)}
+header{height:112px}
+.brand{font-family:'DM Sans',Arial,sans-serif;font-size:22px;font-weight:600;letter-spacing:-.8px}
+header nav{background:rgba(255,255,255,.8);border:1px solid var(--line);padding:10px 18px;border-radius:30px;gap:24px}
+header nav a{font-size:13px}
+header nav a.active{text-decoration:none;font-weight:600}
+.opening.home-intro{border:1px solid var(--line);border-radius:24px;background:linear-gradient(120deg,#FFF 35%,#EDF5F0);padding:48px;box-shadow:0 8px 32px #20332E05}
+.opening.home-intro h1{font-family:'DM Sans',Arial,sans-serif;font-weight:500;font-size:clamp(40px,5vw,62px);letter-spacing:-2.8px;line-height:1.12}
+.opening.home-intro h1 i{font-style:normal}
+.home-intro>p{max-width:640px}
+.inquiry{border:0;margin:30px 0 0;padding:24px 8px 30px}
+.inquiry h2,.practice>h2,.practice-branches h3,.page-title h1,#about .about-part>h2,#about .about-part-body h3,#coaching .coaching-chapter h2,#work .project-list h2{font-family:'DM Sans',Arial,sans-serif;font-weight:500}
+.inquiry h2,.practice>h2{font-size:24px;letter-spacing:-.6px}
+.practice{border:0;padding:10px 0 34px}
+.practice-branches{gap:18px;margin-top:20px}
+.practice-branches>div{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 4px 16px #20332E04;transition:transform .18s ease,box-shadow .18s ease}
+.practice-branches>div:hover{transform:translateY(-3px);box-shadow:0 12px 28px #20332E0B}
+.practice-branches h3{font-size:24px;letter-spacing:-.6px}
+.practice-branches h3 a{text-decoration:none!important;display:flex;justify-content:space-between;align-items:center}
+.practice-branches h3 a::after{content:'↗';font-size:19px;color:var(--blue)}
+.personal-quote{border:0;max-width:850px;margin:10px auto 0;padding:32px 24px 42px}
+.personal-quote blockquote{font-size:25px}
+.page-title{border:0;padding:30px 0 34px}
+.page-title h1{font-size:44px;letter-spacing:-1.8px}
+#about .about-part,#coaching .coaching-chapter{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:32px;margin-bottom:20px;grid-template-columns:190px 1fr;gap:36px;box-shadow:0 4px 18px #20332E03}
+#about .about-part>h2,#coaching .coaching-chapter h2{font-size:24px;letter-spacing:-.6px;line-height:1.35}
+#about .about-part-body h3{font-size:23px;letter-spacing:-.5px}
+#about .milestones{padding:20px;border:0;background:#F2F7F4;border-radius:14px}
+.milestones dt{font-family:'DM Sans',Arial,sans-serif;font-size:28px;letter-spacing:-1px;font-weight:500}
+#coaching .coaching-body .coaching-quote{padding:10px 32px 30px 258px;margin:0}
+#work .project-list{display:grid;gap:14px}
+#work .project-list li{border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:26px 28px;gap:24px;align-items:center;box-shadow:0 4px 18px #20332E03}
+#work .project-list h2{font-size:23px}
+#work .project-status{padding:5px 10px;border-radius:20px;background:#EDF4EF;color:#3E5E4C;font-size:11px}
+#essays .page-title{margin:20px 0 60px;padding:32px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+.contact-actions{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+main a.booking-link{background:var(--blue);color:#FFF;padding:11px 17px;border-radius:9px;text-decoration:none!important;font-size:14px}
+main a.booking-link:hover{background:#244E3C}
+footer{align-items:center;justify-content:space-between;gap:22px;padding-top:26px;padding-bottom:34px}
+.social-links{display:flex;flex-wrap:wrap;gap:18px;max-width:none;justify-content:flex-start}
+.social-links a{font-size:12px;white-space:nowrap}
+a:focus-visible{outline:2px solid var(--blue);outline-offset:5px}
+@media(max-width:760px){
+header{height:auto;align-items:flex-start;flex-wrap:wrap;gap:20px}
+header nav{max-width:none;gap:16px;padding:9px 13px;justify-content:flex-start;flex-wrap:wrap}
+header nav a{font-size:12px}
+.opening.home-intro{padding:28px 24px;border-radius:18px}
+.opening.home-intro h1{font-size:40px;letter-spacing:-1.7px}
+.inquiry{padding:18px 2px;margin-top:18px}
+.practice-branches>div{padding:24px}
+.page-title h1{font-size:38px}
+#about .about-part,#coaching .coaching-chapter{grid-template-columns:1fr;gap:20px;padding:24px}
+#coaching .coaching-body .coaching-quote{padding:8px 20px 28px}
+#work .project-list li{padding:22px;gap:16px}
+#work .project-status{justify-self:start}
+.personal-quote{padding:24px 8px 30px}
+.personal-quote blockquote{font-size:23px}
+footer{align-items:flex-start;flex-direction:column}
+.social-links{gap:12px 20px;max-width:none}
+}
+@media(prefers-reduced-motion:reduce){.practice-branches>div{transition:none}.practice-branches>div:hover{transform:none}}
 </style></head><body><header><a class="brand" href="#home" aria-label="Rafaël de Lavergne home"><span>Rafaël<br>de Lavergne<span class="brand-period">.</span></span></a><nav aria-label="Main navigation"><a href="#about">About</a><a href="#essays">Essays</a><a href="#work">Projects</a><a href="#coaching">Coaching</a></nav></header><main>
 <div class="page active" id="home">
 <section class="opening home-intro">
@@ -131,6 +195,6 @@ nav a{font-size:12px}
 <section class="coaching-chapter"><h2>Zoom out</h2><div class="chapter-copy"><p><strong>What kind of life do you want?</strong></p><p>Work can take up much of our lives while drawing on only part of who we are. We step back from the immediate situation to look at the wider picture.</p><p>In coaching, I look at six dimensions of energy: physical, emotional, mental, social, spiritual, and creative. What gives you energy? What drains it? What have you left little room for?</p><p>Then we bring it back to life: a choice, a conversation, a boundary, or something to try. The aim is to make room for the parts of yourself you want to develop.</p></div></section>
 <figure class="personal-quote coaching-quote"><blockquote>“Between stimulus and response lies a space. In that space lie our freedom and power to choose a response.”</blockquote><figcaption>Author unknown · <a href="https://www.viktorfrankl.org/quote_stimulus.html" target="_blank" rel="noopener noreferrer">Often attributed to Viktor Frankl</a></figcaption></figure>
 <section class="coaching-chapter"><h2>What I bring</h2><div class="chapter-copy"><p>I spent eight years building TOTEM. I know the founder’s seat: hiring, fundraising, carrying responsibility, and making decisions when there is no comfortable option.</p><p>I also know what it is like to need support. Being coached through difficult periods changed how I approached my work and my own choices. That experience is part of why I do this.</p></div></section>
-<section class="coaching-chapter coaching-contact"><h2>Start with what’s on your mind</h2><div class="chapter-copy"><p>Tell me a little about the question or situation you’re facing. We can see whether working together makes sense.</p><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener noreferrer">Get in touch on LinkedIn ↗</a></div></section>
+<section class="coaching-chapter coaching-contact"><h2>Start with what’s on your mind</h2><div class="chapter-copy"><p>Tell me a little about the question or situation you’re facing. We can see whether working together makes sense.</p><div class="contact-actions"><a class="booking-link" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener noreferrer">Book a conversation ↗</a><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener noreferrer">Get in touch on LinkedIn ↗</a></div></div></section>
 </div></div>
-</main><footer><span>© 2026 Rafaël de Lavergne</span></footer><script>function route(){let id=location.hash.slice(1)||'home';if(!document.getElementById(id)?.classList.contains('page'))id='home';document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('nav a').forEach(a=>{a.classList.toggle('active',a.hash==='#'+id);if(a.hash==='#'+id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});document.title=(id==='home'?'What does it mean to be yourself?':({about:'About',essays:'Essays',work:'Projects',coaching:'Coaching'})[id])+' — Rafaël de Lavergne';window.scrollTo(0,0)}window.addEventListener('hashchange',route);route();</script></body></html>
+</main><footer><span>© 2026 Rafaël de Lavergne</span><nav class="social-links" aria-label="Elsewhere"><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener noreferrer">X / Twitter ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener noreferrer">Calendly ↗</a></nav></footer><script>function route(){let id=location.hash.slice(1)||'home';if(!document.getElementById(id)?.classList.contains('page'))id='home';document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('nav a').forEach(a=>{a.classList.toggle('active',a.hash==='#'+id);if(a.hash==='#'+id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});document.title=(id==='home'?'What does it mean to be yourself?':({about:'About',essays:'Essays',work:'Projects',coaching:'Coaching'})[id])+' — Rafaël de Lavergne';window.scrollTo(0,0)}window.addEventListener('hashchange',route);route();</script></body></html>
