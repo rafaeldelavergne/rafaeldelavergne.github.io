@@ -188,6 +188,43 @@ footer{background:var(--paper)}
 .practice-branches>div::before{left:-17px;top:25px}
 .practice-branches>div::after{content:'';position:absolute;left:-13px;top:29px;width:12px;height:1px;background:#A5B8A9;pointer-events:none}
 }
+
+/* Visible graph paper and a directional question-to-action map. */
+body{
+background-color:#F7F5EF;
+background-image:linear-gradient(rgba(83,110,92,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(83,110,92,.12) 1px,transparent 1px),linear-gradient(rgba(83,110,92,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(83,110,92,.045) 1px,transparent 1px);
+background-size:24px 24px,24px 24px,120px 120px,120px 120px;
+}
+#home{padding-top:8px}
+#home .opening.home-intro{max-width:820px;margin:0 auto;border-color:#BCCBBD;background:#FFFEFA;box-shadow:0 5px 18px #20332E06;padding:40px 44px;border-radius:18px}
+#home .flow-arrow{height:64px;display:flex;align-items:center;justify-content:center;color:#54775D}
+#home .inquiry{max-width:820px;margin:0 auto;padding:30px 34px;background:#FFFEFA;border:1px solid #BCCBBD;border-radius:16px;grid-template-columns:210px 1fr;gap:28px;box-shadow:0 5px 18px #20332E04}
+#home .inquiry h2{margin:0}
+#home .practice{padding:0 0 34px}
+#home .practice>h2{display:table;text-align:center;padding:10px 22px;margin:0 auto;border:1px solid #BCCBBD;border-radius:30px;background:#EDF3EB;font-size:20px;line-height:1.4;z-index:1}
+#home .practice-branches{margin-top:58px}
+#home .practice-branches::before{left:calc((100% - 36px)/6);width:calc(100% - (100% - 36px)/3);top:-30px;height:29px;border-color:#54775D;border-width:1.5px;border-radius:10px 10px 0 0}
+#home .practice-branches::after{left:50%;top:-58px;height:58px;width:1.5px;background:#54775D}
+#home .practice-branches>div{background:#FFFEFA;border-color:#BCCBBD;border-radius:16px}
+#home .practice-branches>div::before{width:9px;height:9px;border:0;border-right:1.5px solid #54775D;border-bottom:1.5px solid #54775D;border-radius:0;background:transparent;left:calc(50% - 4px);top:-10px;transform:rotate(45deg)}
+#home .practice-branches>div::after{display:none}
+#home .map-junction{position:absolute;left:calc(50% - 3px);top:-33px;width:7px;height:7px;border-radius:50%;background:#54775D;z-index:1}
+#home .personal-quote{background:transparent;margin-top:12px}
+footer{background:transparent}
+@media(max-width:760px){
+#home .opening.home-intro{padding:28px 24px}
+#home .inquiry{grid-template-columns:1fr;gap:14px;padding:24px}
+#home .flow-arrow{height:54px}
+#home .flow-arrow svg{height:54px}
+#home .practice>h2{font-size:18px}
+#home .practice-branches{margin:32px 0 0 22px;gap:24px}
+#home .practice-branches::before{left:-22px;top:-33px;bottom:30px;width:1.5px;height:auto;border:0;border-radius:0;background:#54775D}
+#home .practice-branches::after{display:block;left:-22px;top:-33px;width:calc(50% + 11px);height:1.5px;background:#54775D}
+#home .practice-branches>div::before{left:-10px;top:25px;width:9px;height:9px;transform:rotate(-45deg)}
+#home .practice-branches>div::after{display:block;position:absolute;left:-22px;top:29px;width:19px;height:1.5px;background:#54775D}
+#home .map-junction{left:-24.5px;top:-35.5px}
+}
+@media(prefers-reduced-motion:no-preference){#home .practice-branches>div:hover{transform:none}}
 </style></head><body><header><a class="brand" href="#home" aria-label="Rafaël de Lavergne home"><span>Rafaël<br>de Lavergne<span class="brand-period">.</span></span></a><nav aria-label="Main navigation"><a href="#about">About</a><a href="#essays">Essays</a><a href="#work">Projects</a><a href="#coaching">Coaching</a></nav></header><main>
 <div class="page active" id="home">
 <section class="opening home-intro">
@@ -196,8 +233,8 @@ footer{background:var(--paper)}
 <p>Am I living the life I want, or running someone else’s program?</p>
 <p>Some of what I’ve inherited from my parents and the world around me is a gift. Some of it I want to question. I’m trying to understand what I choose to keep, and what I want to change.</p>
 </section>
-<section class="inquiry"><h2>Where it takes me</h2><div><p>This question has led me into entrepreneurship, philosophy, coaching, neuroscience, and wisdom traditions from East and West—even shamanism. I explore these things for myself first. I’m still figuring out what to make of them.</p><a href="#about">My story →</a></div></section>
-<section class="practice"><h2>What I do with it</h2><div class="practice-branches">
+<div class="flow-arrow" aria-hidden="true"><svg viewBox="0 0 32 64" width="32" height="64"><path d="M16 2V54M9 47L16 55L23 47" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><section class="inquiry"><h2>Where it takes me</h2><div><p>This question has led me into entrepreneurship, philosophy, coaching, neuroscience, and wisdom traditions from East and West—even shamanism. I explore these things for myself first. I’m still figuring out what to make of them.</p><a href="#about">My story →</a></div></section>
+<div class="flow-arrow" aria-hidden="true"><svg viewBox="0 0 32 64" width="32" height="64"><path d="M16 2V54M9 47L16 55L23 47" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><section class="practice"><h2>What I do with it</h2><div class="practice-branches"><span class="map-junction" aria-hidden="true"></span>
 <div><h3><a href="#work">Build</a></h3><p>As an entrepreneur, I want to build a culture where people can be themselves. That question shapes the companies and projects I work on.</p></div>
 <div><h3><a href="#coaching">Coach</a></h3><p>I help people explore their own choices: what they want, what holds them back, and what they might do next.</p></div>
 <div><h3><a href="#essays">Write</a></h3><p>I’m starting to share what I learn along the way, including the questions I haven’t answered.</p></div>
