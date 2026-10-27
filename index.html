@@ -225,6 +225,23 @@ footer{background:transparent}
 #home .map-junction{left:-24.5px;top:-35.5px}
 }
 @media(prefers-reduced-motion:no-preference){#home .practice-branches>div:hover{transform:none}}
+
+/* Restrained paper notes on the homepage only. */
+#home .opening.home-intro{background:#FFFDF3;border:1px solid #E3DFC9;border-radius:3px;box-shadow:2px 6px 14px #383B2F0D,0 1px 2px #383B2F0A}
+#home .inquiry{background:#F8F5E9;border:1px solid #E2DECE;border-radius:3px;box-shadow:2px 5px 12px #383B2F0C}
+#home .practice>h2{border:0;border-radius:2px;background:#F7F5EF;padding:8px 18px}
+#home .practice-branches>div{border-radius:3px;box-shadow:2px 7px 14px #383B2F10;border:1px solid rgba(69,85,64,.12);transform-origin:50% 0}
+#home .practice-branches>div:nth-of-type(1){background:#E9F0DF;transform:rotate(-.7deg)}
+#home .practice-branches>div:nth-of-type(2){background:#F5EBD5}
+#home .practice-branches>div:nth-of-type(3){background:#E5EEF3;transform:rotate(.7deg)}
+#home .practice-branches>div:nth-of-type(1):hover{transform:rotate(-.7deg)}
+#home .practice-branches>div:nth-of-type(3):hover{transform:rotate(.7deg)}
+#coaching .page-title .coaching-question{font-size:clamp(25px,3.2vw,34px);line-height:1.35;letter-spacing:-.8px;max-width:730px;margin-bottom:12px;color:var(--ink)}
+#coaching .page-title .question-context{font-size:19px;color:var(--blue);margin:0 0 24px}
+@media(max-width:760px){
+#home .practice-branches>div:nth-of-type(1),#home .practice-branches>div:nth-of-type(3),#home .practice-branches>div:nth-of-type(1):hover,#home .practice-branches>div:nth-of-type(3):hover{transform:none}
+#coaching .page-title .coaching-question{font-size:27px}
+}
 </style></head><body><header><a class="brand" href="#home" aria-label="Rafaël de Lavergne home"><span>Rafaël<br>de Lavergne<span class="brand-period">.</span></span></a><nav aria-label="Main navigation"><a href="#about">About</a><a href="#essays">Essays</a><a href="#work">Projects</a><a href="#coaching">Coaching</a></nav></header><main>
 <div class="page active" id="home">
 <section class="opening home-intro">
@@ -253,7 +270,7 @@ footer{background:transparent}
 <div class="page" id="essays"><section class="page-title"><h1>Essays</h1><p class="lead">Notes from an unfinished exploration.</p><p>I’m writing about the beliefs we inherit, the choices we make, and what I’m learning by trying things in my own life.</p><p>First essays coming soon.</p></section></div>
 <div class="page" id="work"><section class="page-title"><h1>Projects</h1></section><ul class="project-list"><li><div><h2><a href="https://compass-me.ai" target="_blank" rel="noopener noreferrer">Compass ↗</a></h2><p>A tool to connect the direction you choose with what you do.</p></div><span class="project-status">In development</span></li><li><div><h2>A game about being yourself</h2><p>A game for adolescents to explore beliefs, choices, and their consequences.</p></div><span class="project-status">Concept</span></li></ul></div>
 <div class="page" id="coaching">
-<section class="page-title"><h1>Coaching</h1><p class="lead">You can carry a lot of responsibility and still need space to work out what you want.</p><p>One-to-one coaching for founders and leaders.</p><p class="credentials">Trained with Jean-Daniel Rémond · Founders coached from seed to Series B</p></section>
+<section class="page-title"><h1>Coaching</h1><p class="lead coaching-question">Are you satisfied with your life right now?</p><p class="question-context">At work? In life?</p><p>You can carry a lot of responsibility and still need space to work out what you want.</p><p>One-to-one coaching for founders and leaders.</p><p class="credentials">Trained with Jean-Daniel Rémond · Founders coached from seed to Series B</p></section>
 <div class="coaching-body">
 <section class="coaching-chapter"><h2>Zoom in</h2><div class="chapter-copy"><p><strong>What needs your attention now?</strong></p><p>We start with what brings you here and create space to think. What’s happening? What do you need? What could you do next?</p><p>Some conversations I have:</p><ul class="conversation-examples"><li>A co-founder whose company makes 100 million in revenue, but who is unhappy with their life.</li><li>A co-founder who wants to leave after ten years, but doesn’t know how.</li><li>A leader who feels close to burnout.</li></ul><p>We look at what you want, what you feel obliged to do, and what makes it difficult to choose—including the expectations you carry from your family, your peers, or yourself.</p></div></section>
 <section class="coaching-chapter"><h2>Zoom out</h2><div class="chapter-copy"><p><strong>What kind of life do you want?</strong></p><p>Work can take up much of our lives while drawing on only part of who we are. We step back from the immediate situation to look at the wider picture.</p><p>In coaching, I look at six dimensions of energy: physical, emotional, mental, social, spiritual, and creative. What gives you energy? What drains it? What have you left little room for?</p><p>Then we bring it back to life: a choice, a conversation, a boundary, or something to try. The aim is to make room for the parts of yourself you want to develop.</p></div></section>
