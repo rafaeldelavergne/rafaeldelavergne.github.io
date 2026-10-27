@@ -242,6 +242,34 @@ footer{background:transparent}
 #home .practice-branches>div:nth-of-type(1),#home .practice-branches>div:nth-of-type(3),#home .practice-branches>div:nth-of-type(1):hover,#home .practice-branches>div:nth-of-type(3):hover{transform:none}
 #coaching .page-title .coaching-question{font-size:27px}
 }
+
+/* Recognisable sticky notes, confined to the home thinking board. */
+#home .opening.home-intro{max-width:720px;padding:40px;background:linear-gradient(to bottom,#F2E5AB 0 30px,#FFF2BC 30px 100%);border:0;border-radius:0;box-shadow:3px 9px 0 -6px #77704C26,5px 14px 20px -14px #4B49377A}
+#home .opening.home-intro .question-note{margin-top:8px}
+#home .opening.home-intro h1{font-size:clamp(38px,4.5vw,54px)}
+#home .inquiry{max-width:620px;display:block;padding:40px 32px 30px;background:linear-gradient(to bottom,#EAE1C1 0 24px,#F8EFD4 24px 100%);border:0;border-radius:0;box-shadow:4px 12px 18px -12px #4B493777}
+#home .inquiry h2{margin:0 0 18px}
+#home .practice-branches{gap:32px;align-items:start;padding-bottom:12px}
+#home .practice-branches>div{border:0;border-radius:0;min-height:290px;padding:42px 26px 30px;box-shadow:3px 8px 0 -5px #77704C22,5px 13px 19px -12px #4B49377A;transform-origin:50% 0}
+#home .practice-branches>div:nth-of-type(1){background:linear-gradient(to bottom,#CDDCAF 0 25px,#E1EDC8 25px 100%);transform:rotate(-2deg)}
+#home .practice-branches>div:nth-of-type(2){background:linear-gradient(to bottom,#ECD598 0 25px,#F9E5AF 25px 100%);transform:rotate(1deg)}
+#home .practice-branches>div:nth-of-type(3){background:linear-gradient(to bottom,#BCD7E1 0 25px,#D6EAF2 25px 100%);transform:rotate(-1.5deg)}
+#home .practice-branches>div:nth-of-type(1):hover{transform:rotate(-2deg)}
+#home .practice-branches>div:nth-of-type(2):hover{transform:rotate(1deg)}
+#home .practice-branches>div:nth-of-type(3):hover{transform:rotate(-1.5deg)}
+#home .practice-branches h3{font-size:25px;margin-bottom:18px}
+#home .practice-branches p{color:#3F5147;line-height:1.7}
+#home .practice-branches::before{left:calc((100% - 64px)/6);width:calc(100% - (100% - 64px)/3)}
+@media(max-width:760px){
+#home .opening.home-intro{padding:38px 24px 28px}
+#home .inquiry{padding:36px 24px 26px}
+#home .practice-branches{gap:30px;margin-left:24px;padding-right:7px}
+#home .practice-branches>div{min-height:230px;padding:38px 24px 26px}
+#home .practice-branches>div:nth-of-type(1),#home .practice-branches>div:nth-of-type(1):hover{transform:rotate(-1deg)}
+#home .practice-branches>div:nth-of-type(2),#home .practice-branches>div:nth-of-type(2):hover{transform:rotate(.7deg)}
+#home .practice-branches>div:nth-of-type(3),#home .practice-branches>div:nth-of-type(3):hover{transform:rotate(-.7deg)}
+#home .practice-branches::before{left:-22px;width:1.5px}
+}
 </style></head><body><header><a class="brand" href="#home" aria-label="Rafaël de Lavergne home"><span>Rafaël<br>de Lavergne<span class="brand-period">.</span></span></a><nav aria-label="Main navigation"><a href="#about">About</a><a href="#essays">Essays</a><a href="#work">Projects</a><a href="#coaching">Coaching</a></nav></header><main>
 <div class="page active" id="home">
 <section class="opening home-intro">
