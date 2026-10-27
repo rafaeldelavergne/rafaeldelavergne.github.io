@@ -161,6 +161,33 @@ footer{align-items:flex-start;flex-direction:column}
 .social-links{gap:12px 20px;max-width:none}
 }
 @media(prefers-reduced-motion:reduce){.practice-branches>div{transition:none}.practice-branches>div:hover{transform:none}}
+
+/* Graph paper and one quiet branching path. */
+:root{--paper:#F7F5EF}
+body{
+background-color:var(--paper);
+background-image:linear-gradient(rgba(72,100,81,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(72,100,81,.045) 1px,transparent 1px);
+background-size:28px 28px;
+}
+.opening.home-intro{background:linear-gradient(120deg,rgba(255,255,255,.97),rgba(240,246,240,.97))}
+.page-title{background:var(--paper)}
+.home-intro,.inquiry,.practice{position:relative}
+.inquiry{background:var(--paper)}
+.practice>h2{position:relative;display:table;background:var(--paper);padding-right:14px}
+.practice-branches{position:relative;margin-top:52px}
+.practice-branches::before{content:'';position:absolute;height:26px;width:calc((100% - 36px)/3 + 36px + (100% - 36px)/3);left:calc((100% - 36px)/6);top:-27px;border:1px solid #A5B8A9;border-bottom:0;border-radius:12px 12px 0 0;pointer-events:none}
+.practice-branches::after{content:'';position:absolute;left:50%;top:-47px;width:1px;height:47px;background:#A5B8A9;pointer-events:none}
+.practice-branches>div{position:relative}
+.practice-branches>div::before{content:'';position:absolute;width:7px;height:7px;border-radius:50%;border:1px solid #76967F;background:var(--paper);left:calc(50% - 4px);top:-5px;z-index:1;pointer-events:none}
+.personal-quote{background:var(--paper)}
+footer{background:var(--paper)}
+@media(max-width:760px){
+.practice-branches{margin-top:24px;margin-left:12px;gap:20px}
+.practice-branches::before{left:-13px;top:27px;bottom:27px;width:1px;height:auto;border:0;background:#A5B8A9;border-radius:0}
+.practice-branches::after{display:none}
+.practice-branches>div::before{left:-17px;top:25px}
+.practice-branches>div::after{content:'';position:absolute;left:-13px;top:29px;width:12px;height:1px;background:#A5B8A9;pointer-events:none}
+}
 </style></head><body><header><a class="brand" href="#home" aria-label="Rafaël de Lavergne home"><span>Rafaël<br>de Lavergne<span class="brand-period">.</span></span></a><nav aria-label="Main navigation"><a href="#about">About</a><a href="#essays">Essays</a><a href="#work">Projects</a><a href="#coaching">Coaching</a></nav></header><main>
 <div class="page active" id="home">
 <section class="opening home-intro">
