@@ -18,13 +18,16 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:24px;pa
 <footer><span>A map, not a master plan.</span><nav aria-label="Elsewhere"><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener noreferrer">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></footer>
 <script>
 'use strict';
-const svgStart='<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 20 920 640" role="img" aria-labelledby="map-title map-desc"><title id="map-title">';
+const svgStart='<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 20 920 640" role="group" aria-labelledby="map-title map-desc"><title id="map-title">';
 const ink='#557161';
 function tree(x,y,s=1,c='#9db29a'){return '<g transform="translate('+x+' '+y+') scale('+s+')" aria-hidden="true"><ellipse cx="8" cy="5" rx="22" ry="10" fill="#526a4e12"/><path d="M0 0V-34" stroke="#80917a" stroke-width="4"/><ellipse cy="-40" rx="19" ry="26" fill="'+c+'"/><ellipse cx="-6" cy="-43" rx="13" ry="22" fill="#ffffff18"/></g>'}
 function shrub(x,y){return '<g aria-hidden="true"><ellipse cx="'+x+'" cy="'+y+'" rx="17" ry="8" fill="#aebd9b"/><ellipse cx="'+(x+12)+'" cy="'+(y-3)+'" rx="11" ry="7" fill="#bcc8a9"/></g>'}
 function person(x,y,c='#c19878'){return '<g aria-hidden="true"><ellipse cx="'+x+'" cy="'+(y+6)+'" rx="6" ry="3" fill="#435e4918"/><path d="M'+(x-2)+' '+(y+4)+'v-8m4 8v-8" stroke="#63796e" stroke-width="2"/><path d="M'+x+' '+(y-2)+'v-9" stroke="'+c+'" stroke-width="6" stroke-linecap="round"/><circle cx="'+x+'" cy="'+(y-17)+'" r="3.2" fill="#d6b79d"/></g>'}
 function label(x,y,title,sub,w=175){return '<g transform="translate('+x+' '+y+')"><rect class="label-bg" x="'+(-w/2)+'" y="-23" width="'+w+'" height="54" rx="6"/><text class="label" text-anchor="middle" y="0">'+title+' <tspan font-size="15">↗</tspan></text><text class="sublabel" text-anchor="middle" y="19">'+sub+'</text></g>'}
-function place(route,origin,content){return '<a class="place" href="#'+route+'" data-origin="'+origin+'" aria-label="'+(names[route]||route)+'">'+content+'</a>'}
+function place(route,origin,content){
+const areas={home:[195,145,200,230],library:[560,90,210,230],workshop:[590,350,220,220],garden:[210,380,210,190],'workshop/compass':[280,230,210,220],'workshop/game':[560,325,220,210],'home/work':[270,230,220,220],'home/life':[550,300,230,240],'library/essays':[380,280,240,220],'garden/zoom-in':[200,230,200,180],'garden/zoom-out':[580,235,215,180],'garden/conversation':[405,420,215,170]};
+const a=areas[route];return '<a class="place" href="#'+route+'" data-origin="'+origin+'" aria-label="'+(names[route]||route)+'"><rect x="'+a[0]+'" y="'+a[1]+'" width="'+a[2]+'" height="'+a[3]+'" fill="transparent" pointer-events="all"/>'+content+'</a>'}
+
 function house(x,y,type){
 let color=type==='workshop'?'#8caaa8':type==='library'?'#9ba9b9':'#b2b49b';
 let windows=type==='workshop'?'<path d="M14-29L80-1V30L14 2Z" fill="#b8cdd0" stroke="#83999a"/><path d="M36-20V11M58-11V21" stroke="#e5e9da" stroke-width="3"/>':'<path d="M14-27L34-18V3L14-5ZM47-13L67-4V16L47 7Z" fill="#b2cad0" stroke="#92a5a0"/><path d="M24-23V-1M57-9V12" stroke="#f5f2df" stroke-width="2"/>';
@@ -81,7 +84,7 @@ document.getElementById('announcement').textContent=(detail?names[key]+' opened.
 current=key;if(focus)document.getElementById('reading-title').focus({preventScroll:true});
 }
 function navigate(){
-const key=safeRoute();if(key===current)return;clearTimeout(timer);
+const key=safeRoute();clearTimeout(timer);if(key===current){scene.className='scene';return;}
 const different=key.split('/')[0]!==current.split('/')[0];
 if(current&&different&&!motionOff){
 scene.style.transformOrigin=pendingOrigin;scene.className='scene exiting';
@@ -91,7 +94,7 @@ pendingOrigin='50% 50%';
 }
 function updateMotion(){motion.setAttribute('aria-pressed',String(motionOff));motion.textContent=motionOff?'Motion off':'Motion on'}
 motion.addEventListener('click',()=>{motionOff=!motionOff;updateMotion()});
-document.addEventListener('click',e=>{const a=e.target.closest('a[data-origin]');if(a)pendingOrigin=a.dataset.origin});
+document.addEventListener('click',e=>{if(e.target.closest('.skip')){e.preventDefault();document.getElementById('reading-title').focus();return;}const a=e.target.closest('a[data-origin]');if(a)pendingOrigin=a.dataset.origin});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&current!=='town')location.hash=current.includes('/')?current.split('/')[0]:'town'});
 window.addEventListener('hashchange',navigate);updateMotion();navigate();
 </script></body></html>
