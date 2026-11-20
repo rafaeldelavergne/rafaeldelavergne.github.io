@@ -135,7 +135,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-tone="ink"]{--bg:#15140f;--fg:#efe9dc;--dim:#8f897b}
 [data-tone="paper"]{--bg:#efe9dc;--fg:#15140f;--dim:#7d7666}
 [data-mode="film"] .scene{background:repeating-linear-gradient(118deg,color-mix(in srgb,var(--fg) 4%,transparent) 0 1px,transparent 1px 6px),var(--bg);color:var(--fg)}
-.seam{height:62vh;position:relative}
+.seam{height:56vh;position:relative}
 .seam svg{width:100%;height:100%;display:block}
 .c-ink{fill:#15140f;stroke:#15140f;stroke-width:.9}
 .c-paper{fill:#efe9dc;stroke:#efe9dc;stroke-width:.9}
@@ -242,6 +242,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .phases>.phase{grid-area:1/1}
 [data-mode="film"] .phase .big{font-size:clamp(28px,4vw,60px);max-width:none}
 [data-mode="film"] .phase .lede{max-width:56ch;margin-top:.8em}
+[data-mode="film"] .phase.dance .big{font-style:italic;max-width:30ch;font-size:clamp(26px,3.4vw,52px)}
 html:not([data-mode="film"]) .phase .big{font-size:clamp(24px,4vw,32px)}
 .tess{width:100%;height:32vh;margin-top:3vh;display:block}
 .tess .ta{fill:var(--fg)}
@@ -397,6 +398,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
+<div class="seam film-only" data-from="me" data-to="ink" data-a="top" data-b="question" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+
 <!-- 1 · the question -->
 <section class="scene" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:260vh">
   <div class="frame has-fig">
@@ -427,6 +430,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="question" data-b="program" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+
 <!-- 2 · the stairs -->
 <section class="scene" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
   <div class="frame stairs-frame" id="stairs-frame">
@@ -447,7 +452,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="paper" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="paper" data-a="program" data-b="pov" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 2b · point of view (3D) -->
 <section class="scene" data-tone="paper" data-name="point of view" id="pov" data-fig="an impossible loop" style="--len:360vh">
@@ -464,6 +469,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     </div>
   </div>
 </section>
+
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="pov" data-b="inherited" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 3 · inherited (interactive) -->
 <section class="scene free" data-tone="paper" data-name="inherited" id="inherited" data-fig="figure and ground">
@@ -483,19 +490,24 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="inherited" data-b="where" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+
 <!-- 4 · metamorphosis -->
 <section class="scene" data-tone="paper" data-name="three stages" id="where" data-fig="a metamorphosis" style="--len:380vh">
   <div class="frame meta-frame">
     <p class="label"><span class="md">##</span>three stages of a life</p>
     <div class="phases">
       <div class="phase b" data-at="0" data-out=".36"><h2 class="big">1 · Adapting</h2><p class="lede">Growing up, we build adaptation software: to our parents, our siblings, our friends, society. Like a sponge, the brain optimises other people’s energy. Each of us takes the shape our neighbours leave us.</p></div>
-      <div class="phase b" data-at=".36" data-out=".7"><h2 class="big">2 · Becoming yourself</h2><p class="lede">Often after a shock, you rewrite what is good and bad for you, across all six dimensions. For me that meant entrepreneurship, philosophy, coaching, neuroscience, wisdom traditions — even shamanism. You become yourself, but mostly among your own.</p></div>
-      <div class="phase b" data-at=".7"><h2 class="big">3 · Yourself, among everyone</h2><p class="lede">Recharge alone or with your own, then go back out to create and change things. Back and forth, like riding a bicycle. The goal: a wanderer who can go anywhere and remain yourself.</p></div>
+      <div class="phase b" data-at=".33" data-out=".52"><h2 class="big">2 · Becoming yourself</h2><p class="lede">Often after a shock, you rewrite what is good and bad for you, across all six dimensions. For me that meant entrepreneurship, philosophy, coaching, neuroscience, wisdom traditions — even shamanism. You become yourself, but mostly among your own.</p></div>
+      <div class="phase b dance" data-at=".52" data-out=".74"><blockquote class="big" style="margin:0">“And those who were dancing were thought to be insane by those who could not hear the music.”</blockquote><p class="cite">— often attributed to Friedrich Nietzsche</p></div>
+      <div class="phase b" data-at=".74"><h2 class="big">3 · Yourself, among everyone</h2><p class="lede">Recharge alone or with your own, then go back out to create and change things. Back and forth, like riding a bicycle. The goal: a wanderer who can go anywhere and remain yourself.</p></div>
     </div>
     <svg class="tess film-only" id="tess" viewBox="0 0 840 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
     <p class="fig-cap film-only">tiles shaped by their neighbours · after M.C. Escher’s metamorphoses</p>
   </div>
 </section>
+
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="where" data-b="totem" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 5 · totem -->
 <section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" data-fig="a totem of cubes" style="--len:280vh">
@@ -513,7 +525,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="ink" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="ink" data-a="totem" data-b="covid" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 6 · covid -->
 <section class="scene" data-tone="ink" data-name="2020" id="covid" data-fig="what remains" style="--len:240vh">
@@ -525,6 +537,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <p class="lede b" data-at=".55">Being coached through that period changed how I approached responsibility — and my own choices.</p>
   </div>
 </section>
+
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="covid" data-b="space" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 7 · the space: two neurons -->
 <section class="scene" data-tone="ink" data-name="the space" id="space" data-fig="the synapse" style="--len:420vh">
@@ -544,6 +558,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <p class="fig-cap film-only syn-cap">two neurons and the space between them · engraved after M.C. Escher</p>
   </div>
 </section>
+
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 8 · energy -->
 <section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:460vh">
@@ -573,7 +589,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="paper" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="paper" data-a="zoom" data-b="work" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 9 · what I do with it -->
 <section class="scene free" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane">
@@ -587,6 +603,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     </ul>
   </div>
 </section>
+
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="work" data-b="eof" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 10 · eof -->
 <section class="scene free eof" data-tone="paper" data-name="EOF" id="eof" data-fig="a möbius strip">
@@ -826,14 +844,14 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
   function drawTess(p){
     const m=c=>{const t=clamp(p*2.4-.15-(c/TC)*1.1);return t*t*(3-2*t)};
-    const lift=clamp((p-.38)/.1)*(1-clamp((p-.66)/.12));
+    const lift=clamp((p-.36)/.1)*(1-clamp((p-.72)/.1)),dance=clamp((p-.52)/.04)*(1-clamp((p-.72)/.04));
     const mine=p>=.36;
     let out='',me='';
     for(let r=0;r<TR;r++)for(let c=0;c<TC;c++){
       const x=c*TS,y=r*TS,d=tilePath(x,y,m(c),m(c-.5),m(c+.5),0);
       if(r===ME_R&&c===ME_C&&mine){
         out+='<path class="'+(lift>.02?'gap':'me')+'" d="'+d+'"/>';
-        if(lift>.02)me='<path class="me" d="'+tilePath(x,y,m(c),m(c-.5),m(c+.5),.9*lift)+'" transform="translate('+(x+TS/2)+' '+(y+TS/2-55*lift)+') scale('+(1+.35*lift)+') translate('+(-x-TS/2)+' '+(-y-TS/2)+')"/>';
+        if(lift>.02)me='<path class="me" d="'+tilePath(x,y,m(c),m(c-.5),m(c+.5),.9*lift)+'" transform="translate('+(x+TS/2)+' '+(y+TS/2-55*lift)+') rotate('+(Math.sin(p*90)*24*dance).toFixed(1)+') scale('+(1+.35*lift+.12*dance*Math.abs(Math.sin(p*90)))+') translate('+(-x-TS/2)+' '+(-y-TS/2)+')"/>';
       } else out+='<path class="'+((r+c)%2?'ta':'tb')+'" d="'+d+'"/>';
     }
     tess.innerHTML='<g transform="translate(0 0)">'+out+me+'</g>';
@@ -899,19 +917,56 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
   document.querySelectorAll('.tile-mark').forEach(el=>{el.innerHTML='<svg viewBox="-10 -10 80 80" aria-hidden="true"><path d="'+tile4(0,0,1,1,1,1)+'"/></svg>'});
 
-  // ---- seams: day and night, figure and ground
+  // ---- seams: every scene has its species of tile; each passage is a metamorphosis
   const seams=[...document.querySelectorAll('.seam')];
   const SR=6,SC=14;
+  // coefficients of sin(πu), sin(2πu), sin(3πu) for horizontal (h) and vertical (v) edges
+  const SPECIES={
+    top:{h:[0,.2,.05],v:[0,.2,.05]},            // helix: s-curves
+    question:{h:[.16,0,0],v:[.16,0,0]},         // sphere: round bulges
+    program:{h:[0,0,.12],v:[.0,.06,0]},         // stairs: steps
+    pov:{h:[.1,0,.1],v:[-.1,0,.1]},             // the loop
+    inherited:{h:[0,.24,0],v:[0,-.24,0]},       // figure and ground
+    where:{h:[0,.2,.07],v:[0,.2,.07]},          // metamorphosis (same family as its band)
+    totem:{h:[0,0,0],v:[0,0,0]},                // cubes: back to the square
+    covid:{h:[.05,.12,.12],v:[-.08,.1,.14]},    // what breaks
+    space:{h:[.22,0,-.06],v:[0,.05,0]},         // synapse: two membranes
+    zoom:{h:[0,.1,.1],v:[0,.1,.1]},             // six energies
+    work:{h:[0,.06,0],v:[0,.06,0]},             // flat plane, lifting
+    eof:{h:[.0,.16,.0],v:[.0,-.16,.0]}          // möbius: one side
+  };
+  const edgeC=(u,c)=>TS*(c[0]*Math.sin(Math.PI*u)+c[1]*Math.sin(2*Math.PI*u)+c[2]*Math.sin(3*Math.PI*u));
+  function tileC(x,y,cT,cB,cL,cR){
+    const pts=[];
+    for(let i=0;i<NS;i++){const u=i/NS;pts.push([x+u*TS,y+edgeC(u,cT)])}
+    for(let i=0;i<NS;i++){const v=i/NS;pts.push([x+TS+edgeC(v,cR),y+v*TS])}
+    for(let i=0;i<NS;i++){const u=1-i/NS;pts.push([x+u*TS,y+TS+edgeC(u,cB)])}
+    for(let i=0;i<NS;i++){const v=1-i/NS;pts.push([x+edgeC(v,cL),y+v*TS])}
+    return 'M'+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')+'Z';
+  }
+  const lerpC=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
+  const opp=c=>c==='ink'?'paper':'ink';
   function drawSeam(se,p){
-    const t0=clamp(p*1.7-.25),m=t0*t0*(3-2*t0);
-    const from=se.dataset.from,to=se.dataset.to;
-    const ah=r=>m*Math.sin(Math.PI*r/SR),av=r=>m*Math.sin(Math.PI*(r+.5)/SR);
+    const A=SPECIES[se.dataset.a]||SPECIES.totem,B=SPECIES[se.dataset.b]||SPECIES.totem;
+    const from=se.dataset.from,to=se.dataset.to,same=from===to,idx=seams.indexOf(se),meC0=from==='me';
+    // the metamorphosis front moves down the band as you scroll
+    const front=t=>{const k=clamp((t-.5)*1.4+.5+(p-.5)*1.1);return k*k*(3-2*k)};
+    // shapes swell in the middle of the band and flatten at its edges
+    const env=t=>Math.sin(Math.PI*clamp(t))*.85+.15;
+    const hC=r=>{const t=r/SR;return lerpC(A.h,B.h,front(t)).map(x=>x*env(t))};
+    const vC=r=>{const t=(r+.5)/SR;return lerpC(A.v,B.v,front(t)).map(x=>x*env(t))};
+    const meC=2+(idx*3)%10;
     let out='';
-    for(let r=0;r<SR;r++)for(let c=0;c<SC;c++){
-      const t=r/(SR-1),fig=(r+c)%2===0;
-      let col=fig?(t<.7?from:to):(t<.3?from:to);
-      if(r===2&&c===7)col='me';
-      out+='<path class="c-'+col+'" d="'+tile4(c*TS,r*TS,ah(r),ah(r+1),av(r),av(r))+'"/>';
+    for(let r=0;r<SR;r++){
+      const top=hC(r),bot=hC(r+1),side=vC(r);
+      for(let c=0;c<SC;c++){
+        const t=r/(SR-1),fig=(r+c)%2===0;
+        let col;
+        if(same)col=fig&&t>.15&&t<.85?opp(from):from;
+        else col=fig?(t<.7?from:to):(t<.3?from:to);
+        if(r===2&&c===meC&&!meC0)col='me';
+        out+='<path class="c-'+col+'" d="'+tileC(c*TS,r*TS,top,bot,side,side)+'"/>';
+      }
     }
     se.firstChild.innerHTML=out;
   }
