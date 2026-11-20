@@ -57,7 +57,23 @@ html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapter
 .menu.open .menu-in{transform:none}
 .menu-h{font:12px var(--mono);color:var(--dim);letter-spacing:.06em;margin:0 0 1.4em}
 .menu-h .md{color:var(--accent);font-size:1em;vertical-align:0}
-.toc{list-style:none;margin:0 0 3em;padding:0}
+.toc{list-style:none;margin:0 0 1.2em;padding:0}
+.trail{position:relative}
+.trail-svg{position:absolute;left:0;top:0;width:64px;height:100%;overflow:visible;pointer-events:none}
+.trail-svg .walked-line{fill:none;stroke:var(--fg);stroke-width:1.6}
+.trail-svg .ahead-line{fill:none;stroke:color-mix(in srgb,var(--fg) 40%,transparent);stroke-width:1.3;stroke-dasharray:2 5;stroke-linecap:round}
+.trail-svg .n-done{fill:var(--fg);stroke:var(--bg);stroke-width:4}
+.trail-svg .n-now{fill:var(--accent);stroke:var(--bg);stroke-width:4}
+.trail-svg .n-next{fill:var(--bg);stroke:color-mix(in srgb,var(--fg) 55%,transparent);stroke-width:5}
+.toc li{padding-left:72px}
+.toc li.act{padding-top:1.4em;font:11px var(--mono);color:var(--dim);letter-spacing:.06em}
+.toc li.act:first-child{padding-top:.2em}
+.toc li.act b{color:var(--accent);font-weight:500;margin-right:.6em}
+.intents{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 2.2em}
+.intents a,.intents button{font:12px var(--mono);color:var(--fg);text-decoration:none;border:1px solid color-mix(in srgb,var(--fg) 35%,transparent);border-radius:30px;padding:7px 14px;background:none}
+.intents a:hover,.intents button:hover{border-color:var(--accent);color:var(--accent)}
+.walked{font:12px var(--mono);color:var(--dim);margin:0 0 3em;padding-left:72px}
+.walked b{color:var(--accent);font-weight:500}
 .toc a{display:flex;align-items:baseline;gap:12px;padding:9px 0;text-decoration:none;color:var(--fg)}
 .toc .no{font:11px var(--mono);color:var(--dim);width:2.4ch;flex-shrink:0}
 .toc .ti{font:400 clamp(22px,3vw,32px)/1.1 var(--serif);white-space:nowrap}
@@ -71,7 +87,7 @@ html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapter
 .toc-links a{color:var(--fg)}
 .menu-foot{font:11px var(--mono);color:var(--dim)}
 .menu-foot button{background:none;border:0;padding:0;color:var(--fg);text-decoration:underline;text-underline-offset:3px;font:inherit}
-@media (max-width:700px){.toc .fg{display:none}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
+@media (max-width:700px){.toc li{padding-left:56px}.walked{padding-left:56px}.trail-svg{width:50px}.toc .fg{display:none}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
 .toggle{white-space:nowrap}
 
 /* ======================================================
@@ -586,8 +602,17 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
 </footer>
 <nav class="menu" id="menu" hidden aria-label="Index">
   <div class="menu-in">
-    <p class="menu-h"><span class="md">#</span>being.md — index</p>
-    <ol class="toc" id="chapters"></ol>
+    <p class="menu-h"><span class="md">#</span>my path</p>
+    <div class="intents" role="group" aria-label="Shortcuts">
+      <a href="#zoom" data-intent>I’m here for coaching →</a>
+      <a href="#work" data-intent>I’m here for Compass →</a>
+      <button type="button" id="intent-text">just let me read it →</button>
+    </div>
+    <div class="trail">
+      <svg class="trail-svg" id="trail-svg" aria-hidden="true"></svg>
+      <ol class="toc" id="chapters"></ol>
+    </div>
+    <p class="walked" id="walked"></p>
     <p class="menu-h"><span class="md">##</span>elsewhere</p>
     <ul class="toc-links">
       <li><a href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">book a coaching conversation ↗</a></li>
@@ -631,14 +656,41 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
     walk(h);
   });
 
-  // index menu
+  // index menu: my path, in five acts
   const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn'),menu=document.getElementById('menu'),menuBtn=document.getElementById('menu-btn');
-  const markSvg='<svg viewBox="-10 -10 80 80"><path d="M0 0H60V60H0Z"/></svg>';
-  scenes.forEach((s,i)=>{const li=document.createElement('li');const a=document.createElement('a');a.href='#'+s.id;
-    a.innerHTML='<span class="no">'+String(i).padStart(2,'0')+'</span><span class="ti">'+s.dataset.name+'</span><span class="lead"></span><span class="fg">'+(s.dataset.fig||'')+'</span><span class="mk">'+markSvg+'</span>';
-    a.addEventListener('click',()=>closeMenu(false));li.append(a);list.append(li)});
+  const trailSvg=document.getElementById('trail-svg'),walkedEl=document.getElementById('walked');
+  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','totem','covid']],['IV','the space',['space','zoom']],['V','what I do with it',['work','eof']]];
+  const sceneIdx=id=>scenes.findIndex(x=>x.id===id);
+  let reached=0;try{reached=+localStorage.getItem('being-reached')||0}catch(e){}
+  ACTS.forEach(([n,name,ids])=>{
+    const h=document.createElement('li');h.className='act';h.innerHTML='<b>'+n+'</b>'+name;list.append(h);
+    ids.forEach(id=>{const sc=scenes[sceneIdx(id)];if(!sc)return;const i=sceneIdx(id);
+      const li=document.createElement('li'),a=document.createElement('a');a.href='#'+id;a.dataset.i=i;
+      a.innerHTML='<span class="no">'+String(i).padStart(2,'0')+'</span><span class="ti">'+sc.dataset.name+'</span><span class="lead"></span><span class="fg">'+(sc.dataset.fig||'')+'</span>';
+      a.addEventListener('click',()=>closeMenu(false));li.append(a);list.append(li)});
+  });
+  let nodeD=null;
+  function drawTrail(){
+    const rows=[...list.querySelectorAll('a')];if(!rows.length||menu.hidden)return;
+    nodeD=nodeD||tile4(-30,-30,.6,.6,.6,.6);
+    const cur=scenes.indexOf(current||scenes[0]),w=trailSvg.clientWidth;
+    const pts=rows.map((a,k)=>[k%2?w*.72:w*.28,a.parentElement.offsetTop+a.offsetHeight/2,+a.dataset.i]);
+    const seg=(a,b)=>'C'+a[0]+' '+(a[1]+(b[1]-a[1])/2)+' '+b[0]+' '+(b[1]-(b[1]-a[1])/2)+' '+b[0]+' '+b[1];
+    let done='M'+pts[0][0]+' '+pts[0][1],ahead='';
+    const last=Math.max(cur,0);
+    for(let k=1;k<pts.length;k++){if(pts[k][2]<=last)done+=seg(pts[k-1],pts[k]);else{if(!ahead)ahead='M'+pts[k-1][0]+' '+pts[k-1][1];ahead+=seg(pts[k-1],pts[k])}}
+    let o='<path class="walked-line" d="'+done+'"/>'+(ahead?'<path class="ahead-line" d="'+ahead+'"/>':'');
+    for(const [x,y,i] of pts){const cls=i===cur?'n-now':i<=Math.max(reached,cur)?'n-done':'n-next';
+      o+='<path class="'+cls+'" d="'+nodeD+'" transform="translate('+x+' '+y+') rotate('+(i*23%90)+') scale('+(i===cur?.36:.27)+')"/>'}
+    trailSvg.innerHTML=o;
+    const seen=Math.max(reached,cur)+1;
+    walkedEl.innerHTML='you’ve walked <b>'+seen+'</b> of '+scenes.length+(seen>=scenes.length?' · and back to the beginning, if you like':'');
+  }
+  addEventListener('resize',()=>{if(!menu.hidden)drawTrail()});
+  menu.querySelectorAll('[data-intent]').forEach(a=>a.addEventListener('click',()=>closeMenu(false)));
+  document.getElementById('intent-text').addEventListener('click',()=>{closeMenu(false);setMode('text',true);scrollTo(0,0)});
   let lastFocus=null;
-  function openMenu(){lastFocus=document.activeElement;menu.hidden=false;requestAnimationFrame(()=>menu.classList.add('open'));[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','true'));document.body.style.overflow='hidden';(list.querySelector('[aria-current="true"]')||list.querySelector('a')).focus()}
+  function openMenu(){lastFocus=document.activeElement;menu.hidden=false;drawTrail();requestAnimationFrame(()=>menu.classList.add('open'));[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','true'));document.body.style.overflow='hidden';(list.querySelector('[aria-current="true"]')||list.querySelector('a')).focus()}
   function closeMenu(refocus=true){menu.classList.remove('open');[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','false'));document.body.style.overflow='';setTimeout(()=>{menu.hidden=true},300);if(refocus&&lastFocus)lastFocus.focus()}
   btn.addEventListener('click',()=>menu.hidden?openMenu():closeMenu());
   menuBtn.addEventListener('click',()=>menu.hidden?openMenu():closeMenu());
@@ -694,6 +746,7 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
     }
     if(active!==current){
       current=active;
+      {const ai=scenes.indexOf(active);if(ai>reached){reached=ai;try{localStorage.setItem('being-reached',String(ai))}catch(e){}}}
       if(film)document.body.dataset.tone=active.dataset.tone;
       here.textContent='¶ '+active.dataset.name;
       list.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',String(a.hash==='#'+active.id)));
