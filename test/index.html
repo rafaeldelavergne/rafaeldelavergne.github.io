@@ -137,6 +137,10 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .scene{background:repeating-linear-gradient(118deg,color-mix(in srgb,var(--fg) 4%,transparent) 0 1px,transparent 1px 6px),var(--bg);color:var(--fg)}
 .seam{height:56vh;position:relative}
 .seam svg{width:100%;height:100%;display:block}
+.seam[data-kind="fold"]{perspective:1100px;perspective-origin:50% 0%;overflow:hidden}
+.fold{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 60%}
+.fold svg{position:absolute;inset:0}
+.fold svg.back{filter:brightness(.55)}
 .c-ink{fill:#15140f;stroke:#15140f;stroke-width:.9}
 .c-paper{fill:#efe9dc;stroke:#efe9dc;stroke-width:.9}
 .c-me{fill:#c98260;stroke:#c98260;stroke-width:.9}
@@ -431,7 +435,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="me" data-to="ink" data-a="top" data-b="question" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="me" data-to="ink" data-a="top" data-b="question" data-kind="helix" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 1 · the question -->
 <section class="scene" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:260vh">
@@ -485,7 +489,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="paper" data-a="program" data-b="pov" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="paper" data-a="program" data-b="pov" data-kind="fold" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 2b · point of view (3D) -->
 <section class="scene" data-tone="paper" data-name="point of view" id="pov" data-fig="an impossible loop" style="--len:360vh">
@@ -503,7 +507,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="paper" data-a="pov" data-b="inherited" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="pov" data-b="inherited" data-kind="helix" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 3 · inherited (interactive) -->
 <section class="scene free" data-tone="paper" data-name="inherited" id="inherited" data-fig="figure and ground">
@@ -592,7 +596,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" data-kind="helix" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 8 · energy -->
 <section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:460vh">
@@ -1012,24 +1016,62 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   };
   const RG={};for(const k in GLYPHS)RG[k]=resample(GLYPHS[k]);
   const BG={ink:'#15140f',paper:'#efe9dc',me:'#c98260'},FG={ink:'#efe9dc',paper:'#15140f',me:'#15140f'};
-  function drawSeam(se,p){
+  const glyphPath=(A,B,t,cx,cy,sc)=>{let d='';for(let i=0;i<GN;i++){const x=A[i][0]+(B[i][0]-A[i][0])*t,y=A[i][1]+(B[i][1]-A[i][1])*t;d+=(i?'L':'M')+(cx+x*sc).toFixed(1)+' '+(cy+y*sc).toFixed(1)}return d+'Z'};
+  function seamParts(se,p){
     const A=RG[se.dataset.a]||RG.question,B=RG[se.dataset.b]||RG.question,from=se.dataset.from,to=se.dataset.to,idx=seams.indexOf(se);
-    const R=5,C=10,CS=84,ROT=0;let out='';
-    for(let r=0;r<R;r++){
-      const bgK=r<R/2-.01?from:to;
-      out+='<rect x="0" y="'+r*CS+'" width="'+C*CS+'" height="'+CS+'" fill="'+BG[bgK]+'"/>';
-    }
-    if(R%2){const mid=Math.floor(R/2);out+='<rect x="0" y="'+mid*CS+'" width="'+C*CS/2+'" height="'+CS+'" fill="'+BG[from]+'"/><rect x="'+C*CS/2+'" y="'+mid*CS+'" width="'+C*CS/2+'" height="'+CS+'" fill="'+BG[to]+'"/>'}
+    const R=5,C=10,CS=84;let bg='',gl='';
+    for(let r=0;r<R;r++)bg+='<rect x="0" y="'+r*CS+'" width="'+C*CS+'" height="'+CS+'" fill="'+BG[r<R/2-.01?from:to]+'"/>';
+    const mid=Math.floor(R/2);bg+='<rect x="0" y="'+mid*CS+'" width="'+C*CS/2+'" height="'+CS+'" fill="'+BG[from]+'"/><rect x="'+C*CS/2+'" y="'+mid*CS+'" width="'+C*CS/2+'" height="'+CS+'" fill="'+BG[to]+'"/>';
     const meC=(idx*3+2)%C;
     for(let r=0;r<R;r++)for(let c=0;c<C;c++){
       const t0=(r+(c/C)*.9)/(R-.1),k=clamp((t0-.5)*1.25+.5+(p-.5)*1.2),t=k*k*(3-2*k);
       const cx=c*CS+CS/2+(r%2?CS/4:-CS/4),cy=r*CS+CS/2,sc=CS*.4;
-      const bgK=(R%2&&r===Math.floor(R/2))?(c<C/2?from:to):(r<R/2-.01?from:to);
+      const bgK=r===mid?(c<C/2?from:to):(r<R/2-.01?from:to);
       const fill=(r===2&&c===meC&&from!=='me')?'#c98260':FG[bgK];
-      let d='';for(let i=0;i<GN;i++){const x=A[i][0]+(B[i][0]-A[i][0])*t,y=A[i][1]+(B[i][1]-A[i][1])*t;d+=(i?'L':'M')+(cx+x*sc).toFixed(1)+' '+(cy+y*sc).toFixed(1)}
-      out+='<path d="'+d+'Z" fill="'+fill+'" fill-rule="nonzero"/>';
+      gl+='<path d="'+glyphPath(A,B,t,cx,cy,sc)+'" fill="'+fill+'"/>';
     }
-    se.firstChild.innerHTML=out;
+    return [bg,gl];
+  }
+  // a double helix of glyphs; scrolling turns it
+  function drawHelix(se,p){
+    const A=RG[se.dataset.a]||RG.question,B=RG[se.dataset.b]||RG.question,from=se.dataset.from,to=se.dataset.to;
+    const W=840,H=420,cy=H/2,AMP=118,N=26;
+    let o='<defs><linearGradient id="hx'+seams.indexOf(se)+'" x1="0" x2="1" y1="0" y2="1"><stop offset=".47" stop-color="'+BG[from]+'"/><stop offset=".53" stop-color="'+BG[to]+'"/></linearGradient></defs><rect width="'+W+'" height="'+H+'" fill="url(#hx'+seams.indexOf(se)+')"/>';
+    const items=[];
+    for(let i=0;i<N;i++){
+      const x=18+i*(W-36)/(N-1),ph=i*.52+p*11;
+      const tx=clamp(x/W*1.25-.12+(p-.5)*.7),t=tx*tx*(3-2*tx);
+      const side=(x/W)+(cy/H)<1?from:to;
+      const pts=[0,1].map(sd=>{const a=ph+sd*Math.PI;return {y:cy+AMP*Math.cos(a),z:Math.sin(a),sd}});
+      // rung (base pair) behind the strands
+      items.push({z:-2,svg:'<line x1="'+x.toFixed(1)+'" y1="'+pts[0].y.toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+pts[1].y.toFixed(1)+'" stroke="'+FG[side]+'" stroke-opacity=".35" stroke-width="3"/>'});
+      for(const q of pts){
+        const sc=15+11*(q.z+1)/2,me=i===9&&q.sd===0&&from!=='me';
+        const sideQ=(x/W)+(q.y/H)<1?from:to;
+        items.push({z:q.z,svg:'<path d="'+glyphPath(A,B,t,x,q.y,sc)+'" fill="'+(me?'#c98260':FG[sideQ])+'" fill-opacity="'+(.45+.55*(q.z+1)/2).toFixed(2)+'"/>'});
+      }
+    }
+    items.sort((a,b)=>a.z-b.z);
+    se.firstChild.innerHTML=o+items.map(x=>x.svg).join('');
+  }
+  // from the flat print to a block in space: the band tilts and its figures are extruded
+  const FOLD_LAYERS=9;
+  function drawFold(se,p){
+    if(!se._fold){
+      const f=document.createElement('div');f.className='fold';
+      for(let k=0;k<FOLD_LAYERS;k++){const sv=document.createElementNS('http://www.w3.org/2000/svg','svg');sv.setAttribute('viewBox','0 0 840 420');sv.setAttribute('preserveAspectRatio','xMidYMid slice');if(k)sv.classList.add('back');f.append(sv)}
+      se.innerHTML='';se.append(f);se._fold=f;
+    }
+    const e=clamp((p-.15)/.55),ee=e*e*(3-2*e),[bg,gl]=seamParts(se,p);
+    const L=[...se._fold.children];
+    L.forEach((sv,k)=>{sv.innerHTML=(k===L.length-1?bg:'')+gl;sv.style.transform='translateZ('+(-k*7*ee).toFixed(1)+'px)'});
+    se._fold.style.transform='rotateX('+(ee*52).toFixed(1)+'deg) rotateZ('+(-ee*9).toFixed(1)+'deg) scale('+(1+ee*.25).toFixed(3)+')';
+  }
+  function drawSeam(se,p){
+    const kind=se.dataset.kind;
+    if(kind==='helix')return drawHelix(se,p);
+    if(kind==='fold')return drawFold(se,p);
+    const [bg,gl]=seamParts(se,p);se.firstChild.innerHTML=bg+gl;
   }
 
   // ---- point of view: the staircase in 3D
