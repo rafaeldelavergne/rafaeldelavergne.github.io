@@ -41,12 +41,38 @@ button{font:inherit;color:inherit;cursor:pointer}
 .toggle,.chapters-btn{background:none;border:1px solid currentColor;border-radius:20px;padding:4px 11px;font:12px var(--mono);color:var(--dim)}
 .toggle:hover,.chapters-btn:hover{color:var(--fg)}
 html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapters-btn:hover{color:var(--ink)}
-.chapters{position:fixed;right:20px;bottom:48px;z-index:30;background:var(--bg);border:1px solid #ffffff22;border-radius:10px;padding:10px 0;margin:0;list-style:none;font:13px/1.4 var(--mono);min-width:230px;box-shadow:0 20px 50px #0006}
+.chapters-old{position:fixed;right:20px;bottom:48px;z-index:30;background:var(--bg);border:1px solid #ffffff22;border-radius:10px;padding:10px 0;margin:0;list-style:none;font:13px/1.4 var(--mono);min-width:230px;box-shadow:0 20px 50px #0006}
 .chapters[hidden]{display:none}
 .chapters a{display:block;padding:7px 16px;text-decoration:none;color:var(--dim)}
 .chapters a:hover,.chapters a[aria-current="true"]{color:var(--fg)}
 .chapters a span{opacity:.5;margin-right:8px}
 .progress{position:fixed;left:0;top:0;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(var(--total,0));background:var(--accent);z-index:25}
+
+/* index menu: a table of contents, like a print catalogue */
+.fb-right{display:flex;gap:8px}
+.menu{position:fixed;inset:0;z-index:60;overflow:auto;--bg:#15140f;--fg:#efe9dc;--dim:#8f897b;color:var(--fg);background:repeating-linear-gradient(118deg,rgba(239,233,220,.045) 0 1px,transparent 1px 6px),#15140f;opacity:0;transition:opacity .35s ease}
+.menu.open{opacity:1}
+.menu[hidden]{display:none}
+.menu-in{max-width:780px;margin:0 auto;padding:96px 22px 64px;transform:translateY(14px);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.menu.open .menu-in{transform:none}
+.menu-h{font:12px var(--mono);color:var(--dim);letter-spacing:.06em;margin:0 0 1.4em}
+.menu-h .md{color:var(--accent);font-size:1em;vertical-align:0}
+.toc{list-style:none;margin:0 0 3em;padding:0}
+.toc a{display:flex;align-items:baseline;gap:12px;padding:9px 0;text-decoration:none;color:var(--fg)}
+.toc .no{font:11px var(--mono);color:var(--dim);width:2.4ch;flex-shrink:0}
+.toc .ti{font:400 clamp(22px,3vw,32px)/1.1 var(--serif);white-space:nowrap}
+.toc .lead{flex:1;border-bottom:1px dotted color-mix(in srgb,var(--fg) 35%,transparent);transform:translateY(-6px);min-width:20px}
+.toc .fg{font:11px var(--mono);color:var(--dim);white-space:nowrap}
+.toc .mk{width:12px;height:12px;flex-shrink:0;opacity:0}
+.toc .mk svg{width:100%;height:100%;fill:var(--accent)}
+.toc a:hover .ti,.toc a[aria-current="true"] .ti{color:var(--accent)}
+.toc a[aria-current="true"] .mk{opacity:1}
+.toc-links{list-style:none;padding:0;margin:0 0 3em;display:flex;flex-wrap:wrap;gap:10px 22px;font:13px var(--mono)}
+.toc-links a{color:var(--fg)}
+.menu-foot{font:11px var(--mono);color:var(--dim)}
+.menu-foot button{background:none;border:0;padding:0;color:var(--fg);text-decoration:underline;text-underline-offset:3px;font:inherit}
+@media (max-width:700px){.toc .fg{display:none}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
+.toggle{white-space:nowrap}
 
 /* ======================================================
    TEXT MODE (default: no JS, reduced motion, or chosen)
@@ -174,6 +200,9 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 .emeter{font:12px var(--mono);color:var(--dim);margin-top:1.4em}
 .emeter b{color:var(--fg);font-weight:500}
 .emeter .up{color:var(--accent)}
+.grow-step{font:13px var(--mono);color:var(--accent);margin-top:1em;min-height:1.6em}
+[data-mode="film"] .orbit li.quiet .n{opacity:.45}
+[data-mode="film"] .orbit li.grew .n{color:var(--accent)}
 @media (max-width:900px){
   [data-mode="film"] .side-fig{top:auto;bottom:62px;transform:none;width:min(46vw,28vh);right:16px}
   [data-mode="film"] .side-fig.backdrop-m{opacity:.28}
@@ -223,20 +252,35 @@ html:not([data-mode="film"]) .phase .big{font-size:clamp(24px,4vw,32px)}
 [data-mode="film"] .stats span{font:11px var(--mono);color:var(--dim);margin-top:6px}
 .drop{font:400 clamp(60px,14vw,220px)/.9 var(--serif);letter-spacing:-.04em;color:var(--accent);margin:0}
 
-/* the space: gallery + white spot */
-[data-mode="film"] .gallery-frame>.label{position:absolute;top:84px;left:max(22px,8vw);z-index:4}
-[data-mode="film"] .gallery{position:absolute;inset:0;overflow:hidden}
-[data-mode="film"] .g-stack{position:absolute;left:50%;top:50%;width:0;height:0}
-.gf{position:absolute;left:0;top:0;width:80vmin;height:80vmin;margin:-40vmin 0 0 -40vmin;border:1px solid color-mix(in srgb,var(--fg) 30%,transparent);will-change:transform,opacity}
-.gf span{position:absolute;left:10px;top:7px;font:12px var(--mono);color:color-mix(in srgb,var(--fg) 55%,transparent);white-space:nowrap}
-[data-mode="film"] .g-notes{position:absolute;left:max(22px,8vw);bottom:84px;z-index:4;display:grid;max-width:42ch}
+/* the space: a synapse */
+[data-mode="film"] .syn-frame>.label{position:absolute;top:84px;left:max(22px,8vw);z-index:4}
+[data-mode="film"] .synapse{position:absolute;inset:0;width:100%;height:100%}
+[data-mode="film"] .g-notes{position:absolute;left:max(22px,8vw);bottom:84px;z-index:4;display:grid;max-width:38ch}
 [data-mode="film"] .g-notes>p{grid-area:1/1;margin:0;font:400 clamp(20px,2.2vw,30px)/1.25 var(--serif)}
 .g-notes .mono{font-size:.7em;color:var(--accent);display:block;margin-top:.5em}
-[data-mode="film"] .hole{--fg:#15140f;--dim:#7d7666;position:absolute;left:50%;top:50%;width:var(--hd,1.5vmin);height:var(--hd,1.5vmin);transform:translate(-50%,-50%);border-radius:50%;background:var(--paper);color:var(--ink);overflow:hidden;z-index:3;box-shadow:0 0 60px 6px #efe9dc26}
-[data-mode="film"] .hole-in{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(62vmin,560px);text-align:center}
-[data-mode="film"] .hole-in .big{font-size:clamp(22px,3.6vw,46px);max-width:none;margin:0 auto}
-[data-mode="film"] .hole-in .small{font:12px/1.6 var(--mono);color:var(--dim);margin:1.2em auto 0;max-width:40ch}
-html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d7666}
+[data-mode="film"] .cleft-text{--fg:#15140f;--dim:#7d7666;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:var(--cw,520px);max-width:88vw;text-align:center;color:#15140f;z-index:3}
+[data-mode="film"] .cleft-text .big{font-size:clamp(20px,2.5vw,36px);max-width:none;margin:0 auto}
+[data-mode="film"] .cleft-text .small{font:12px/1.6 var(--mono);color:#7d7666;margin:1em auto 0;max-width:40ch}
+html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:#7d7666}
+[data-mode="film"] .syn-cap{position:absolute;right:max(22px,7vw);bottom:70px;z-index:3;margin:0}
+.synapse .syn-body{fill:url(#synH);stroke:none}
+.synapse .syn-edge{fill:none;stroke:var(--fg);stroke-width:1.5}
+.synapse .syn-mem{stroke:var(--fg);stroke-width:3.5;stroke-linecap:round}
+.synapse .syn-ves{fill:var(--bg);stroke:var(--fg);stroke-width:1.2}
+.synapse .syn-ves-in{fill:var(--fg)}
+.synapse .syn-rec{fill:var(--fg)}
+.synapse .syn-gap{fill:#efe9dc}
+.synapse .syn-pulse{fill:var(--accent)}
+.synapse .syn-nt{fill:var(--fg)}
+.synapse .syn-nt.me{fill:var(--accent)}
+.synapse .syn-lbl{font:12px var(--mono);fill:var(--dim)}
+@media (max-width:900px){
+  [data-mode="film"] .g-notes{bottom:64px;right:22px;background:var(--bg);padding:12px 14px;border:1px solid color-mix(in srgb,var(--fg) 20%,transparent)}
+  [data-mode="film"] .g-notes>p{font-size:18px}
+  [data-mode="film"] .cleft-text .big{font-size:19px}
+  [data-mode="film"] .cleft-text .small{font-size:10px;margin-top:.6em}
+  [data-mode="film"] .syn-cap{display:none}
+}
 
 /* energy: six dimensions */
 [data-mode="film"] .energy{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4vw}
@@ -300,7 +344,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
   .tess{height:26vh}
   [data-mode="film"] .phase .lede{font-size:14px}
   [data-mode="film"] .phases{min-height:17em}
-  [data-mode="film"] .g-notes{bottom:64px;right:22px}
+  [data-mode="film"] .g-notes{bottom:64px;right:22px;background:var(--bg);padding:12px 14px;border:1px solid color-mix(in srgb,var(--fg) 20%,transparent)}
   [data-mode="film"] .g-notes>p{font-size:18px}
   [data-mode="film"] .hole-in{width:76vmin}
   [data-mode="film"] .hole-in .big{font-size:19px}
@@ -313,14 +357,14 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 <div class="progress" aria-hidden="true"></div>
 
 <header class="filebar">
-  <a class="name" href="/">rafaeldelavergne / <strong>being.md</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· a working draft</small></a>
-  <button class="toggle" type="button" id="mode-toggle" aria-pressed="false">read as text</button>
+  <a class="name" href="/"><span class="pre">rafaeldelavergne / </span><strong>being.md</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· a working draft</small></a>
+  <span class="fb-right"><button class="toggle" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu">≡ index</button><button class="toggle" type="button" id="mode-toggle" aria-pressed="false">read as text</button></span>
 </header>
 
 <main id="text" tabindex="-1">
 
 <!-- 0 · title -->
-<section class="scene title-card" data-tone="ink" data-name="being.md" style="--len:240vh" id="top">
+<section class="scene title-card" data-tone="ink" data-name="being.md" style="--len:240vh" id="top" data-fig="a double helix">
   <div class="frame">
     <canvas class="cosmos film-only" id="cosmos" aria-hidden="true"></canvas>
     <p class="label film-only"># being.md</p>
@@ -331,7 +375,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 </section>
 
 <!-- 1 · the question -->
-<section class="scene" data-tone="ink" data-name="the question" id="question" style="--len:260vh">
+<section class="scene" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:260vh">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true">
       <svg viewBox="-110 -110 220 220">
@@ -361,7 +405,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 </section>
 
 <!-- 2 · the stairs -->
-<section class="scene" data-tone="ink" data-name="someone else’s program" id="program" style="--len:400vh">
+<section class="scene" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
   <div class="frame stairs-frame" id="stairs-frame">
     <div>
       <h2 class="big"><span class="b" data-at=".02">Am I living the life I want,</span><br><span class="b" data-at=".08">or running someone else’s program?</span></h2>
@@ -383,7 +427,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 <div class="seam film-only" data-from="ink" data-to="paper" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 2b · point of view (3D) -->
-<section class="scene" data-tone="paper" data-name="point of view" id="pov" style="--len:360vh">
+<section class="scene" data-tone="paper" data-name="point of view" id="pov" data-fig="an impossible loop" style="--len:360vh">
   <div class="frame pov-frame">
     <div class="pov-stage film-only" id="pov-stage" aria-hidden="true"></div>
     <div class="pov-copy">
@@ -399,7 +443,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 </section>
 
 <!-- 3 · inherited (interactive) -->
-<section class="scene free" data-tone="paper" data-name="inherited" id="inherited">
+<section class="scene free" data-tone="paper" data-name="inherited" id="inherited" data-fig="figure and ground">
   <div class="frame has-fig">
     <p class="label"><span class="md">##</span>inherited</p>
     <h2 class="big">Some of what I’ve inherited is a gift. Some of it I want to question.</h2>
@@ -417,7 +461,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 </section>
 
 <!-- 4 · metamorphosis -->
-<section class="scene" data-tone="paper" data-name="three stages" id="where" style="--len:380vh">
+<section class="scene" data-tone="paper" data-name="three stages" id="where" data-fig="a metamorphosis" style="--len:380vh">
   <div class="frame meta-frame">
     <p class="label"><span class="md">##</span>three stages of a life</p>
     <div class="phases">
@@ -431,7 +475,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 </section>
 
 <!-- 5 · totem -->
-<section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" style="--len:280vh">
+<section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" data-fig="a totem of cubes" style="--len:280vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="totem-fig" viewBox="0 0 300 340"></svg><p class="fig-cap">a totem of cubes · after M.C. Escher’s cubic space</p></div>
     <p class="label"><span class="md">##</span>2017</p>
@@ -449,7 +493,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 <div class="seam film-only" data-from="paper" data-to="ink" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 6 · covid -->
-<section class="scene" data-tone="ink" data-name="2020" id="covid" style="--len:240vh">
+<section class="scene" data-tone="ink" data-name="2020" id="covid" data-fig="what remains" style="--len:240vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="covid-fig" viewBox="0 0 300 340" style="overflow:hidden"></svg><p class="fig-cap">what remains</p></div>
     <p class="label"><span class="md">##</span>2020</p>
@@ -459,34 +503,35 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
   </div>
 </section>
 
-<!-- 7 · the space -->
-<section class="scene" data-tone="ink" data-name="the space" id="space" style="--len:380vh">
-  <div class="frame gallery-frame">
+<!-- 7 · the space: two neurons -->
+<section class="scene" data-tone="ink" data-name="the space" id="space" data-fig="the synapse" style="--len:420vh">
+  <div class="frame syn-frame">
     <p class="label"><span class="md">##</span>the space</p>
-    <div class="gallery film-only" aria-hidden="true"><div class="g-stack" id="gstack"></div></div>
+    <svg class="synapse film-only" id="synapse" aria-hidden="true"></svg>
     <div class="g-notes">
-      <p class="b" data-at=".04" data-out=".24">A moment, a reaction, a habit, a story, a life. And around again.</p>
-      <p class="b" data-at=".24" data-out=".46">Usually the reaction is instant: a heuristic, written by our past.<span class="mono">interpretation = f(values, beliefs, past, energy)</span></p>
+      <p class="b" data-at=".03" data-out=".22">A stimulus arrives. A signal runs down the nerve.</p>
+      <p class="b" data-at=".22" data-out=".44">Usually the reaction is instant: a heuristic, written by our past.<span class="mono">interpretation = f(values, beliefs, past, energy)</span></p>
     </div>
-    <div class="hole" id="hole"><div class="hole-in">
-      <blockquote class="big b" data-at=".5" style="margin:0">Between stimulus and response lies a space.</blockquote>
-      <p class="big b" data-at=".6" style="margin-top:.4em"><em>In that space lie our freedom and power to choose.</em></p>
-      <p class="small b" data-at=".7">— often attributed to Viktor Frankl</p>
-      <p class="small b" data-at=".8">Coaching, meditation, a night’s sleep, dancing in the evening: they all do the same thing. They make the space longer.</p>
-    </div></div>
+    <div class="cleft-text" id="cleft-text">
+      <blockquote class="big b" data-at=".56" style="margin:0">Between stimulus and response lies a space.</blockquote>
+      <p class="big b" data-at=".64" style="margin-top:.4em"><em>In that space lie our freedom and power to choose.</em></p>
+      <p class="small b" data-at=".72">— often attributed to Viktor Frankl</p>
+      <p class="small b" data-at=".8">Coaching, meditation, a night’s sleep, dancing in the evening: they all do the same thing. They widen the gap.</p>
+    </div>
+    <p class="fig-cap film-only syn-cap">two neurons and the space between them · engraved after M.C. Escher</p>
   </div>
 </section>
 
 <!-- 8 · energy -->
-<section class="scene" data-tone="ink" data-name="energy" id="zoom" style="--len:460vh">
+<section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:460vh">
   <div class="frame energy">
     <div>
       <p class="label"><span class="md">##</span>energy</p>
       <div class="phases">
-        <div class="phase b" data-at="0" data-out=".46"><h2 class="big">Everything is <em>energy</em>.</h2><p class="lede">In coaching, I look at six dimensions of it. Work is only one place where they show up.</p></div>
-        <div class="phase b" data-at=".46" data-out=".64"><h2 class="big">Hustling on work alone.</h2><p class="lede">Work lives mostly in one dimension. Push only there, and the others pay for it. The shape gets thinner.</p></div>
-        <div class="phase b" data-at=".64" data-out=".82"><h2 class="big">Or 1% better, <em>everywhere</em>.</h2><p class="lede">A little more sleep. One honest conversation. Ten minutes of music. Small moves on every dimension are easier than one big push on work, and the whole shape grows.</p></div>
-        <div class="phase b" data-at=".82"><h2 class="big">Where are you today?</h2><p class="lede">Each one can be cultivated. Tap a dimension to raise or lower it.</p></div>
+        <div class="phase b" data-at="0" data-out=".3"><h2 class="big">Everything is <em>energy</em>.</h2><p class="lede">In coaching, I look at six dimensions of it: physical, emotional, mental, aesthetic, spiritual, social.</p></div>
+        <div class="phase b" data-at=".3" data-out=".5"><h2 class="big">Many of us live on two.</h2><p class="lede">Usually the mind and the work. They run full, and the other four wait quietly. Nothing is wrong with you: it is just where the energy has been going.</p></div>
+        <div class="phase b" data-at=".5" data-out=".82"><h2 class="big">The others are <em>room to grow</em>.</h2><p class="lede">You don’t need to push harder on what is already full. A small step on a forgotten dimension changes the whole shape, and you feel it.</p><p class="grow-step mono" id="grow-step"></p></div>
+        <div class="phase b" data-at=".82"><h2 class="big">Where are you today?</h2><p class="lede">Each one can be cultivated, a little at a time. Tap a dimension to raise or lower it.</p></div>
       </div>
       <p class="emeter film-only" id="emeter">energy: <b>100%</b></p>
       <p class="core film-only" id="core" aria-live="polite"></p>
@@ -508,26 +553,26 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
 <div class="seam film-only" data-from="ink" data-to="paper" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 9 · what I do with it -->
-<section class="scene free" data-tone="paper" data-name="what I do with it" id="work">
+<section class="scene free" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="work-fig" viewBox="0 0 320 300"></svg><p class="fig-cap">out of the flat plane · after M.C. Escher’s reptiles</p></div>
     <p class="label"><span class="md">##</span>what I do with it</p>
     <ul class="todo">
       <li><span class="box">[x]</span><div><h3>Build</h3><p>As an entrepreneur, I want to build a culture where people can be themselves.</p><p class="links"><a href="https://compass-me.ai" target="_blank" rel="noopener">Compass ↗</a><span class="tag">in development</span> &nbsp; A game about being yourself<span class="tag">concept</span></p></div></li>
-      <li><span class="box">[~]</span><div><h3>Coach</h3><p>One-to-one, for founders and leaders, seed to Series B. What you want, what holds you back, what you might do next.</p><p class="links"><a href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation ↗</a><a href="/#coaching">How it works</a></p></div></li>
+      <li><span class="box">[~]</span><div><h3>Coach</h3><p>One-to-one, for founders and leaders, seed to Series B. What you want, what holds you back, what you might do next.</p><p class="links"><a href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation ↗</a><a href="/archive/2026-11-20-before-being-md.html#coaching">How it works</a></p></div></li>
       <li><span class="box">[ ]</span><div><h3>Write</h3><p>Sharing what I learn along the way, including the questions I haven’t answered.</p><p class="links">first essays coming soon</p></div></li>
     </ul>
   </div>
 </section>
 
 <!-- 10 · eof -->
-<section class="scene free eof" data-tone="paper" data-name="EOF" id="eof">
+<section class="scene free eof" data-tone="paper" data-name="EOF" id="eof" data-fig="a möbius strip">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true"><canvas id="mobius"></canvas><p class="fig-cap">one side, no end · after M.C. Escher’s Möbius strip</p></div>
     <h2 class="big">I’m still figuring out what being myself means in practice.</h2>
     <p class="lede">I dance and I climb. In climbing, I like trying a movement, understanding what went wrong, and trying again. Same here.</p>
     <a class="cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Start with what’s on your mind ↗</a>
-    <p class="elsewhere"><a href="/">the long version</a><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></p>
+    <p class="elsewhere"><a href="/archive/2026-11-20-before-being-md.html">the previous version</a><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></p>
     <p class="elsewhere"><a href="#top">↺ back to the beginning</a></p>
     <p class="end">-- EOF · © 2026 Rafaël de Lavergne --</p>
   </div>
@@ -539,7 +584,22 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
   <span><span class="pos">being.md · </span><span id="here">being.md</span></span>
   <span><span id="pct" class="pos">0%</span>&nbsp; <button class="chapters-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="chapters">≡ chapters</button></span>
 </footer>
-<ol class="chapters" id="chapters" hidden></ol>
+<nav class="menu" id="menu" hidden aria-label="Index">
+  <div class="menu-in">
+    <p class="menu-h"><span class="md">#</span>being.md — index</p>
+    <ol class="toc" id="chapters"></ol>
+    <p class="menu-h"><span class="md">##</span>elsewhere</p>
+    <ul class="toc-links">
+      <li><a href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">book a coaching conversation ↗</a></li>
+      <li><a href="https://compass-me.ai" target="_blank" rel="noopener">Compass ↗</a></li>
+      <li><a href="/archive/2026-11-20-before-being-md.html">the previous version</a></li>
+      <li><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+      <li><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a></li>
+      <li><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></li>
+    </ul>
+    <p class="menu-foot">esc to close · m to open · <button type="button" id="menu-close">close ×</button></p>
+  </div>
+</nav>
 
 <script>
 'use strict';
@@ -571,11 +631,23 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
     walk(h);
   });
 
-  // chapters menu
-  const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn');
-  scenes.forEach((s,i)=>{const li=document.createElement('li');const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+String(i).padStart(2,'0')+'</span>'+s.dataset.name;a.addEventListener('click',()=>{list.hidden=true;btn.setAttribute('aria-expanded','false')});li.append(a);list.append(li)});
-  btn.addEventListener('click',()=>{list.hidden=!list.hidden;btn.setAttribute('aria-expanded',String(!list.hidden))});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!list.hidden){list.hidden=true;btn.setAttribute('aria-expanded','false');btn.focus()}});
+  // index menu
+  const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn'),menu=document.getElementById('menu'),menuBtn=document.getElementById('menu-btn');
+  const markSvg='<svg viewBox="-10 -10 80 80"><path d="M0 0H60V60H0Z"/></svg>';
+  scenes.forEach((s,i)=>{const li=document.createElement('li');const a=document.createElement('a');a.href='#'+s.id;
+    a.innerHTML='<span class="no">'+String(i).padStart(2,'0')+'</span><span class="ti">'+s.dataset.name+'</span><span class="lead"></span><span class="fg">'+(s.dataset.fig||'')+'</span><span class="mk">'+markSvg+'</span>';
+    a.addEventListener('click',()=>closeMenu(false));li.append(a);list.append(li)});
+  let lastFocus=null;
+  function openMenu(){lastFocus=document.activeElement;menu.hidden=false;requestAnimationFrame(()=>menu.classList.add('open'));[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','true'));document.body.style.overflow='hidden';(list.querySelector('[aria-current="true"]')||list.querySelector('a')).focus()}
+  function closeMenu(refocus=true){menu.classList.remove('open');[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','false'));document.body.style.overflow='';setTimeout(()=>{menu.hidden=true},300);if(refocus&&lastFocus)lastFocus.focus()}
+  btn.addEventListener('click',()=>menu.hidden?openMenu():closeMenu());
+  menuBtn.addEventListener('click',()=>menu.hidden?openMenu():closeMenu());
+  document.getElementById('menu-close').addEventListener('click',()=>closeMenu());
+  menu.querySelectorAll('.toc-links a').forEach(a=>a.addEventListener('click',()=>closeMenu(false)));
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&!menu.hidden){e.preventDefault();closeMenu()}
+    else if((e.key==='m'||e.key==='M')&&!e.metaKey&&!e.ctrlKey&&!/input|textarea/i.test(document.activeElement.tagName)){menu.hidden?openMenu():closeMenu()}
+  });
 
   const clamp=v=>Math.max(0,Math.min(1,v));
   const ease=t=>1-Math.pow(1-t,3);
@@ -606,7 +678,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
       });
       if(s.id==='program')drawStairs(p);
       if(s.id==='where')drawTess(p);
-      if(s.id==='space')drawGallery(p);
+      if(s.id==='space')synP=p;
       if(s.id==='pov')povP=p;
       if(s.id==='zoom')energyScroll(p);
       if(s.id==='top')cosmosP=p;
@@ -700,22 +772,54 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
     tess.innerHTML='<g transform="translate(0 0)">'+out+me+'</g>';
   }
 
-  // ---- the space: a gallery that loops, and a white spot
-  const gstack=document.getElementById('gstack'),hole=document.getElementById('hole');
-  const GL=['a life','a story','a habit','a reaction','a moment'],GN=8,GR=1.55,GROT=7;
-  const gfs=[];for(let i=0;i<GN;i++){const d=document.createElement('div');d.className='gf';d.innerHTML='<span></span>';gstack.append(d);gfs.push(d)}
-  function drawGallery(p){
-    const t=ease(clamp(p/.85))*9,k=Math.floor(t),f=t-k;
-    gfs.forEach((el,i)=>{
-      const d=i-f;
-      el.style.transform='scale('+Math.pow(GR,-d).toFixed(4)+') rotate('+(d*GROT).toFixed(2)+'deg)';
-      el.style.opacity=(d<0?Math.max(0,1+d):d>GN-3?Math.max(0,GN-2-d):1).toFixed(3);
-      el.firstChild.textContent=GL[(i+k)%GL.length];
-    });
-    const h=clamp((p-.42)/.3);
-    hole.style.setProperty('--hd',(1.5+Math.pow(h,1.3)*84).toFixed(2)+'vmin');
+  // ---- the space: two neurons, and the gap between them
+  const syn=document.getElementById('synapse'),cleftText=document.getElementById('cleft-text');
+  let synP=0;
+  const NT=[];for(let i=0;i<54;i++)NT.push({y:Math.random()*2-1,s:Math.random(),d:.4+Math.random()*.8,rel:Math.random(),me:i%11===5});
+  const sm=x=>x*x*(3-2*x);
+  function drawSynapse(t){
+    const W=syn.clientWidth,H=syn.clientHeight;if(!W)return;
+    const hor=W>=H*.9,L=hor?W:H,Wd=hor?H:W,p=synP;
+    const maxGap=hor?Math.min(W*.44,620):Math.min(H*.42,380);
+    const g=10+(maxGap-10)*sm(clamp((p-.26)/.3));
+    const c=L/2,m1=c-g/2,m2=c+g/2,cy=Wd/2,R=Math.min(Wd*.32,200),rx=R*1.05,ex1=m1-R*.55,ex2=m2+R*.55;
+    const hm=x=>{const k=(x)/rx;return k>=1?0:R*Math.sqrt(1-k*k)};
+    const h1=hm(m1-ex1),h2=hm(m2-ex2),xa=ex1-rx*Math.sqrt(1-Math.pow(24/R,2)),xb=ex2+rx*Math.sqrt(1-Math.pow(24/R,2));
+    let o='<defs><pattern id="synH" width="4.6" height="4.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="4.6" height="4.6" fill="var(--bg)"/><line class="hp" x1="0" y1="0" x2="0" y2="4.6"/></pattern>'+
+      '<clipPath id="synL"><rect x="-20" y="-20" width="'+(m1+20)+'" height="'+(Wd+40)+'"/></clipPath><clipPath id="synR"><rect x="'+m2+'" y="-20" width="'+(L-m2+20)+'" height="'+(Wd+40)+'"/></clipPath>'+
+      '<path id="ntT" d="'+tile4(-30,-30,.7,.7,.7,.7)+'"/></defs>';
+    o+='<g'+(hor?'':' transform="translate('+W+' 0) rotate(90)"')+'>';
+    // the space lights up
+    const lit=sm(clamp((p-.44)/.16));
+    if(lit>0)o+='<rect class="syn-gap" x="'+m1+'" y="-20" width="'+g+'" height="'+(Wd+40)+'" opacity="'+lit.toFixed(3)+'"/>';
+    // presynaptic: axon + terminal
+    o+='<g clip-path="url(#synL)"><rect class="syn-body" x="-20" y="'+(cy-24)+'" width="'+(xa+30)+'" height="48"/><ellipse class="syn-body" cx="'+ex1+'" cy="'+cy+'" rx="'+rx+'" ry="'+R+'"/><ellipse class="syn-edge" cx="'+ex1+'" cy="'+cy+'" rx="'+rx+'" ry="'+R+'"/></g>';
+    o+='<path class="syn-edge" d="M-20 '+(cy-24)+'H'+xa+'M-20 '+(cy+24)+'H'+xa+'"/>';
+    o+='<line class="syn-mem" x1="'+m1+'" y1="'+(cy-h1)+'" x2="'+m1+'" y2="'+(cy+h1)+'"/>';
+    for(let k=0;k<10;k++){const a=-.62+(k%4)*.2,b=-.6+Math.floor(k/4)*.42+(k%2)*.12,vx=ex1+rx*a+R*.25,vy=cy+R*b,vr=R*.075;o+='<circle class="syn-ves" cx="'+vx.toFixed(1)+'" cy="'+vy.toFixed(1)+'" r="'+vr.toFixed(1)+'"/><circle class="syn-ves-in" cx="'+vx.toFixed(1)+'" cy="'+vy.toFixed(1)+'" r="'+(vr*.32).toFixed(1)+'"/>'}
+    // postsynaptic: spine + dendrite
+    o+='<g clip-path="url(#synR)"><rect class="syn-body" x="'+(xb-10)+'" y="'+(cy-24)+'" width="'+(L-xb+30)+'" height="48"/><ellipse class="syn-body" cx="'+ex2+'" cy="'+cy+'" rx="'+rx+'" ry="'+R+'"/><ellipse class="syn-edge" cx="'+ex2+'" cy="'+cy+'" rx="'+rx+'" ry="'+R+'"/></g>';
+    o+='<path class="syn-edge" d="M'+xb+' '+(cy-24)+'H'+(L+20)+'M'+xb+' '+(cy+24)+'H'+(L+20)+'"/>';
+    o+='<line class="syn-mem" x1="'+m2+'" y1="'+(cy-h2)+'" x2="'+m2+'" y2="'+(cy+h2)+'"/>';
+    for(let k=0;k<7;k++){const ry=cy-h2*.8+k*(h2*1.6/6);o+='<rect class="syn-rec" x="'+(m2-3)+'" y="'+(ry-7).toFixed(1)+'" width="6" height="14" rx="2"/>'}
+    // the signal: pulses down the axon until it reaches the terminal
+    const run=1-sm(clamp((p-.28)/.1));
+    if(run>0)for(let k=0;k<3;k++){const f=((t*.00035+k/3)%1);o+='<circle class="syn-pulse" cx="'+(f*(xa+R*.3)-10).toFixed(1)+'" cy="'+cy+'" r="'+(9*run).toFixed(1)+'" opacity="'+run.toFixed(2)+'"/>'}
+    // neurotransmitters: tiny tiles crossing the gap
+    const rel=clamp((p-.3)/.22),fade=1-.75*clamp((p-.52)/.1);
+    for(const n of NT){
+      if(n.rel>rel)continue;
+      const f=(n.s+t*.00005*n.d)%1,x=m1+4+(g-8)*f,y=cy+n.y*Math.max(h1,h2,R*.5)*.85+Math.sin(t*.001*n.d+n.s*9)*5;
+      o+='<use href="#ntT" class="syn-nt'+(n.me?' me':'')+'" transform="translate('+x.toFixed(1)+' '+y.toFixed(1)+') rotate('+(n.s*360+t*.02*n.d).toFixed(0)+') scale(.13)" opacity="'+fade.toFixed(2)+'"/>';
+    }
+    o+='</g>';
+    // labels stay upright
+    const M=(x,y)=>hor?[x,y]:[W-y,x];
+    const ls=hor?[L*.06,cy+R+28]:[W-16,L*.16],lr=hor?[L*.94,cy+R+28]:[W-16,L*.9];
+    o+='<text class="syn-lbl" x="'+ls[0]+'" y="'+ls[1]+'"'+(hor?'':' text-anchor="end"')+'>stimulus</text><text class="syn-lbl" x="'+lr[0]+'" y="'+lr[1]+'" text-anchor="end">response</text>';
+    syn.innerHTML=o;
+    cleftText.style.setProperty('--cw',(hor?Math.max(260,maxGap-56):W-44)+'px');
   }
-
 
   // ---- shared tile geometry (used by seams and the mark)
   function tile4(x,y,aT,aB,aL,aR){
@@ -904,31 +1008,45 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
   drawInh();
   document.getElementById('sorter').addEventListener('click',()=>setTimeout(drawInh,0));
 
-  // cosmos: a galaxy of tiles, smaller and smaller toward the centre; scroll dives into the orange one
+  // DNA: a double helix of tiles; scroll dives into the orange one
   const cosmos=document.getElementById('cosmos');let cosmosP=0;
   const tileP=new Path2D(tile4(-30,-30,.6,.6,.6,.6));
-  const stars=[];for(let i=0;i<260;i++)stars.push([Math.random()*2-1,Math.random()*2-1,Math.random()]);
+  const stars=[];for(let i=0;i<200;i++)stars.push([Math.random()*2-1,Math.random()*2-1,Math.random()]);
+  let helixPhase=0,lastHT=0;
   function drawCosmos(t){
     const W=cosmos.clientWidth,H=cosmos.clientHeight;if(!W)return;
     const d=Math.min(devicePixelRatio,2);if(cosmos.width!==Math.round(W*d)){cosmos.width=Math.round(W*d);cosmos.height=Math.round(H*d)}
     const c=cosmos.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
-    c.fillStyle='rgba(239,233,220,.55)';for(const s of stars){c.globalAlpha=.25+.6*s[2];c.fillRect((s[0]*.5+.5)*W,(s[1]*.5+.5)*H,1.2,1.2)}c.globalAlpha=1;
-    const U=Math.min(W,H),gx=W*(W>900?.73:.5),gy=H*(W>900?.5:.8),rot=t*.00004,RMAX=U*(W>900?.44:.3);
+    c.fillStyle='#efe9dc';for(const st of stars){c.globalAlpha=.12+.35*st[2];c.fillRect((st[0]*.5+.5)*W,(st[1]*.5+.5)*H,1.2,1.2)}c.globalAlpha=1;
+    const dt=Math.min(50,t-lastHT||0);lastHT=t;helixPhase+=dt*.0007*(1-clamp(cosmosP*1.6));
+    const vert=W>900,L=vert?H*1.15:W*1.1,R=vert?Math.min(W*.11,130):Math.min(H*.09,70);
+    const ax0=vert?W*.73:W*.5,ay0=vert?H*.5:H*.8,N=34,ME=17;
+    const P=(along,across)=>vert?[ax0+across,ay0-L/2+along]:[ax0-L/2+along,ay0+across];
     const items=[];
-    for(let a=0;a<4;a++)for(let k=0;k<120;k++){
-      const th=k*.12+a*Math.PI/2+rot,r=U*.012*Math.pow(1.034,k);
-      if(r>RMAX)break;
-      items.push([gx+Math.cos(th)*r,gy+Math.sin(th)*r*.62,r*.075,th,(a+k)%2,a===1&&k===64]);
+    for(let i=0;i<N;i++){
+      const a=i/(N-1)*L,ph=i*.45+helixPhase,ca=Math.cos(ph),sa=Math.sin(ph);
+      const A=P(a,R*ca),B=P(a,-R*ca),zA=sa,zB=-sa;
+      items.push({rung:[A,B],z:-1.5,alt:i%2});
+      items.push({p:A,z:zA,sz:(vert?24:16)*(1+.28*zA),ink:i%2,me:i===ME,rot:ph});
+      items.push({p:B,z:zB,sz:(vert?24:16)*(1+.28*zB),ink:(i+1)%2,me:false,rot:-ph});
     }
-    const me=items.find(i=>i[5]);
-    const zMax=me?1.8*Math.max(W,H)/me[2]:60,z=Math.exp(Math.pow(clamp(cosmosP/.92),2.2)*Math.log(zMax)),fx=me?me[0]:gx,fy=me?me[1]:gy;
+    const me=items.find(it=>it.me);
+    const zMax=1.8*Math.max(W,H)/me.sz,z=Math.exp(Math.pow(clamp(cosmosP/.92),2.2)*Math.log(zMax)),fx=me.p[0],fy=me.p[1];
     c.save();c.translate(fx,fy);c.scale(z,z);c.translate(-fx,-fy);
-    for(const [x,y,sz,th,alt,isMe] of items){
-      c.save();c.translate(x,y);c.rotate(th+Math.PI/4);c.scale(sz/60,sz/60*.9);
-      c.fillStyle=isMe?'#c98260':alt?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=60/sz*.9/z;
+    for(const it of items.filter(x=>x.rung)){
+      const [A,B]=it.rung,mx=(A[0]+B[0])/2,my=(A[1]+B[1])/2;
+      c.lineWidth=2.2/z*1.2;c.strokeStyle=it.alt?'rgba(239,233,220,.55)':'rgba(239,233,220,.28)';
+      c.beginPath();c.moveTo(A[0],A[1]);c.lineTo(mx,my);c.stroke();
+      c.strokeStyle=it.alt?'rgba(239,233,220,.28)':'rgba(239,233,220,.55)';
+      c.beginPath();c.moveTo(mx,my);c.lineTo(B[0],B[1]);c.stroke();
+    }
+    for(const it of items.filter(x=>!x.rung).sort((a,b)=>a.z-b.z)){
+      c.save();c.translate(it.p[0],it.p[1]);c.rotate(it.rot*.25+Math.PI/4);const k=it.sz/60;c.scale(k,k);
+      c.globalAlpha=.55+.45*(it.z*.5+.5);
+      c.fillStyle=it.me?'#c98260':it.ink?'#15140f':'#efe9dc';c.strokeStyle='#efe9dc';c.lineWidth=1.1/k/z;
       c.fill(tileP);c.stroke(tileP);c.restore();
     }
-    c.restore();
+    c.globalAlpha=1;c.restore();
   }
 
   // möbius strip: one side, no end
@@ -959,6 +1077,7 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
       const vh=innerHeight;
       const tr=document.getElementById('top').getBoundingClientRect();if(tr.bottom>0)drawCosmos(t);
       const er=mob.getBoundingClientRect();if(er.bottom>0&&er.top<vh)drawMobius(t);
+      const sr=document.getElementById('space').getBoundingClientRect();if(sr.bottom>0&&sr.top<vh)drawSynapse(t);
     }
     requestAnimationFrame(animLoop);
   }
@@ -995,16 +1114,21 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
     dimBtns.forEach((b,i)=>{const l=Math.round(ls[i]);b.querySelector('.lv').textContent='●'.repeat(l)+'○'.repeat(5-l);b.setAttribute('aria-label',b.querySelector('.n').textContent+': '+l+' out of 5. Activate to change.')});
     dimLis.forEach((li,i)=>li.classList.toggle('on',i<shown));
   }
+  // a common profile: mind and work full, four dimensions waiting
+  const START=[1,1,5,1,1,5],GROW=[[0,'+ a walk, an earlier night','physical'],[1,'+ naming one feeling, out loud','emotional'],[3,'+ ten minutes of music','aesthetic'],[4,'+ a quiet moment, no screen','spiritual']];
+  const growStep=document.getElementById('grow-step');
+  let scrollLevels=START.slice();
   function energyScroll(p){
     if(touched)return;
-    const shown=Math.min(6,Math.floor(clamp((p-.04)/.36)*6.99));
-    const h=clamp((p-.48)/.12),b=clamp((p-.66)/.12);
-    let ls=dimBtns.map(()=>3);
-    if(b>0)ls=ls.map(()=>3+.3*b);
-    else if(h>0)ls=ls.map((l,i)=>i===SOCIAL?3+1.8*h:3-.4*h);
+    const shown=Math.min(6,Math.floor(clamp((p-.03)/.25)*6.99));
+    const ls=START.slice();let step=-1;
+    GROW.forEach(([idx],k)=>{const g=sm(clamp((p-.52-k*.065)/.06));ls[idx]=1+2*g;if(g>0)step=k});
+    scrollLevels=ls;
     paintEnergy(ls,shown);
-    const pct=Math.round(areaOf(ls)/54*100);
-    emeter.innerHTML=b>0?'same effort, spread out · energy: <b class="up">'+pct+'%</b>':h>0?'all the effort on work · energy: <b>'+pct+'%</b>':'energy: <b>'+pct+'%</b>';
+    dimLis.forEach((li,i)=>{li.classList.toggle('quiet',p>=.3&&START[i]===1&&ls[i]<1.5);li.classList.toggle('grew',ls[i]>1.5&&START[i]===1)});
+    const ratio=areaOf(ls)/areaOf(START);
+    emeter.innerHTML=p<.5?'energy: <b>×1.0</b>':'energy: <b class="up">×'+ratio.toFixed(1)+'</b>';
+    growStep.textContent=step>=0?GROW[step][1]+' → '+GROW[step][2]:'';
     if(p>=.82&&!core.textContent)core.innerHTML='<strong>Tap a dimension.</strong>Set where you are today.';
     if(p<.82)core.textContent='';
   }
@@ -1012,14 +1136,15 @@ html:not([data-mode="film"]) .hole-in .small{font:14px/1.6 var(--mono);color:#7d
     const ls=dimBtns.map(b=>+b.dataset.l),min=Math.min(...ls);
     paintEnergy(ls,6);
     dimBtns.forEach((b,i)=>b.classList.toggle('low',ls[i]===min&&Math.max(...ls)!==min));
-    emeter.innerHTML='your energy: <b>'+Math.round(areaOf(ls)/54*100)+'%</b>';
+    emeter.innerHTML='your shape: <b>×'+(areaOf(ls)/areaOf(START)).toFixed(1)+'</b> compared with living on two';
+    dimLis.forEach(li=>li.classList.remove('quiet','grew'));
     const low=dimBtns.filter(b=>+b.dataset.l===min);
     if(Math.max(...ls)===min){core.innerHTML='<strong>Balanced, at '+min+' out of 5.</strong>Which one would you grow first?';return}
-    core.innerHTML='<strong>'+low[0].dataset.q+'</strong>Lowest right now: '+low.map(x=>x.querySelector('.n').textContent).join(', ')+'. One small step there.';
+    core.innerHTML='<strong>'+low[0].dataset.q+'</strong>Most room to grow: '+low.map(x=>x.querySelector('.n').textContent).join(', ')+'. One small step there.';
   }
   document.getElementById('orbit').addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b||root.dataset.mode!=='film')return;
-    if(!touched)dimBtns.forEach(x=>x.dataset.l='3');
+    if(!touched)dimBtns.forEach((x,i)=>x.dataset.l=String(Math.round(scrollLevels[i])));
     b.dataset.l=String(+b.dataset.l%5+1);touched=true;drawEnergy();
   });
 
