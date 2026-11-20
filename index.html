@@ -135,6 +135,12 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-tone="paper"]{--bg:#efe9dc;--fg:#15140f;--dim:#7d7666}
 [data-mode="film"] .scene{background:repeating-linear-gradient(118deg,color-mix(in srgb,var(--fg) 4%,transparent) 0 1px,transparent 1px 6px),var(--bg);color:var(--fg)}
 .seam{height:56vh;position:relative}
+.helix-bg{display:none}
+[data-mode="film"] .helix-bg{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity .4s}
+[data-mode="film"] .helix-bg.on{opacity:1}
+[data-mode="film"] .in-helix{background:transparent!important;perspective:1500px;position:relative;z-index:1}
+[data-mode="film"] .in-helix>.frame{transform-origin:50% 50%;will-change:transform}
+[data-mode="film"] main{position:relative;z-index:1}
 .seam svg{width:100%;height:100%;display:block}
 .seam[data-kind="fold"]{perspective:1100px;perspective-origin:50% 0%;overflow:hidden}
 .fold{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 60%}
@@ -415,6 +421,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <body>
 <a class="skip" href="#text" data-to-text>Skip to the text</a>
 <div class="progress" aria-hidden="true"></div>
+<canvas class="helix-bg film-only" id="helix-bg" aria-hidden="true"></canvas>
 
 <header class="filebar">
   <a class="name" href="/"><span class="pre">rafaeldelavergne / </span><strong>being.md</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· a working draft</small></a>
@@ -424,7 +431,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <main id="text" tabindex="-1">
 
 <!-- 0 · title -->
-<section class="scene title-card" data-tone="ink" data-name="being.md" style="--len:240vh" id="top" data-fig="a double helix">
+<section class="scene title-card in-helix" data-tone="ink" data-name="being.md" style="--len:240vh" id="top" data-fig="a double helix">
   <div class="frame">
     <canvas class="cosmos film-only" id="cosmos" aria-hidden="true"></canvas>
     <p class="label film-only"># being.md</p>
@@ -434,10 +441,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="me" data-to="ink" data-a="top" data-b="question" data-kind="helix" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
-
 <!-- 1 · the question -->
-<section class="scene" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:260vh">
+<section class="scene in-helix" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:260vh">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true">
       <svg viewBox="-110 -110 220 220">
@@ -466,10 +471,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="question" data-b="program" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
-
 <!-- 2 · the stairs -->
-<section class="scene" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
+<section class="scene in-helix" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
   <div class="frame stairs-frame" id="stairs-frame">
     <div>
       <h2 class="big"><span class="b" data-at=".02">Am I living the life I want,</span><br><span class="b" data-at=".08">or running someone else’s program?</span></h2>
@@ -506,7 +509,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="paper" data-a="pov" data-b="inherited" data-kind="helix" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="pov" data-b="inherited" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 3 · inherited (interactive) -->
 <section class="scene free" data-tone="paper" data-name="inherited" id="inherited" data-fig="figure and ground">
@@ -595,7 +598,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" data-kind="helix" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 8 · energy -->
 <section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:460vh">
@@ -830,6 +833,17 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       if(s.id==='work')drawWork(p);
     }
     if(film){
+      // the page is a DNA strand: each scene turns in, faces you, turns out
+      let helixVisible=false;
+      for(const sc of helixScenes){
+        const r=sc.getBoundingClientRect();if(r.bottom<-vh||r.top>vh*1.5)continue;
+        if(r.bottom>0&&r.top<vh&&sc.id!=='top')helixVisible=true;
+        let a=0;if(r.top>0)a=72*clamp(r.top/vh);else if(r.bottom<vh)a=-72*clamp((vh-r.bottom)/vh);
+        sc.firstElementChild.style.transform=a?'translateZ(-520px) rotateY('+a.toFixed(2)+'deg) translateZ(520px)':'';
+        sc.firstElementChild.style.opacity=(1-Math.abs(a)/72*.55).toFixed(3);
+      }
+      helixBg.classList.toggle('on',helixVisible);
+      if(helixVisible)drawHelixBg();
       for(const se of seams){const r=se.getBoundingClientRect();if(r.bottom<-50||r.top>vh+50)continue;drawSeam(se,clamp((vh-r.top)/(vh+r.height)))}
       const pr=document.getElementById('pov').getBoundingClientRect();
       povVisible=pr.bottom>0&&pr.top<vh;
@@ -1351,6 +1365,23 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     if(end&&!nextCard.classList.contains('ping')){nextCard.classList.add('ping');setTimeout(()=>nextCard.classList.remove('ping'),2600)}
   }
   resIn.addEventListener('input',()=>{if(resQueued)return;resQueued=true;requestAnimationFrame(()=>{resQueued=false;drawRes()})});drawRes();
+
+  // the background strand the first scenes turn around
+  const helixScenes=[...document.querySelectorAll('.in-helix')],helixBg=document.getElementById('helix-bg');
+  function drawHelixBg(){
+    const W=innerWidth,H=innerHeight,d=Math.min(devicePixelRatio,2);
+    if(helixBg.width!==Math.round(W*d)){helixBg.width=Math.round(W*d);helixBg.height=Math.round(H*d)}
+    const c=helixBg.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
+    const g0=helixScenes[1].offsetTop,g1=helixScenes[2].offsetTop+helixScenes[2].offsetHeight,g=clamp((scrollY-g0)/(g1-g0));
+    const ph=g*Math.PI*2*2.2,cx=W*.5,R=Math.min(W*.16,210),N=26,tileB=new Path2D(tile4(-30,-30,.6,.6,.6,.6));
+    const items=[];
+    for(let i=-2;i<N+2;i++){
+      const y=i/N*H,a=ph+i*.5,x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),z2=-z1;
+      items.push({z:-2,f:()=>{c.strokeStyle='rgba(239,233,220,.10)';c.lineWidth=2;c.beginPath();c.moveTo(x1,y);c.lineTo(x2,y);c.stroke()}});
+      for(const [x,z,k] of [[x1,z1,0],[x2,z2,1]])items.push({z,f:()=>{const sz=(12+8*(z+1)/2)/60;c.save();c.translate(x,y);c.rotate(a*.3+k);c.scale(sz,sz);c.globalAlpha=.10+.16*(z+1)/2;c.fillStyle=(i+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(tileB);c.stroke(tileB);c.restore()}});
+    }
+    items.sort((a,b)=>a.z-b.z).forEach(it=>it.f());
+  }
 
   // inherited sorter
   const tally=document.getElementById('tally');
