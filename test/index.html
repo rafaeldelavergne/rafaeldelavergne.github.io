@@ -348,6 +348,21 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
 .eof .cta:hover{background:var(--fg);color:var(--bg)}
 .cta-2{font:13px var(--mono);color:var(--fg)}
 html:not([data-mode="film"]) .next{box-shadow:none}
+.disclaimer{margin-top:2.4em;max-width:600px}
+.disclaimer .label{margin:0 0 .8em}
+.disc-h{font:400 clamp(20px,2.2vw,28px)/1.25 var(--serif);margin:0}
+.res{display:flex;gap:22px;align-items:center;margin-top:1.4em;flex-wrap:wrap}
+.res canvas{width:120px;height:120px;border:1.5px solid var(--fg);border-radius:8px;background:var(--bg);flex-shrink:0}
+.res-ctl{flex:1;min-width:240px}
+.res-row{display:flex;align-items:center;gap:10px;font:11px var(--mono);color:var(--dim)}
+.res-row input{flex:1;accent-color:#c98260;min-width:80px}
+.res-meter{font:12px var(--mono);color:var(--dim);margin:.8em 0 0}
+.res-meter b{color:var(--fg);font-weight:500}
+.res-err{font:12px var(--mono);color:#fff;background:#b3452c;display:inline-block;padding:4px 10px;border-radius:4px;margin:.6em 0 0}
+.res-err[hidden]{display:none}
+.next.ping{animation:ping 1.2s cubic-bezier(.3,.7,.3,1) 2}
+@keyframes ping{0%,100%{transform:none}15%{transform:translate(-4px,0) rotate(-.6deg)}30%{transform:translate(4px,0) rotate(.6deg)}45%{transform:translate(-2px,0)}60%{transform:translate(2px,0)}}
+@media (prefers-reduced-motion:reduce){.next.ping{animation:none;outline:3px solid #c98260}}
 .eof .elsewhere{margin-top:2em;font:12px var(--mono);color:var(--dim);display:flex;gap:18px;flex-wrap:wrap}
 .eof .end{font:12px var(--mono);color:var(--dim);margin-top:5em}
 
@@ -612,13 +627,25 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <div class="side-fig" aria-hidden="true"><canvas id="mobius"></canvas><p class="fig-cap">one side, no end · after M.C. Escher’s Möbius strip</p></div>
     <h2 class="big">I’m still figuring out what being myself means in practice.</h2>
     <p class="lede">I dance and I climb. In climbing, I like trying a movement, understanding what went wrong, and trying again. Same here.</p>
+    <div class="disclaimer">
+      <p class="label"><span class="md">##</span>disclaimer</p>
+      <p class="disc-h">Everything above is an abstraction of me. Twelve scenes, a few thousand tiles, zero handshakes.</p>
+      <div class="res">
+        <canvas id="res-canvas" width="240" height="240" aria-hidden="true"></canvas>
+        <div class="res-ctl">
+          <div class="res-row"><span>abstraction</span><input type="range" id="res" min="0" max="100" value="0" step="1" aria-label="Resolution, from abstraction to the real thing"><span>the real thing</span></div>
+          <p class="res-meter" id="res-meter" aria-live="polite">resolution: <b>1 tile</b> · a sketch</p>
+          <p class="res-err" id="res-err" hidden>error: a person does not fit in a .md file</p>
+        </div>
+      </div>
+    </div>
     <div class="next" id="next">
       <p class="label"><span class="md">##</span>next step</p>
-      <h3 class="next-h">If this question is yours too, let’s talk.</h3>
+      <h3 class="next-h">Meet the original.</h3>
       <p class="next-p">One-to-one coaching for founders and leaders. Tell me a little about the question or situation you’re facing. In a first conversation, we see whether working together makes sense.</p>
       <div class="next-actions">
-        <a class="cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation ↗</a>
-        <a class="cta-2" href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">or write to me on LinkedIn ↗</a>
+        <a class="cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation →</a>
+        <a class="cta-2" href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">or LinkedIn, if you’re shy ↗</a>
       </div>
     </div>
     <p class="elsewhere"><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></p>
@@ -1204,6 +1231,26 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     requestAnimationFrame(animLoop);
   }
   requestAnimationFrame(animLoop);
+
+  // the real thing: an abstraction can only get so close
+  const resIn=document.getElementById('res'),resCv=document.getElementById('res-canvas'),resMeter=document.getElementById('res-meter'),resErr=document.getElementById('res-err'),nextCard=document.getElementById('next');
+  const RES_WORDS=['a sketch','a rough idea','a fair likeness','getting closer','closer still','almost','still not me'];
+  let resTile=null;
+  function drawRes(){
+    const v=+resIn.value,k=Math.min(6,Math.floor(v/100*6.999)),n=Math.pow(2,k),W=240,c=resCv.getContext('2d');
+    resTile=resTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));
+    c.setTransform(1,0,0,1,0,0);c.fillStyle='#efe9dc';c.fillRect(0,0,W,W);
+    const cell=W/n;
+    for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+      c.save();c.translate((x+.5)*cell,(y+.5)*cell);const sc=cell/60*(n===1?.8:1.02);c.scale(sc,sc);
+      c.fillStyle=(x+y)%2?'#c98260':'#a8654a';c.fill(resTile);c.restore();
+    }
+    const count=n*n,end=v>=100;
+    resMeter.innerHTML='resolution: <b>'+count.toLocaleString('en-US')+' tile'+(count>1?'s':'')+'</b> · '+RES_WORDS[k];
+    resErr.hidden=!end;
+    if(end&&!nextCard.classList.contains('ping')){nextCard.classList.add('ping');setTimeout(()=>nextCard.classList.remove('ping'),2600)}
+  }
+  resIn.addEventListener('input',drawRes);drawRes();
 
   // inherited sorter
   const tally=document.getElementById('tally');
