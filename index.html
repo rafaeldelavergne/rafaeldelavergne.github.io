@@ -337,8 +337,15 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
 .todo .tag{font:11px var(--mono);border:1px solid currentColor;border-radius:20px;padding:1px 8px;margin-left:6px;opacity:.7}
 
 /* EOF */
-.eof .cta{display:inline-block;align-self:flex-start;margin-top:2.2em;font:14px var(--mono);padding:12px 20px;border-radius:30px;background:var(--fg);color:var(--bg);text-decoration:none}
-.eof .cta:hover{background:var(--accent);color:#fff}
+.next{margin-top:2.6em;max-width:560px;border:1.5px solid var(--fg);border-radius:14px;padding:26px 28px 28px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));box-shadow:6px 6px 0 var(--fg)}
+.next .label{margin:0 0 1em}
+.next-h{font:400 clamp(26px,3vw,38px)/1.1 var(--serif);margin:0;letter-spacing:-.01em}
+.next-p{margin:.8em 0 0;color:color-mix(in srgb,var(--fg) 75%,transparent);max-width:46ch}
+.next-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-top:1.6em}
+.eof .cta{display:inline-block;font:500 15px var(--mono);padding:14px 24px;border-radius:30px;background:var(--accent);color:#fff;text-decoration:none;border:1.5px solid var(--fg)}
+.eof .cta:hover{background:var(--fg);color:var(--bg)}
+.cta-2{font:13px var(--mono);color:var(--fg)}
+html:not([data-mode="film"]) .next{box-shadow:none}
 .eof .elsewhere{margin-top:2em;font:12px var(--mono);color:var(--dim);display:flex;gap:18px;flex-wrap:wrap}
 .eof .end{font:12px var(--mono);color:var(--dim);margin-top:5em}
 
@@ -586,7 +593,15 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
     <div class="side-fig" aria-hidden="true"><canvas id="mobius"></canvas><p class="fig-cap">one side, no end · after M.C. Escher’s Möbius strip</p></div>
     <h2 class="big">I’m still figuring out what being myself means in practice.</h2>
     <p class="lede">I dance and I climb. In climbing, I like trying a movement, understanding what went wrong, and trying again. Same here.</p>
-    <a class="cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Start with what’s on your mind ↗</a>
+    <div class="next" id="next">
+      <p class="label"><span class="md">##</span>next step</p>
+      <h3 class="next-h">If this question is yours too, let’s talk.</h3>
+      <p class="next-p">One-to-one coaching for founders and leaders. Tell me a little about the question or situation you’re facing. In a first conversation, we see whether working together makes sense.</p>
+      <div class="next-actions">
+        <a class="cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation ↗</a>
+        <a class="cta-2" href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">or write to me on LinkedIn ↗</a>
+      </div>
+    </div>
     <p class="elsewhere"><a href="/archive/2026-11-20-before-being-md.html">the previous version</a><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></p>
     <p class="elsewhere"><a href="#top">↺ back to the beginning</a></p>
     <p class="end">-- EOF · © 2026 Rafaël de Lavergne --</p>
@@ -603,7 +618,7 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
   <div class="menu-in">
     <p class="menu-h"><span class="md">#</span>my path</p>
     <div class="intents" role="group" aria-label="Shortcuts">
-      <a href="#zoom" data-intent>I’m here for coaching →</a>
+      <a href="#next" data-intent>I’m here for coaching →</a>
       <a href="#work" data-intent>I’m here for Compass →</a>
       <button type="button" id="intent-text">just let me read it →</button>
     </div>
