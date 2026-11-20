@@ -344,15 +344,21 @@ html:not([data-mode="film"]) .cleft-text .small{font:14px/1.6 var(--mono);color:
 .next-h{font:400 clamp(26px,3vw,38px)/1.1 var(--serif);margin:0;letter-spacing:-.01em}
 .next-p{margin:.8em 0 0;color:color-mix(in srgb,var(--fg) 75%,transparent);max-width:46ch}
 .next-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-top:1.6em}
-.eof .cta{display:inline-block;font:500 15px var(--mono);padding:14px 24px;border-radius:30px;background:var(--accent);color:#fff;text-decoration:none;border:1.5px solid var(--fg)}
-.eof .cta:hover{background:var(--fg);color:var(--bg)}
+.next .cta{display:inline-block;font:500 15px var(--mono);padding:14px 24px;border-radius:30px;background:var(--accent);color:#fff;text-decoration:none;border:1.5px solid var(--fg)}
+.next .cta:hover{background:var(--fg);color:var(--bg)}
 .cta-2{font:13px var(--mono);color:var(--fg)}
 html:not([data-mode="film"]) .next{box-shadow:none}
-.disclaimer{margin-top:2.4em;max-width:600px}
+.disclaimer{max-width:600px}
+.real .elsewhere,.real .end{font:12px var(--mono);color:var(--dim);display:flex;gap:18px;flex-wrap:wrap}
+.real .elsewhere{margin-top:3em}.real .end{margin-top:2em}
+.real-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:5vw;align-items:center}
+.real-right canvas{width:100%;max-width:min(40vw,62vh);aspect-ratio:1;display:block;border:1.5px solid var(--fg);border-radius:10px;background:var(--bg);margin-left:auto}
+.real-right .fig-cap{text-align:right}
+.real .next{margin-top:2.2em}
+@media (max-width:900px){.real-grid{grid-template-columns:1fr;gap:1.6em}.real-right{order:-1}.real-right canvas{max-width:100%;margin:0}.real-right .fig-cap{text-align:left}}
 .disclaimer .label{margin:0 0 .8em}
 .disc-h{font:400 clamp(20px,2.2vw,28px)/1.25 var(--serif);margin:0}
 .res{display:flex;gap:22px;align-items:center;margin-top:1.4em;flex-wrap:wrap}
-.res canvas{width:120px;height:120px;border:1.5px solid var(--fg);border-radius:8px;background:var(--bg);flex-shrink:0}
 .res-ctl{flex:1;min-width:240px}
 .res-row{display:flex;align-items:center;gap:10px;font:11px var(--mono);color:var(--dim)}
 .res-row input{flex:1;accent-color:#c98260;min-width:80px}
@@ -413,7 +419,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="me" data-to="ink" data-a="top" data-b="question" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="me" data-to="ink" data-a="top" data-b="question" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 1 · the question -->
 <section class="scene" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:260vh">
@@ -445,7 +451,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="question" data-b="program" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="question" data-b="program" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 2 · the stairs -->
 <section class="scene" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
@@ -467,7 +473,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="paper" data-a="program" data-b="pov" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="paper" data-a="program" data-b="pov" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 2b · point of view (3D) -->
 <section class="scene" data-tone="paper" data-name="point of view" id="pov" data-fig="an impossible loop" style="--len:360vh">
@@ -485,7 +491,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="paper" data-a="pov" data-b="inherited" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="pov" data-b="inherited" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 3 · inherited (interactive) -->
 <section class="scene free" data-tone="paper" data-name="inherited" id="inherited" data-fig="figure and ground">
@@ -505,7 +511,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="paper" data-a="inherited" data-b="where" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="inherited" data-b="where" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 4 · metamorphosis -->
 <section class="scene" data-tone="paper" data-name="three stages" id="where" data-fig="a metamorphosis" style="--len:380vh">
@@ -522,7 +528,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="paper" data-a="where" data-b="totem" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="where" data-b="totem" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 5 · totem -->
 <section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" data-fig="a totem of cubes" style="--len:280vh">
@@ -540,7 +546,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="ink" data-a="totem" data-b="covid" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="ink" data-a="totem" data-b="covid" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 6 · covid -->
 <section class="scene" data-tone="ink" data-name="2020" id="covid" data-fig="what remains" style="--len:240vh">
@@ -553,7 +559,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="covid" data-b="space" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="covid" data-b="space" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 7 · the space: two neurons -->
 <section class="scene" data-tone="ink" data-name="the space" id="space" data-fig="the synapse" style="--len:420vh">
@@ -574,7 +580,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 8 · energy -->
 <section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:460vh">
@@ -604,7 +610,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="paper" data-a="zoom" data-b="work" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="ink" data-to="paper" data-a="zoom" data-b="work" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 9 · what I do with it -->
 <section class="scene free" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane">
@@ -619,7 +625,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="paper" data-a="work" data-b="eof" aria-hidden="true"><svg viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="work" data-b="eof" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 10 · eof -->
 <section class="scene free eof" data-tone="paper" data-name="EOF" id="eof" data-fig="a möbius strip">
@@ -627,29 +633,40 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <div class="side-fig" aria-hidden="true"><canvas id="mobius"></canvas><p class="fig-cap">one side, no end · after M.C. Escher’s Möbius strip</p></div>
     <h2 class="big">I’m still figuring out what being myself means in practice.</h2>
     <p class="lede">I dance and I climb. In climbing, I like trying a movement, understanding what went wrong, and trying again. Same here.</p>
-    <div class="disclaimer">
-      <p class="label"><span class="md">##</span>disclaimer</p>
-      <p class="disc-h">Everything above is an abstraction of me. Twelve scenes, a few thousand tiles, zero handshakes.</p>
-      <div class="res">
-        <canvas id="res-canvas" width="240" height="240" aria-hidden="true"></canvas>
-        <div class="res-ctl">
-          <div class="res-row"><span>abstraction</span><input type="range" id="res" min="0" max="100" value="0" step="1" aria-label="Resolution, from abstraction to the real thing"><span>the real thing</span></div>
-          <p class="res-meter" id="res-meter" aria-live="polite">resolution: <b>1 tile</b> · a sketch</p>
-          <p class="res-err" id="res-err" hidden>error: a person does not fit in a .md file</p>
+  </div>
+</section>
+
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="eof" data-b="real" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+
+<!-- 12 · meet the original -->
+<section class="scene free real" data-tone="paper" data-name="meet the original" id="real" data-fig="a portrait in tiles">
+  <div class="frame real-frame">
+    <div class="real-grid">
+      <div class="real-left">
+        <div class="disclaimer">
+          <p class="label"><span class="md">##</span>disclaimer</p>
+          <p class="disc-h">Everything above is an abstraction of me. Twelve scenes, a few thousand tiles, zero handshakes.</p>
+          <div class="res">
+                    <div class="res-ctl">
+              <div class="res-row"><span>abstraction</span><input type="range" id="res" min="0" max="100" value="0" step="1" aria-label="Resolution, from abstraction to the real thing"><span>the real thing</span></div>
+              <p class="res-meter" id="res-meter" aria-live="polite">resolution: <b>1 tile</b> · a sketch</p>
+              <p class="res-err" id="res-err" hidden>error: a person does not fit in a .md file</p>
+            </div>
+          </div>
+        </div>
+        <div class="next" id="next">
+          <p class="label"><span class="md">##</span>next step</p>
+          <h3 class="next-h">Meet the original.</h3>
+          <p class="next-p">One-to-one coaching for founders and leaders. Tell me a little about the question or situation you’re facing. In a first conversation, we see whether working together makes sense.</p>
+          <div class="next-actions">
+            <a class="cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation →</a>
+            <a class="cta-2" href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">or LinkedIn, if you’re shy ↗</a>
+          </div>
         </div>
       </div>
+      <div class="real-right"><canvas id="res-canvas" width="480" height="480" aria-label="A portrait of Rafaël made of tiles"></canvas><p class="fig-cap">a portrait in tiles · after M.C. Escher’s smaller and smaller</p></div>
     </div>
-    <div class="next" id="next">
-      <p class="label"><span class="md">##</span>next step</p>
-      <h3 class="next-h">Meet the original.</h3>
-      <p class="next-p">One-to-one coaching for founders and leaders. Tell me a little about the question or situation you’re facing. In a first conversation, we see whether working together makes sense.</p>
-      <div class="next-actions">
-        <a class="cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation →</a>
-        <a class="cta-2" href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">or LinkedIn, if you’re shy ↗</a>
-      </div>
-    </div>
-    <p class="elsewhere"><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></p>
-    <p class="elsewhere"><a href="#top">↺ back to the beginning</a></p>
+    <p class="elsewhere"><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a><a href="#top">↺ back to the beginning</a></p>
     <p class="end">-- EOF · © 2026 Rafaël de Lavergne --</p>
   </div>
 </section>
@@ -718,7 +735,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // index menu: my path, in five acts
   const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn'),menu=document.getElementById('menu'),menuBtn=document.getElementById('menu-btn');
   const trailSvg=document.getElementById('trail-svg'),walkedEl=document.getElementById('walked');
-  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','totem','covid']],['IV','the space',['space','zoom']],['V','what I do with it',['work','eof']]];
+  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','totem','covid']],['IV','the space',['space','zoom']],['V','what I do with it',['work','eof','real']]];
   const sceneIdx=id=>scenes.findIndex(x=>x.id===id);
   let reached=0;try{reached=+localStorage.getItem('being-reached')||0}catch(e){}
   ACTS.forEach(([n,name,ids])=>{
@@ -944,56 +961,61 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
   document.querySelectorAll('.tile-mark').forEach(el=>{el.innerHTML='<svg viewBox="-10 -10 80 80" aria-hidden="true"><path d="'+tile4(0,0,1,1,1,1)+'"/></svg>'});
 
-  // ---- seams: every scene has its species of tile; each passage is a metamorphosis
+  // ---- seams: each scene's figure becomes the next one's, point by point
   const seams=[...document.querySelectorAll('.seam')];
-  const SR=6,SC=14;
-  // coefficients of sin(πu), sin(2πu), sin(3πu) for horizontal (h) and vertical (v) edges
-  const SPECIES={
-    top:{h:[0,.2,.05],v:[0,.2,.05]},            // helix: s-curves
-    question:{h:[.16,0,0],v:[.16,0,0]},         // sphere: round bulges
-    program:{h:[0,0,.12],v:[.0,.06,0]},         // stairs: steps
-    pov:{h:[.1,0,.1],v:[-.1,0,.1]},             // the loop
-    inherited:{h:[0,.24,0],v:[0,-.24,0]},       // figure and ground
-    where:{h:[0,.2,.07],v:[0,.2,.07]},          // metamorphosis (same family as its band)
-    totem:{h:[0,0,0],v:[0,0,0]},                // cubes: back to the square
-    covid:{h:[.05,.12,.12],v:[-.08,.1,.14]},    // what breaks
-    space:{h:[.22,0,-.06],v:[0,.05,0]},         // synapse: two membranes
-    zoom:{h:[0,.1,.1],v:[0,.1,.1]},             // six energies
-    work:{h:[0,.06,0],v:[0,.06,0]},             // flat plane, lifting
-    eof:{h:[.0,.16,.0],v:[.0,-.16,.0]}          // möbius: one side
-  };
-  const edgeC=(u,c)=>TS*(c[0]*Math.sin(Math.PI*u)+c[1]*Math.sin(2*Math.PI*u)+c[2]*Math.sin(3*Math.PI*u));
-  function tileC(x,y,cT,cB,cL,cR){
-    const pts=[];
-    for(let i=0;i<NS;i++){const u=i/NS;pts.push([x+u*TS,y+edgeC(u,cT)])}
-    for(let i=0;i<NS;i++){const v=i/NS;pts.push([x+TS+edgeC(v,cR),y+v*TS])}
-    for(let i=0;i<NS;i++){const u=1-i/NS;pts.push([x+u*TS,y+TS+edgeC(u,cB)])}
-    for(let i=0;i<NS;i++){const v=1-i/NS;pts.push([x+edgeC(v,cL),y+v*TS])}
-    return 'M'+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')+'Z';
+  const GN=96;
+  const curve=(f,n=240)=>{const a=[];for(let i=0;i<n;i++)a.push(f(i/n));return a};
+  const fromPts=pts=>pts.concat([pts[0]]);
+  function resample(pts){
+    const P=fromPts(pts),L=[0];for(let i=1;i<P.length;i++)L.push(L[i-1]+Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]));
+    const tot=L[L.length-1],out=[];let k=1;
+    for(let i=0;i<GN;i++){const d=i/GN*tot;while(L[k]<d)k++;const f=(d-L[k-1])/((L[k]-L[k-1])||1);out.push([P[k-1][0]+(P[k][0]-P[k-1][0])*f,P[k-1][1]+(P[k][1]-P[k-1][1])*f])}
+    // start at the top-most point, go clockwise
+    let area=0;for(let i=0;i<GN;i++){const a=out[i],b=out[(i+1)%GN];area+=a[0]*b[1]-b[0]*a[1]}
+    if(area<0)out.reverse();
+    let top=0;for(let i=1;i<GN;i++)if(out[i][1]<out[top][1]-1e-6||(Math.abs(out[i][1]-out[top][1])<1e-6&&out[i][0]<out[top][0]))top=i;
+    return out.slice(top).concat(out.slice(0,top));
   }
-  const lerpC=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
-  const opp=c=>c==='ink'?'paper':'ink';
+  const tilePts=(own)=>{const pts=[],NSg=24,ed=(u,a)=>a*(.2*Math.sin(2*Math.PI*u)+.07*Math.sin(4*Math.PI*u));
+    for(let i=0;i<NSg;i++){const u=i/NSg;pts.push([u-.5,-.5+ed(u,.6+own)])}
+    for(let i=0;i<NSg;i++){const v=i/NSg;pts.push([.5+ed(v,.6+own),v-.5])}
+    for(let i=0;i<NSg;i++){const u=1-i/NSg;pts.push([u-.5,.5+ed(u,.6+own)])}
+    for(let i=0;i<NSg;i++){const v=1-i/NSg;pts.push([-.5+ed(v,.6+own),v-.5])}
+    return pts.map(q=>[q[0]*1.5,q[1]*1.5])};
+  const hexR=(rs)=>rs.map((r,i)=>{const a=(i*60-90)*Math.PI/180;return [Math.cos(a)*r,Math.sin(a)*r]});
+  const GLYPHS={
+    top:curve(t=>{const y=t<.5?-1+4*t:3-4*t,s=t<.5?1:-1;return [s*(.14+.42*Math.abs(Math.sin(Math.PI*y*1.5))),y*.9]}),     // DNA ribbon
+    question:curve(t=>[Math.cos(2*Math.PI*t)*.8,Math.sin(2*Math.PI*t)*.8]),                                                         // sphere
+    program:[[-.85,.85],[-.85,.45],[-.43,.45],[-.43,.03],[0,.03],[0,-.4],[.43,-.4],[.43,-.85],[.85,-.85],[.85,.85]],               // stairs
+    pov:hexR([.88,.88,.88,.88,.88,.88]),                                                                                            // cube
+    inherited:tilePts(0),                                                                                                           // interlocking tile
+    where:tilePts(.6),                                                                                                              // the tile that leaves the grid
+    totem:[[0,-.95],[.4,-.76],[.4,.76],[0,.95],[-.4,.76],[-.4,-.76]],                                                               // totem
+    covid:[[0,-.85],[.75,-.42],[.3,-.12],[.62,.1],[.75,.42],[0,.85],[-.75,.42],[-.35,.05],[-.75,-.42]],                             // broken cube
+    space:curve(t=>{const a=2*Math.PI*t,c=Math.cos(a);return [c*.88,Math.sin(a)*(.18+.55*Math.abs(c))]}),                           // two neurons facing
+    zoom:hexR([.88,.42,.8,.36,.74,.5]),                                                                                              // radar of six energies
+    work:[[0,-.62],[.9,-.1],[.9,.12],[0,.64],[-.9,.12],[-.9,-.1]],                                                                  // a tile out of the plane
+    eof:curve(t=>{const a=2*Math.PI*t,d=1+Math.sin(a)*Math.sin(a);return [.92*Math.cos(a)/d,1.25*.92*Math.sin(a)*Math.cos(a)/d]}),   // möbius / infinity
+    real:curve(t=>{const a=2*Math.PI*t;const head=[Math.cos(a)*.42,-.32+Math.sin(a)*.46];return a>Math.PI*.15&&a<Math.PI*.85?[Math.cos(a)*.9,.25+Math.sin(a)*.6]:head})   // a person
+  };
+  const RG={};for(const k in GLYPHS)RG[k]=resample(GLYPHS[k]);
+  const BG={ink:'#15140f',paper:'#efe9dc',me:'#c98260'},FG={ink:'#efe9dc',paper:'#15140f',me:'#15140f'};
   function drawSeam(se,p){
-    const A=SPECIES[se.dataset.a]||SPECIES.totem,B=SPECIES[se.dataset.b]||SPECIES.totem;
-    const from=se.dataset.from,to=se.dataset.to,same=from===to,idx=seams.indexOf(se),meC0=from==='me';
-    // the metamorphosis front moves down the band as you scroll
-    const front=t=>{const k=clamp((t-.5)*1.4+.5+(p-.5)*1.1);return k*k*(3-2*k)};
-    // shapes swell in the middle of the band and flatten at its edges
-    const env=t=>Math.sin(Math.PI*clamp(t))*.85+.15;
-    const hC=r=>{const t=r/SR;return lerpC(A.h,B.h,front(t)).map(x=>x*env(t))};
-    const vC=r=>{const t=(r+.5)/SR;return lerpC(A.v,B.v,front(t)).map(x=>x*env(t))};
-    const meC=2+(idx*3)%10;
-    let out='';
-    for(let r=0;r<SR;r++){
-      const top=hC(r),bot=hC(r+1),side=vC(r);
-      for(let c=0;c<SC;c++){
-        const t=r/(SR-1),fig=(r+c)%2===0;
-        let col;
-        if(same)col=fig&&t>.15&&t<.85?opp(from):from;
-        else col=fig?(t<.7?from:to):(t<.3?from:to);
-        if(r===2&&c===meC&&!meC0)col='me';
-        out+='<path class="c-'+col+'" d="'+tileC(c*TS,r*TS,top,bot,side,side)+'"/>';
-      }
+    const A=RG[se.dataset.a]||RG.question,B=RG[se.dataset.b]||RG.question,from=se.dataset.from,to=se.dataset.to,idx=seams.indexOf(se);
+    const R=5,C=10,CS=84,ROT=0;let out='';
+    for(let r=0;r<R;r++){
+      const bgK=r<R/2-.01?from:to;
+      out+='<rect x="0" y="'+r*CS+'" width="'+C*CS+'" height="'+CS+'" fill="'+BG[bgK]+'"/>';
+    }
+    if(R%2){const mid=Math.floor(R/2);out+='<rect x="0" y="'+mid*CS+'" width="'+C*CS/2+'" height="'+CS+'" fill="'+BG[from]+'"/><rect x="'+C*CS/2+'" y="'+mid*CS+'" width="'+C*CS/2+'" height="'+CS+'" fill="'+BG[to]+'"/>'}
+    const meC=(idx*3+2)%C;
+    for(let r=0;r<R;r++)for(let c=0;c<C;c++){
+      const t0=(r+(c/C)*.9)/(R-.1),k=clamp((t0-.5)*1.25+.5+(p-.5)*1.2),t=k*k*(3-2*k);
+      const cx=c*CS+CS/2+(r%2?CS/4:-CS/4),cy=r*CS+CS/2,sc=CS*.4;
+      const bgK=(R%2&&r===Math.floor(R/2))?(c<C/2?from:to):(r<R/2-.01?from:to);
+      const fill=(r===2&&c===meC&&from!=='me')?'#c98260':FG[bgK];
+      let d='';for(let i=0;i<GN;i++){const x=A[i][0]+(B[i][0]-A[i][0])*t,y=A[i][1]+(B[i][1]-A[i][1])*t;d+=(i?'L':'M')+(cx+x*sc).toFixed(1)+' '+(cy+y*sc).toFixed(1)}
+      out+='<path d="'+d+'Z" fill="'+fill+'" fill-rule="nonzero"/>';
     }
     se.firstChild.innerHTML=out;
   }
@@ -1232,18 +1254,23 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
   requestAnimationFrame(animLoop);
 
-  // the real thing: an abstraction can only get so close
+  // the real thing: a portrait in tiles, as close as an abstraction gets
+  const RAF_LUM='7a7576909f959ba199949291959897989a96a9ababb0a6af78897e5b555132242a323434383e43474c51565a5b68666467696967656562615f5d5b59575654527b78758a9e9498a09a948f8d909493959792acacaaaaa8b37976807f74605e432930343e39333c4044484c4f4f5f555253525250504f4e4d4b4a4846423f3d3a7775748c9d96989c9a968d8a8b8e90939390adb0aeaca7b3797484623a2e272a2a252a344533262d3136383b3c4e3e3d3e3d3c393735333131323232373d43477574728a9b959a9d9b958c8b8a8b8f908c8cb2aeb1ada5ae7b88541716191c1d20242628303e33242527282927442b2728292b2f353b40454d53585d676b6c6772746e8698929a9c98938b898a8c8b8a8489b3b1b3b2a7a98c5a0f161a1a1d1d1d2021252c2d4537171f22252c6a3b3e484d52565a5b5c5f656566696b6c6e706e6e6b83968f9899959389868889888a8185b4b0b2b5b1ae6a131315171a1c1c1d222528302c2a4a393b403f5b8a5056585856585a5d5f5f585e66686b6f727469686780938e959894918784878787858082abb1b3b9beaf250a151717171a1c1b1f262b343e2b404b4247416aaa4e515859575a5f615d5a606567686a6f71736766667d928b9295938d8680848783837a7ca3b1b2b0c6780b17171817191a1c1e20232b313e43404f494b49505a5257595a5b5d6061616366686a686a6c696d6566667a8d8890949289848083837f7e7870a1b4b1b8a82613181618171816191c1e20282c2e424f4f4a4f5458595e606060605f5f5d5b57524d484239342b236566657788858c9090888080817b79776f659aa9a9b84d0d19151412131415161a1c1f25292c324b5849423837352f2924201a181413141516182127323c445465636475827e878d8b857c7e7b777069615f8d989e6a12151818171918191b1a1c1e1f232729313d53520f2a3b3e58646c7688919b9fadbbbec1d0d4dce1dfe2616363737975838988827878746e64605b5a8196831410161411101013161a1b1f1e1f1e21263135495f34d5d6e0eff0ebeef2f0e7e1efe8dbddd9d9d0d6d6d26a666272726d7c85867f746f6c625d5c57577a944e0b120501050c0e0f10121317191e2323222a303d4c48d6d3ddd6d8d7d0d5dcd0ded9d7d4d7d5cbd1d3d0d2636262716d66708084796a69665f5b5a555579842004042a6863081111111314141517171e26282c3b3c59d3ddd9d5d6dfd7d7d9dad6d5d1d4d4cfeaedd1d1d2616261716b6568767d756463605d5957505e7f5304228d9ad2810612111111121414151414191d22343780efeeebf2edf0eff0ebe8e8e1dddcd9f8fcfaedcfd06362617169646670787161605f5a54534e4d6a150269aca9946107110f12111214141617161717191f2b74977c767269655c575049423b362e34362e282119146160606f6763636b746d605f5b57514e484d3c05097295897f6a051110121515161618191a191a191c1b3d45363b3b45484d4f4b4b555b5b6f7e5d5a6b9190806060606d65626268726c605e58544f4c444b29050973866ea17704100e100f101616181c1c1c1d1b1e221cb8f3e9f0f4f1f0eeebebebe6e7fbfedad5eefdf7eb605f606d646060666d6a5f5d56514c4842482507076fb09c994f050908071313090c0b0f141a1c1c21261a77e6d9dde2dbdad9d8d2cdd3d5e6f0e9e3ebede3d7645d606e645e5f646a675d5a554f48453d441f0705415c2a0804060c0f407c7179725b38170a10191c241e60e6e0dbe2dfd9dad6d7cdcbc9d8e2eaf2f5f4e4d16d5c606e635e5e6167645b55514b47403a381106070501010707090d48acb2c5cec4bfb69a65260a141e1c58e3dde0e1dcd5d5cdc9c2c4c7c6c6cad3dee7deca79595f6d625e5d60656159554f49433a3b2c04040203090d0807082d717789a5b7c2bcc0c3c1ab4c0a151a52ddd6d0dccdcac7c8c7c7c6c9c8c7c5c7cacbcac685575f6b5f5b5b5f625e55544f46403b3a280606080f0d06092348615d4940557bb2bbb9ad8b7265220c124ef2eee4e0cfcacccdcbcacac9c8cbc8cccacccbcd8e565e685c58595c5d5c54504b433b362f2c130a100e03074c835a4f8c4d435a7bacc4b174523c64680f0a51f5f1f2ecf2ddcfbdb3b3b2afb0abaaaaadb4b0ae91565c6359565557595b534d4841342627211f1b130c154d9ca59199b29b98918fb7cdac87a163497b21065ffbf5f4ecfdc5cbcbaca7b2bbbab5b4b2b1afaead8b55595f565451525556504c4740352119131a11071a6293a7b2bbb1adb4bab1a3b5c9b6a9a9acac9119047ee6dde4e1f187b7cfb3b7d5cbbfbebcc0c2c5c8c37c52545a5352515254554f4b4440221d1e1a16050621789bb2b6c2c5c2c1bfadaab0c8beb3a7a7baab2024ad90bda393b48d9c729fc5c5c1c0c9cfc7ccc9caca694b5055514f4f5153544f494723010b160d0a050a176c9bb5bbc1cacbc9b8acadafc6c3c3c2bec4a33576adc4ffdfd8fffff799a5c189bcbfcacfc5c2bbbcbe53454c51504f4e4f4f4f4b49420e08050604010c13135e96aabbc3cacac6b4abadb0c5c4c0bec0cb982f5a59a0d7b4bfd9dad39caab498c7cad1d5d7ced3cec84241484d4e4d4c4b4b4b4946350c0b040402030d0f0c589495b5c3c7c8c2aab0aca8c5c4b3b7b8c97c44595d6b644763626162556e5e6c6f7177838c8d969ea63b3f464b4d4a484748464542300e0f07050603030303589e92a0b1b5bac5a8acb9a9c4c7acacafc241265142442333333f52655a694c6e9cbfb8796f7370716b393f444a4a4945434544423e2f0e14100e0d0305030653979a969eb3bfc4bc8586b4bec1bcb1a491190a1531431a342a2c4f6658563c738ba9cf9a6470787c7d393d40464a4742404145403c210b17171411060809094f919ea6a5a4aebbb4a3708aa8b7b7adb34c18273a453d16322f3251695950295f441c8a824f3a3a4c55393c3d444944403e3e423e38150b161816150e090c0d308a9ea1ae997b9fa39aa69ca2a79199a31213292939362031313d484851736969421a7b47160c023b64383b3c4247413d3b393c3b31100a14181714121209110e669991acbca9899396a1a7a1a8a4ba4d000e30063651333542659699aca996ad7c3299be9b846d858c36393940443f3b3a36393a30100a121818140e170f0a142386899cb2b9bba7a59ea6afb9c27701040e3c0d1a5c393b6453453d723000060d188ed1d2eaf3ebe13437373e433d3a383535463a0f0b0f181a190b17160a12163c9591b1a7acb5b2acacb6c39a0c050a143d1e0b4f3a3d72262f4b2e1d0e10100d3454525a97a1ba3435363d423c3935333730270f0b0d161a1c0b151819081713478cadb0aba79b93a5b5b62b010b0d193c280f4e3f4070294f7a5c3b09100f134d37131628364e323434393e3a38332a323f2c11080b141b1e0f12181b19081b1140a4b9b7c2bcb7becb650008070c173b31166937385f2f486b5b3e09100e176d520d0c39635831312f353d38372c363e3a3e210909101820170e1b101e1c0c180d5cb0aaabbcb7c4a20d0709090c113635292e33312c282c394e2a0a100e1d653f0f0b4761602f2e2a343d37303d504339393811090e14201d1219150a1f22112d1c4889959aa29a2d0813110f0e183d3a3935233235262f2a4f220b110d2666440d0c4c575c2f2c28333936454d42403e3b4124090c121a251d1320070f2028272e1710262c2e120b1f1e1a1316303d39243c673c2a1e232d3d0e0f100c368a6d0d137067552e29272f3f5e5741444641453f3a14071115222511211507121e2b1e2028201c1715222b3121192a37373f6258ab9c66296534552d0a10110d1714100f41524f2d27212d60604e494a474b554c40300a0b161c231716240f0d141b485b1e31312f2c2c2027322b2a30303a7a8c808d753cbd5496c11f0e0f637f3a14230e346f2a231d515a41424750484a4d524d3b21061219201a0d251e11092a777c5e061a1c1a17161b2b242224232f2d335d836a69ce9f5488290a0aa3f4d06743243d7025192536343c5157504f534c595b5238120a161d1e0f14273d2940395b803d010a0e131c1e1b1e2019202f32282e726f8fc59501060e130f55998a592c37413c1b22472f323d3e425a655b5c646160552e0a10181e1314718c86552873a7a4440b121c1915161710152a2e2e2927456c6baf69030e1519262d563d2331674324225a555348465243303d545d686d6257461d0a141b17194267627293999386986c28030711171317292c2c271d1d205a7ba25802295c194e335642262678462950483d55635b4b524b393256675e685a4d3e120d18160d134e67979c87757f8fa5a6511d0b366e94887f7c77645f615e72927101415324485b3c484624683e3e6e4f3d485d5b5c5a54575740416770675252350a123955284d976d757f7688adb3ac6582432d6d968d7f879b918289aa7963a13f393b42666c2e425c24503b5b636c6552515b6066685f646d452c5a6e614e512420535b3b484d57666989aaa77d8a7e7a6f2c4d6f9083976657567aa58948a2a15334706d66294767233b407a675a6577605766696e7266666f4c2b476e64453a190e4a55211b2f5e86a2854b46558d7f41272b677f936b756b6d6c889d566f853a4d766e6d3146831a225c846b6861606f78747c6f6a696b6d7057313f6a5b3b270f3c76621d257d84554a6753439a6e17331e2f7c62668364607c7097624e3f2d4f766b772f3a8a3126624e67666a748d8c8688847f7d6764786f563b3d695b2d17257866334375484d627146745a3c251f271e44725b6b5e4f6d6d848c45183138757b7e3e419a4d267c8461686875848777656d7b8b8a7667696d634b3d685b280d275b54364c3040575972341f353a17161c1c6d9878755b81747192511826324a787d46648d3133989c5662707f857d74645852506c8288756967615146605d20043162542118366256231b242b393514141469a38f7a587a538b9b7c21232b3e507c5f53822e3a889d55515054717e746959544d42437b91827c6661523f555b18115b7525155447141b1e1c242b3d2e0a285852aaa25c44778c828e45192555575e7f37957b6a7daf58514c464b64706e6b63524b3c3c7e888988725f4f465d601b062b38292a141d1f1c1b1f2530421c463141ab919786728194966f1c1b6271446560a4a3b2b0b8464143413837495764665a514e313e7e86817a76625150624c090932350f121d1d1f1f1e22292d485533718e8295b086779ea38250237d7c3b3e80b29092c0c130343133333230373c434241494c2b437e827e7d7260545565410002192909171b1e2120211e337f8b616b864598a6a17e283543534f9283423940a0b3b3bdc03032373b4146535c6263594c4d504c2a47747a7d79717762596435464f360811141720201c3d737a907b608a5a76a8989d3c1618175ca38749353c5baebebec04f4b5254585c615c6a6b5e5c585b5c5f3b4766767e7d7e6b666a6e5f48350f0a121416194f7c7b898b746e93618f6a74ba582c27215b8b87592f3b417eccc2c36f7167616a676c7372797a756f7471716b31466579847581606d6057454a27040f121d596a4d7a83756690988e875c91b86834382f3258746330383c4dacc1c0666b635a5851586a767c827e827f6d6c734a28436a785577526a6e706a5b2b0807155b4d236179727e8c8c8aa99aa29f876c47374d6d5f718133383b3c65bdc5',RAF_WARM='0000000000000000000000000011110000000000000000000000000000000000000000000000000000000000011111100000000000000000000000000000000000000000000000000000000001110000000000000000000000000000000000000000000000000000000000000110000000000000000000000000000001111111000000000000000000000000010000000000000000000100011111111111111100000000000000000000000000000000000000000000111111111111111111110000000000000000000000000000000000000000111111111111111111111111000000000000000000000000000000000000000011111111111111111111111100000000000000000000000000000000000000001111111111111111110000000000000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111110000000000000000000000000000000000000000000000000000000000111111111000000000000000000000000000000000000000000000000000000111111111111000000000000000000000000000000000000000000000000000111011111111100000000000000000000000000000000000000000000000011111111111111011000000000000000000000000000000000000000000000011111111111111111100000000000111111111111000000000000000000000011111111111111111110000000000011011111111100000000000000000000001111111111111111111000000000000001100100010000000000000000000000111111111111111111100100000000000111000000000000000000000000000011111111111111111110000000000000001100000000000000000000000000001111111111111111111011110000000000000000000000000000000000000000111111111111111111001000000111101000011100000000000000000000000011111111111111111100000000011110110011111100000000000000000000000111111111111111100000000001111010000000010000000000000000000000011111111111111110000000000110100000000001000000000000000000000001111111111111110000001000100000000000000100000000000000000000000011111111111111000000100110010000000000000000000000000000000000000111111111111000000000010010000000000000000000000000000000000000001111111111000000000001001100000100000000000000000000000000000000011111111100000000000100110000011000110000000000000000000000000001111111100000000000000000000001000011000000000000000000000000000001111100000000000000000000000000001100000000000000000000000000000000000000000000010000000000000000010000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000000000000000000011110000000000000000000000000000000000000000000010000000000000000011100000000000000000000000000000000000000000000010000000000000000111000000000000000000000000000000000000001111011100000000000000001100000000000010000000000000000000000000011111111100000000000000110000000000001000000000000000000000000001111111111000011111111011110000000000000000000000000000000000010111111111111001111111111111000000000000000000000000000000000011000111111101100011110111111100000000000000000000000000000000000010001111000010001111111111001000000000000000000000000000000000001100011011011000010111111111000000000000000000000000000000000000110011111010000000111111111000000000000100000000000000000000000001101001110000000001111111110000000000000000000000000000000000000011000110000000001111111111000000000000000000000000000000000000001100100000000000101111011100000000110010000000000000000000000000000000000000000000111111110000000010011000000000000000000000000000000000000000010111111111100110000001100000000000000000000000000000000000000011111011110000011000001110000000000000000000000000000000000000011111111111000011100000111000000000000000000000000000000000000011111111111100000111000011100000000000000000000000000000000000110111111111111000011100000110000000000000000000000000000000000100111111111111000011100000011';
   const resIn=document.getElementById('res'),resCv=document.getElementById('res-canvas'),resMeter=document.getElementById('res-meter'),resErr=document.getElementById('res-err'),nextCard=document.getElementById('next');
-  const RES_WORDS=['a sketch','a rough idea','a fair likeness','getting closer','closer still','almost','still not me'];
+  const RES_WORDS=['a sketch','a rough idea','a silhouette','getting closer','closer still','almost','the closest I can get'];
+  const lumAt=(x,y)=>parseInt(RAF_LUM.substr((y*64+x)*2,2),16)/255,warmAt=(x,y)=>RAF_WARM[y*64+x]==='1';
   let resTile=null;
   function drawRes(){
-    const v=+resIn.value,k=Math.min(6,Math.floor(v/100*6.999)),n=Math.pow(2,k),W=240,c=resCv.getContext('2d');
+    const v=+resIn.value,k=Math.min(6,Math.floor(v/100*6.999)),n=Math.pow(2,k),W=480,c=resCv.getContext('2d');
     resTile=resTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));
     c.setTransform(1,0,0,1,0,0);c.fillStyle='#efe9dc';c.fillRect(0,0,W,W);
-    const cell=W/n;
+    const cell=W/n,b=64/n;
     for(let y=0;y<n;y++)for(let x=0;x<n;x++){
-      c.save();c.translate((x+.5)*cell,(y+.5)*cell);const sc=cell/60*(n===1?.8:1.02);c.scale(sc,sc);
-      c.fillStyle=(x+y)%2?'#c98260':'#a8654a';c.fill(resTile);c.restore();
+      let L=0,w=0;for(let j=0;j<b;j++)for(let i=0;i<b;i++){L+=lumAt(x*b+i,y*b+j);if(warmAt(x*b+i,y*b+j))w++}
+      L/=b*b;w/=b*b;
+      const dark=Math.pow(1-L,.9),warm=n>1&&w>.5,sz=n===1?.55:Math.max(.12,Math.min(1.05,.15+dark*1.05));
+      c.save();c.translate((x+.5)*cell,(y+.5)*cell);c.rotate(((x*7+y*3)%4)*Math.PI/2);c.scale(cell/60*sz,cell/60*sz);
+      c.fillStyle=n===1||warm?'#c98260':'#15140f';c.fill(resTile);c.restore();
     }
     const count=n*n,end=v>=100;
     resMeter.innerHTML='resolution: <b>'+count.toLocaleString('en-US')+' tile'+(count>1?'s':'')+'</b> · '+RES_WORDS[k];
