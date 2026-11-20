@@ -354,11 +354,23 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 .real-right canvas{width:100%;max-width:min(40vw,62vh);aspect-ratio:1;display:block;border:1.5px solid var(--fg);border-radius:10px;background:var(--bg);margin-left:auto}
 .real-right .fig-cap{text-align:right}
 .real .next{margin-top:2.2em}
-@media (max-width:900px){.real-grid{grid-template-columns:1fr;gap:1.6em}.real-right{order:-1}.real-right canvas{max-width:100%;margin:0}.real-right .fig-cap{text-align:left}}
+@media (max-width:900px){.real-grid{display:flex;flex-direction:column;gap:1.2em}.real-left{display:contents}.real .disclaimer{order:1}.real-right{order:2}.real .next{order:3;margin-top:.6em}.real-right canvas{max-width:min(100%,46vh);margin:0}.real-right .fig-cap{text-align:left}}
 .disclaimer .label{margin:0 0 .8em}
 .disc-h{font:400 clamp(20px,2.2vw,28px)/1.25 var(--serif);margin:0}
 .res{display:flex;gap:22px;align-items:center;margin-top:1.4em;flex-wrap:wrap}
 .res-ctl{flex:1;min-width:240px}
+.slide-h{font:400 clamp(30px,3.6vw,52px)/1.05 var(--serif);margin:.9em 0 .5em;letter-spacing:-.01em}
+.unlock{position:relative;height:60px;border-radius:40px;background:var(--fg);border:1.5px solid var(--fg);overflow:hidden;max-width:560px}
+.unlock::before{content:'';position:absolute;inset:0;width:calc(var(--v,0)*1%);background:linear-gradient(90deg,#a8654a,#c98260);transition:width .08s linear}
+.unlock-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:14px var(--mono);color:var(--bg);letter-spacing:.04em;pointer-events:none;opacity:calc(1 - var(--v,0)/35);padding-left:40px}
+.unlock input{position:absolute;inset:0;width:100%;height:100%;margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:grab}
+.unlock input:active{cursor:grabbing}
+.unlock input::-webkit-slider-runnable-track{height:100%;background:transparent}
+.unlock input::-moz-range-track{height:100%;background:transparent}
+.unlock input::-webkit-slider-thumb{-webkit-appearance:none;width:52px;height:52px;margin-top:2px;border-radius:50%;background:#c98260 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 6l6 6-6 6' fill='none' stroke='%23efe9dc' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center/22px no-repeat;border:3px solid var(--bg);box-shadow:0 2px 0 var(--fg)}
+.unlock input::-moz-range-thumb{width:46px;height:46px;border-radius:50%;background:#c98260;border:3px solid var(--bg)}
+.unlock input:focus-visible{outline:none}
+.unlock:focus-within{outline:2px solid var(--accent);outline-offset:4px}
 .res-row{display:flex;align-items:center;gap:10px;font:11px var(--mono);color:var(--dim)}
 .res-row input{flex:1;accent-color:#c98260;min-width:80px}
 .res-meter{font:12px var(--mono);color:var(--dim);margin:.8em 0 0}
@@ -645,13 +657,13 @@ html:not([data-mode="film"]) .next{box-shadow:none}
         <div class="disclaimer">
           <p class="label"><span class="md">##</span>disclaimer</p>
           <p class="disc-h">Everything above is an abstraction of me. Thirteen scenes, tens of thousands of tiles, zero handshakes.</p>
-          <div class="res">
-                    <div class="res-ctl">
-              <div class="res-row"><span>abstraction</span><input type="range" id="res" min="0" max="100" value="0" step="1" aria-label="Resolution, from abstraction to the real thing"><span>the real thing</span></div>
-              <p class="res-meter" id="res-meter" aria-live="polite">resolution: <b>1 tile</b> · a sketch</p>
-              <p class="res-err" id="res-err" hidden>error: a person does not fit in a .md file</p>
-            </div>
+          <h2 class="slide-h">Slide to meet the original.</h2>
+          <div class="unlock">
+            <span class="unlock-txt" id="unlock-txt" aria-hidden="true">slide to meet the original →</span>
+            <input type="range" id="res" min="0" max="100" value="0" step="1" aria-label="Slide to meet the original: raises the resolution of the portrait">
           </div>
+          <p class="res-meter" id="res-meter" aria-live="polite">resolution: <b>1 tile</b> · a sketch</p>
+          <p class="res-err" id="res-err" hidden>error: a person does not fit in a .md file. Let’s meet for real ↓</p>
         </div>
         <div class="next" id="next">
           <p class="label"><span class="md">##</span>next step</p>
@@ -1290,6 +1302,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       const sp=sprite(Math.round(cell),step,'#15140f');
       c.drawImage(sp,(x+.5)*cell-sp.width/2,(y+.5)*cell-sp.height/2);
     }
+    resIn.parentElement.style.setProperty('--v',v);
     const count=n*n,end=v>=100;
     resMeter.innerHTML='resolution: <b>'+count.toLocaleString('en-US')+' tile'+(count>1?'s':'')+'</b> · '+RES_WORDS[k];
     resErr.hidden=!end;
