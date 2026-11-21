@@ -201,7 +201,9 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 .program .stop{color:var(--accent)}
 
 /* stairs */
-[data-mode="film"] .stairs-frame{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:4vw}
+[data-mode="film"] .stairs-frame{display:flex;flex-direction:column;justify-content:center}
+[data-mode="film"] .stairs-frame>div{position:relative;z-index:1;max-width:min(560px,46vw)}
+.stairs-cap{position:absolute;right:max(22px,7vw);bottom:70px;margin:0;z-index:1}
 [data-mode="film"] .stairs-frame .big{font-size:clamp(30px,4.6vw,72px)}
 .meter{font:12px var(--mono);color:var(--dim);margin-top:1.8em}
 .meter b{color:var(--fg);font-weight:500}
@@ -211,18 +213,18 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .off-txt{opacity:0;transform:translateY(10px);transition:opacity .8s .5s,transform .8s .5s;font:400 clamp(20px,2.2vw,30px)/1.25 var(--serif);max-width:28ch;margin:.6em 0 0}
 [data-mode="film"] .off .off-txt{opacity:1;transform:none}
 [data-mode="film"] .off .stepoff button{opacity:.4;pointer-events:none}
-.stairs{width:100%;max-height:74vh;overflow:visible}
-.stairs .side{fill:url(#hatchSide);stroke:color-mix(in srgb,var(--fg) 30%,transparent);stroke-width:.6}
+.stairs{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:0;max-height:none!important}
+.stairs .side{fill:color-mix(in srgb,var(--fg) 86%,var(--bg));stroke:var(--bg);stroke-width:.8}
 .stairs .tread{fill:var(--fg);stroke:var(--bg);stroke-width:1}
 .stairs .riser{fill:url(#hatchRiser);stroke:var(--fg);stroke-width:1}
 .stairs .h-line{stroke:var(--fg);stroke-width:1.1}
 .stairs .h-faint{stroke:color-mix(in srgb,var(--fg) 22%,transparent);stroke-width:1}
-.stairs .lbl{font:8.5px var(--mono);fill:var(--fg);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+.stairs .lbl{font:9px var(--mono);fill:var(--fg);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
 .stairs #sg{transition:opacity 1s}
 .off .stairs #sg{opacity:.35}
 .stairs .climber{fill:var(--fg);stroke:var(--fg)}
 .off .stairs #climber{transition:transform 1.4s cubic-bezier(.5,0,.3,1)}
-.stairs .ground{stroke:var(--accent);stroke-width:1.2;opacity:0;transition:opacity .8s .9s}
+.stairs .ground{fill:none;stroke:var(--accent);stroke-width:1.2;opacity:0;transition:opacity .8s .9s}
 .off .stairs .ground{opacity:1}
 .fig-cap{font:10px var(--mono);color:var(--dim);margin:.6em 0 0;text-align:right}
 
@@ -447,7 +449,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   [data-mode="film"] .stats{grid-template-columns:repeat(2,auto)}
   .sorter li{flex-direction:column;align-items:flex-start}
   .statusbar .pos{display:none}
-  [data-mode="film"] .stairs-frame{grid-template-columns:1fr;gap:0;align-content:center}
+  [data-mode="film"] .stairs-frame{justify-content:flex-start;padding-top:84px}
+  [data-mode="film"] .stairs-frame>div{max-width:none}
+  .stairs-cap{display:none}
   [data-mode="film"] .stairs-frame .big{font-size:clamp(26px,7vw,40px)}
   [data-mode="film"] .stairs-frame .lede{font-size:14px;margin-top:.6em}
   .stairs{max-height:34vh}
@@ -538,10 +542,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
         <p class="off-txt">At Polytechnique I understood two things: I couldn’t be myself there, and success doesn’t mean happiness.</p>
       </div>
     </div>
-    <div class="film-only">
-      <svg class="stairs" id="stairs" viewBox="0 0 420 420" aria-hidden="true"></svg>
-      <p class="fig-cap">a staircase that never arrives · after M.C. Escher</p>
-    </div>
+    <svg class="stairs film-only" id="stairs" aria-hidden="true"></svg>
+    <p class="fig-cap film-only stairs-cap">the far side of a staircase that never arrives · after M.C. Escher</p>
   </div>
 </section>
 
@@ -768,7 +770,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 'use strict';
 (function(){
   const root=document.documentElement;
-  let tessMeHidden=false,dancerCalm=0,mobK=1,antScreen=null,antHide=false,resHold=false,povSnap=null,povTone=1;
+  let povGrow=1,tessMeHidden=false,dancerCalm=0,mobK=1,antScreen=null,antHide=false,resHold=false,povSnap=null,povTone=1;
 
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scenes=[...document.querySelectorAll('.scene')];
@@ -941,38 +943,41 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // ---- stairs: climbing without rising
   const svgNS='http://www.w3.org/2000/svg';
   const stairs=document.getElementById('stairs'),sframe=document.getElementById('stairs-frame'),meter=document.getElementById('meter');
-  const SW=44,SH=30,DX=30,DY=-18,X0=-40,Y0=448,ME=6;
-  const SL=['prépa','the best school','20/20','consulting','finance','the next title','a bigger salary','the right postcode','promotion','20/20 again','what others expect','the next box'];
-  stairs.innerHTML='<defs><pattern id="hatchRiser" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><line class="h-line" x1="0" y1="0" x2="0" y2="4"/></pattern><pattern id="hatchSide" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)"><line class="h-faint" x1="0" y1="0" x2="0" y2="5"/></pattern><clipPath id="sclip"><rect x="-20" y="-20" width="460" height="460"/></clipPath></defs><g clip-path="url(#sclip)"><g id="sg"></g></g><line class="ground" x1="250" y1="404" x2="420" y2="404"/><g id="others"></g><g id="climber"><path d="M-7 0L-3-19Q0-23 3-19L7 0Z" fill="var(--accent)"/><circle cy="-23" r="4.6" fill="var(--accent)"/></g>';
-  const sg=stairs.querySelector('#sg'),climber=stairs.querySelector('#climber');
-  let lastK=null,climbed=0,off=false;
-  const P=a=>a.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ');
-  function buildStairs(k){
-    let side='',faces='';
-    for(let j=-2;j<=13;j++){
-      const x=X0+j*SW,y=Y0-j*SH,l=SL[((j+k)%SL.length+SL.length)%SL.length];
-      side+='<rect class="side" x="'+x+'" y="'+y+'" width="'+SW+'" height="'+(520-y)+'"/>';
-      faces+='<polygon class="tread" points="'+P([[x,y],[x+SW,y],[x+SW+DX,y+DY],[x+DX,y+DY]])+'"/>';
-      faces+='<polygon class="riser" points="'+P([[x+SW,y],[x+SW,y-SH],[x+SW+DX,y-SH+DY],[x+SW+DX,y+DY]])+'"/>';
-      faces+='<text class="lbl" x="'+(x+5)+'" y="'+(y+15)+'">'+l+'</text>';
-    }
-    sg.innerHTML='<g id="sgm">'+side+faces+'</g>';
-  }
-  const others=stairs.querySelector('#others');
+  const SL=['prépa','the best school','20/20','consulting','finance','the next title','a bigger salary','the right postcode','what others expect'];
+  const S_RISE=4/28,S_BASE=-7,FIG='M-7 0L-3-19Q0-23 3-19L7 0Z';
+  stairs.innerHTML='<defs><pattern id="hatchRiser" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><line class="h-line" x1="0" y1="0" x2="0" y2="4"/></pattern><pattern id="hatchSide" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)"><line class="h-faint" x1="0" y1="0" x2="0" y2="5"/></pattern></defs><g id="sg"></g><path class="ground" id="sground"/><g id="others"></g><g id="climber"><path d="'+FIG+'" fill="var(--accent)"/><circle cy="-23" r="4.6" fill="var(--accent)"/></g>';
+  const sg=stairs.querySelector('#sg'),climber=stairs.querySelector('#climber'),others=stairs.querySelector('#others'),sground=stairs.querySelector('#sground');
+  let climbed=0,off=false;
+  // the same orthographic camera as the 3D scene (azimuth 45°, isometric elevation, same frustum)
+  function stairCam(){const W=stairs.clientWidth||innerWidth,H=stairs.clientHeight||innerHeight,mob=innerWidth<900,S=mob?9.5:7.4,a=W/H,ox=mob?0:-S*a*.32,oy=mob?S*.42:0;return {W,H,l:-S*a+ox,r:S*a+ox,t:S+oy,b:-S+oy}}
+  function proj(c,x,y,z){x-=4.5;y-=1;z-=4.5;const X=(x-z)/Math.SQRT2,Y=(-x+2*y-z)/Math.sqrt(6);return [(X-c.l)/(c.r-c.l)*c.W,(c.t-Y)/(c.t-c.b)*c.H]}
+  const PT=a=>a.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ');
+  function stairPos(c,t){const k=Math.max(0,Math.min(8,Math.floor(t))),f=t-k,x=k+f,y=k*S_RISE;return proj(c,x,y,0)}
   function drawStairs(p){
-    const climb=clamp((p-.1)/.75)*14,k=Math.floor(climb),f=climb-k;
-    if(k!==lastK){buildStairs(k);lastK=k}
-    sg.firstChild.setAttribute('transform','translate('+(-f*SW).toFixed(2)+' '+(f*SH).toFixed(2)+')');
-    const cx=X0+ME*SW+SW/2+DX/2,cy=Y0-ME*SH+DY/2;
-    let og='';for(const [st,ph] of [[3,.5],[9,.25],[12,.75]]){const ox=X0+st*SW+SW/2+DX/2,oy=Y0-st*SH+DY/2-Math.abs(Math.sin((f+ph)*Math.PI))*6;og+='<g transform="translate('+ox+' '+oy.toFixed(1)+')"><path d="M-7 0L-3-19Q0-23 3-19L7 0Z" fill="var(--fg)"/><circle cy="-23" r="4.6" fill="var(--fg)"/></g>'}
+    const c=stairCam(),u=c.H/(c.t-c.b);let o='';
+    for(let i=0;i<9;i++){
+      const x=i,z=0,t=i*S_RISE,B=S_BASE,q=(X,Y,Z)=>proj(c,X,Y,Z);
+      o+='<polygon class="side" points="'+PT([q(x-.5,t,z+.5),q(x+.5,t,z+.5),q(x+.5,B,z+.5),q(x-.5,B,z+.5)])+'"/>';
+      o+='<polygon class="riser" points="'+PT([q(x+.5,t,z-.5),q(x+.5,t,z+.5),q(x+.5,B,z+.5),q(x+.5,B,z-.5)])+'"/>';
+      if(i%2===0){const wy=t-2.1;o+='<polygon fill="var(--fg)" fill-opacity=".85" points="'+PT([q(x-.16,wy-.32,z+.51),q(x+.16,wy-.32,z+.51),q(x+.16,wy+.1,z+.51),q(x+.08,wy+.23,z+.51),q(x-.08,wy+.23,z+.51),q(x-.16,wy+.1,z+.51)])+'"/>'}
+      o+='<polygon class="tread" points="'+PT([q(x-.5,t,z-.5),q(x+.5,t,z-.5),q(x+.5,t,z+.5),q(x-.5,t,z+.5)])+'"/>';
+      const lc=q(x,t,z);o+='<text class="lbl" x="'+lc[0].toFixed(1)+'" y="'+(lc[1]+3).toFixed(1)+'" text-anchor="middle">'+SL[i]+'</text>';
+    }
+    sg.innerHTML=o;
+    const g0=proj(c,-2.5,0,-.5),g1=proj(c,-.5,0,-.5),g2=proj(c,-.5,0,.5),g3=proj(c,-2.5,0,.5);
+    sground.setAttribute('d','M'+PT([g0,g1,g2,g3]).replace(/ /g,' L')+'Z');
+    const sc=(u*.82/27).toFixed(3),climb=clamp((p-.1)/.75)*14,k=Math.floor(climb),f=climb-k;
+    let og='';for(const ph of [.15,.45,.75]){const tt=((climb*.6+ph*9)%8),pp=stairPos(c,tt);og+='<g transform="translate('+pp[0].toFixed(1)+' '+(pp[1]-Math.abs(Math.sin(tt*Math.PI))*3).toFixed(1)+') scale('+sc+')"><path d="'+FIG+'" fill="var(--fg)"/><circle cy="-23" r="4.6" fill="var(--fg)"/></g>'}
     others.innerHTML=og;
-    if(off)return;
-    climber.style.transform='translate('+cx+'px,'+(cy-Math.abs(Math.sin(f*Math.PI))*7).toFixed(2)+'px)';
+    if(off){const gp=proj(c,-1.5,0,0);climber.style.transform='translate('+gp[0].toFixed(1)+'px,'+gp[1].toFixed(1)+'px) scale('+sc+')';return}
+    const me=stairPos(c,2+(climb%6));
+    climber.style.transform='translate('+me[0].toFixed(1)+'px,'+(me[1]-Math.abs(Math.sin(f*Math.PI))*4).toFixed(1)+'px) scale('+sc+')';
     climbed=k;meter.innerHTML='steps climbed: <b>'+k+'</b> · height gained: <b>0 m</b>';
   }
+  addEventListener('resize',()=>{const pr=document.getElementById('program').getBoundingClientRect();if(pr.bottom>0&&pr.top<innerHeight)drawStairs(clamp(-pr.top/Math.max(1,pr.height-innerHeight)))});
   document.getElementById('stepoff').addEventListener('click',()=>{
     off=true;sframe.classList.add('off');
-    climber.style.transform='translate(330px,404px)';
+    const pr=document.getElementById('program').getBoundingClientRect();drawStairs(clamp(-pr.top/Math.max(1,pr.height-innerHeight)));
     meter.innerHTML='steps climbed: <b>'+climbed+'</b> · height gained: <b>0 m</b> · <span style="color:var(--accent)">^C</span>';
   });
 
@@ -1204,18 +1209,19 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // arched window shape
     const ws=new T.Shape();ws.moveTo(-.16,-.32);ws.lineTo(.16,-.32);ws.lineTo(.16,.1);ws.absarc(0,.1,.16,0,Math.PI,false);ws.lineTo(-.16,-.32);
     const wgeo=new T.ShapeGeometry(ws,10);
-    const cells=[];let cx=0,cz=0,i=0;
+    const cols=[],cells=[];let cx=0,cz=0,i=0;
     for(const [dx,dz,n] of flights)for(let k=0;k<n;k++){
       const top=i*RISE,h=top-BASE;
       const geo=new T.BoxGeometry(1,h,1),m=new T.Mesh(geo,stone);
       m.position.set(cx,BASE+h/2,cz);group.add(m);
       const ed=new T.LineSegments(new T.EdgesGeometry(geo),lineMat);ed.position.copy(m.position);group.add(ed);
+      cols.push({m,ed,h,fi:i<9?0:i<18?1:i<23?2:3,wins:[]});
       // windows on the faces the eye can see
       if(i%2===0){
         for(const [nx,nz] of [[1,0],[0,1]]){
           const w=new T.Mesh(wgeo,inkM);
           w.position.set(cx+nx*.502,top-2.1,cz+nz*.502);
-          w.rotation.y=nx?Math.PI/2:0;group.add(w);
+          w.rotation.y=nx?Math.PI/2:0;group.add(w);cols[cols.length-1].wins.push(w);
         }
       }
       cells.push([cx,top,cz]);cx+=dx;cz+=dz;i++;
@@ -1230,7 +1236,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const monks=[];for(let k=0;k<9;k++)monks.push({g:monk(inkM,inkM),off:k*N/9,dir:1});
     monks.push({g:monk(meM,meM),off:N/18,dir:-1});
     group.position.set(-4.5,-1,-4.5);scene.add(group);
-    pov={renderer,scene,cam,cells,monks,N};
+    pov={renderer,scene,cam,cells,monks,N,cols,BASE};
     sizePov();
     let x0=null;
     povStage.addEventListener('pointerdown',e=>{x0=e.clientX;povStage.setPointerCapture(e.pointerId)});
@@ -1256,7 +1262,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
         const t=((m.off+m.dir*walkT)%pov.N+pov.N)%pov.N,k=Math.floor(t),f=t-k,a=pov.cells[k],b=pov.cells[k+1];
         m.g.position.set(a[0]+(b[0]-a[0])*f,a[1]+Math.abs(Math.sin(f*Math.PI))*.06,a[2]+(b[2]-a[2])*f);
         const dx=(b[0]-a[0])*m.dir,dz=(b[2]-a[2])*m.dir;m.g.rotation.y=Math.atan2(dx,dz);
+        m.g.visible=povGrow>.98||k<9;
       }
+      for(const c of pov.cols){const s=c.fi===0?1:Math.max(.001,povGrow),y=pov.BASE+c.h*s/2;c.m.scale.y=s;c.ed.scale.y=s;c.m.position.y=y;c.ed.position.y=y;c.wins.forEach(w=>w.visible=s>.98)}
       const turn=ease(clamp((povP-.3)/.4))*1.05+drag;
       const az=Math.PI/4+turn,el=Math.asin(1/Math.sqrt(3)),d=60;
       pov.cam.position.set(Math.cos(el)*Math.cos(az)*d,Math.sin(el)*d,Math.sin(el)*0+Math.cos(el)*Math.sin(az)*d);
@@ -1651,7 +1659,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const pf=document.getElementById('program').firstElementChild,pvS=document.getElementById('pov'),pvF=pvS.firstElementChild,pvr=pvS.getBoundingClientRect();
     // 3 · the same staircase: the 3D one takes the drawing's place in the drawing's colours, then the light comes in
     const tP=pvr.top>0&&pvr.top<vh?1-pvr.top/vh:0,tI=passIn('inherited');
-    povTone=pvr.top>0?0:sm(clamp((povP-.04)/.22));
+    povTone=pvr.top>0?0:sm(clamp((povP-.04)/.22));povGrow=pvr.top>0?0:sm(clamp((povP-.02)/.14));
     pvF.style.setProperty('--bg',toRGB(INKc,PAPc,povTone));pvF.style.setProperty('--fg',toRGB(PAPc,INKc,povTone));pvF.style.setProperty('--dim',toRGB([143,137,123],[125,118,102],povTone));
     if(tP>0){const e=sm(tP);pf.style.transform='translateY('+(tP*vh).toFixed(1)+'px)';pf.style.opacity=(1-e).toFixed(3);pvF.style.transform='translateY('+(-pvr.top).toFixed(1)+'px)';pvF.style.opacity=e.toFixed(3);pvF.style.zIndex='2'}
     else{pf.style.transform='';pf.style.opacity='';pvF.style.transform='';pvF.style.zIndex='';pvF.style.opacity=''}
