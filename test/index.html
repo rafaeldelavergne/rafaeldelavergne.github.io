@@ -262,11 +262,12 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 
 /* the dancers */
 [data-mode="film"] .dance-frame{align-items:center;justify-content:center;text-align:center}
-[data-mode="film"] .dancers{position:absolute;left:50%;top:50%;width:min(92vw,92vh);height:min(92vw,92vh);transform:translate(-50%,-50%);z-index:0}
+[data-mode="film"] .dancers{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+[data-mode="film"] .dance-copy{background:color-mix(in srgb,#15140f 82%,transparent);padding:28px 32px;border:1px solid rgba(239,233,220,.18)}
 [data-mode="film"] .dance-copy{position:relative;z-index:1;max-width:min(560px,70vw)}
 [data-mode="film"] .dance-copy .big{font-style:italic;font-size:clamp(24px,3vw,44px);max-width:none}
 [data-mode="film"] .dance-copy .label{margin-bottom:1.4em}
-@media (max-width:700px){[data-mode="film"] .dancers{width:100vw;height:84vh}[data-mode="film"] .dance-copy{max-width:70vw}[data-mode="film"] .dance-copy .big{font-size:20px}}
+@media (max-width:700px){[data-mode="film"] .dance-copy{max-width:86vw;padding:20px}[data-mode="film"] .dance-copy .big{font-size:20px}}
 
 /* point of view (3D) */
 [data-mode="film"] .pov-frame{padding:0}
@@ -287,9 +288,9 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .phase .lede{max-width:56ch;margin-top:.8em}
 [data-mode="film"] .phase.dance .big{font-style:italic;max-width:30ch;font-size:clamp(26px,3.4vw,52px)}
 html:not([data-mode="film"]) .phase .big{font-size:clamp(24px,4vw,32px)}
-.tess{width:100%;height:32vh;margin-top:3vh;display:block}
-.tess .ta{fill:var(--fg)}
-.tess .tb{fill:var(--bg)}
+.tess{width:100%;height:32vh;margin-top:3vh;display:block;position:relative;z-index:3;transform-origin:50% 50%}
+.tess .ta{fill:var(--ta,var(--fg))}
+.tess .tb{fill:var(--tb,var(--bg))}
 .tess path{stroke:var(--fg);stroke-width:.8;stroke-linejoin:round}
 .tess .gap{fill:var(--bg);stroke:color-mix(in srgb,var(--fg) 40%,transparent);stroke-dasharray:3 3}
 .tess .me{fill:var(--accent);stroke:var(--bg)}
@@ -563,23 +564,21 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 4 · metamorphosis -->
-<section class="scene" data-tone="paper" data-name="three stages" id="where" data-fig="a metamorphosis" style="--len:380vh">
+<section class="scene" data-tone="paper" data-name="three stages" id="where" data-fig="a metamorphosis" style="--len:460vh">
   <div class="frame meta-frame">
     <p class="label"><span class="md">##</span>three stages of a life</p>
     <div class="phases">
       <div class="phase b" data-at="0" data-out=".36"><h2 class="big">1 · Adapting</h2><p class="lede">Growing up, we build adaptation software: to our parents, our siblings, our friends, society. Like a sponge, the brain optimises other people’s energy. Each of us takes the shape our neighbours leave us.</p></div>
-      <div class="phase b" data-at=".33" data-out=".68"><h2 class="big">2 · Becoming yourself</h2><p class="lede">Often after a shock, you rewrite what is good and bad for you, across all six dimensions. For me that meant entrepreneurship, philosophy, coaching, neuroscience, wisdom traditions — even shamanism. You become yourself, but mostly among your own.</p></div>
-      <div class="phase b" data-at=".68"><h2 class="big">3 · Yourself, among everyone</h2><p class="lede">Recharge alone or with your own, then go back out to create and change things. Back and forth, like riding a bicycle. The goal: a wanderer who can go anywhere and remain yourself.</p></div>
+      <div class="phase b" data-at=".3" data-out=".6"><h2 class="big">2 · Becoming yourself</h2><p class="lede">Often after a shock, you rewrite what is good and bad for you, across all six dimensions. For me that meant entrepreneurship, philosophy, coaching, neuroscience, wisdom traditions — even shamanism. You become yourself, but mostly among your own.</p></div>
+      <div class="phase b" data-at=".6" data-out=".82"><h2 class="big">3 · Yourself, among everyone</h2><p class="lede">Recharge alone or with your own, then go back out to create and change things. Back and forth, like riding a bicycle. The goal: a wanderer who can go anywhere and remain yourself.</p></div>
     </div>
     <svg class="tess film-only" id="tess" viewBox="0 0 840 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
     <p class="fig-cap film-only">tiles shaped by their neighbours · after M.C. Escher’s metamorphoses</p>
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="ink" data-a="where" data-b="dance" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
-
 <!-- 5b · the dancers -->
-<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="a round of dancers" style="--len:240vh">
+<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="the one who hears" style="--len:240vh">
   <div class="frame dance-frame">
     <svg class="dancers film-only" id="dancers" viewBox="-300 -300 600 600" aria-hidden="true"></svg>
     <div class="dance-copy">
@@ -992,6 +991,13 @@ html:not([data-mode="film"]) .next{box-shadow:none}
         if(lift>.02)me='<path class="me" d="'+tilePath(x,y,m(c),m(c-.5),m(c+.5),.9*lift)+'" transform="translate('+(x+TS/2)+' '+(y+TS/2-55*lift)+') rotate('+(Math.sin(p*90)*24*dance).toFixed(1)+') scale('+(1+.35*lift+.12*dance*Math.abs(Math.sin(p*90)))+') translate('+(-x-TS/2)+' '+(-y-TS/2)+')"/>';
       } else out+='<path class="'+((r+c)%2?'ta':'tb')+'" d="'+d+'"/>';
     }
+    // stage 3 becomes the way out: the band grows over the screen and turns to ink
+    const gm=clamp((p-.72)/.24),ge=gm*gm*(3-2*gm),lerpC=(a,b)=>'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*ge)).join(',')+')';
+    const ink=[21,20,15],paper=[239,233,220],dim=[44,42,35];
+    tess.style.setProperty('--ta',lerpC(ink,dim));tess.style.setProperty('--tb',lerpC(paper,ink));
+    if(ge>0){tess.style.transform='';const r=tess.getBoundingClientRect(),w=r.width,h=r.height,cx=r.left+r.width/2,cy=r.top+r.height/2;
+      const k=1+(Math.max(innerWidth/w,innerHeight/h)*1.25-1)*ge;tess.style.transform='translate('+((innerWidth/2-cx)*ge).toFixed(1)+'px,'+((innerHeight/2-cy)*ge).toFixed(1)+'px) scale('+k.toFixed(3)+')';}
+    else tess.style.transform='';
     tess.innerHTML='<g transform="translate(0 0)">'+out+me+'</g>';
   }
 
@@ -1510,20 +1516,32 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
 
   const faller=document.getElementById('faller');
-  // the dancers: a still round, and one who hears the music
+  // the dancers: interlocking still figures (head into the feet above, arm into the side of the next); one hears the music
   const dancersSvg=document.getElementById('dancers');
+  function personD(x,y,S,lift){
+    const g=(u,c,w)=>Math.exp(-(((u-c)/w)**2)),N=18,P=[];
+    const head=u=>-S*.3*g(u,.5,.11),arm=v=>S*.2*(g(v,.38,.09)-g(v,.78,.09));
+    for(let i=0;i<=N;i++){const u=i/N;P.push([x+u*S,y+head(u)])}
+    for(let i=0;i<=N;i++){const v=i/N;P.push([x+S+arm(v),y+v*S])}
+    for(let i=0;i<=N;i++){const u=1-i/N;P.push([x+u*S,y+S+head(u)])}
+    for(let i=0;i<=N;i++){const v=1-i/N;P.push([x+arm(v),y+v*S])}
+    return 'M'+P.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')+'Z';
+  }
   function drawDancers(p){
-    const mob=innerWidth<700,Rx=mob?250:232,Ry=mob?400:232,N=14,rot=p*120;
-    dancersSvg.setAttribute('viewBox',mob?'-300 -450 600 900':'-300 -300 600 600');
-    let o='<ellipse rx="'+Rx+'" ry="'+Ry+'" fill="none" stroke="#efe9dc" stroke-opacity=".12" stroke-dasharray="2 8"/>';
-    for(let i=0;i<N;i++){
-      const a=(i/N*360+rot)*Math.PI/180,x=Math.cos(a)*Rx,y=Math.sin(a)*Ry,me=i===3,sc=mob?1.5:1;
-      const beat=me?Math.sin(p*60):0,lift=me?Math.abs(beat)*14:0,tilt=me?beat*28:0;
-      o+='<g transform="translate('+x.toFixed(1)+' '+(y-lift).toFixed(1)+') rotate('+tilt.toFixed(1)+') scale('+sc+')">'+
-        '<path d="M-9 14 L-4 -10 Q0 -15 4 -10 L9 14 Z" fill="'+(me?'#c98260':'#efe9dc')+'" fill-opacity="'+(me?1:.35)+'"/><circle cy="-15" r="6" fill="'+(me?'#c98260':'#efe9dc')+'" fill-opacity="'+(me?1:.35)+'"/>'+
-        (me?'<path d="M-4 -6 L-16 '+(-14-beat*8).toFixed(1)+' M4 -6 L16 '+(-14+beat*8).toFixed(1)+'" stroke="#c98260" stroke-width="3" stroke-linecap="round"/>':'')+'</g>';
-      if(me){for(let k=0;k<3;k++){const ph=(p*6+k/3)%1;o+='<text x="'+(x+18+ph*30).toFixed(1)+'" y="'+(y-30-ph*50).toFixed(1)+'" fill="#c98260" fill-opacity="'+(1-ph).toFixed(2)+'" font-size="'+(14+k*3)+'" font-family="Georgia,serif">♪</text>'}}
+    const mob=innerWidth<700,S=mob?56:64,W=600,H=mob?900:600;
+    dancersSvg.setAttribute('viewBox','0 0 '+W+' '+H);dancersSvg.setAttribute('preserveAspectRatio','xMidYMid slice');
+    const cols=Math.ceil(W/S)+2,rows=Math.ceil(H/S)+2,mc=Math.floor(cols*(mob?.5:.24)),mr=Math.floor(rows*(mob?.8:.56));
+    const mx=mc*S-S+S/2,my=mr*S-S+S/2;
+    let o='';
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+      if(r===mr&&c===mc){o+='<path d="'+personD(c*S-S,r*S-S,S)+'" fill="#15140f" stroke="#c98260" stroke-opacity=".5" stroke-dasharray="3 4"/>';continue}
+      o+='<path d="'+personD(c*S-S,r*S-S,S)+'" fill="'+((r+c)%2?'#2c2a23':'#15140f')+'" stroke="#efe9dc" stroke-opacity=".14" stroke-width="1"/>';
     }
+    // music: rings that cross everyone; nobody else moves
+    for(let k=0;k<5;k++){const f=((p*4+k/5)%1),R=40+f*Math.hypot(W,H);o+='<circle cx="'+mx+'" cy="'+my+'" r="'+R.toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="'+(2.4*(1-f)+.4).toFixed(2)+'" stroke-opacity="'+(.7*(1-f)).toFixed(2)+'"/>'}
+    const beat=Math.sin(p*70),lift=10+Math.abs(beat)*16;
+    o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*24).toFixed(1)+') scale(1.12) translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mc*S-S,mr*S-S,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
+    for(let k=0;k<3;k++){const ph=(p*7+k/3)%1;o+='<text x="'+(mx+S*.6+ph*40).toFixed(1)+'" y="'+(my-S*.6-ph*70).toFixed(1)+'" fill="#c98260" fill-opacity="'+(1-ph).toFixed(2)+'" font-size="'+(16+k*4)+'" font-family="Georgia,serif">♪</text>'}
     dancersSvg.innerHTML=o;
   }
 
