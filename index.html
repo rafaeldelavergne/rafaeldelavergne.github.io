@@ -268,6 +268,10 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 /* the dancers */
 [data-mode="film"] .dance-frame{align-items:center;justify-content:center;text-align:center}
 @media (min-width:901px){[data-mode="film"] .dance-frame{align-items:flex-start;text-align:left}[data-mode="film"] .dance-copy{max-width:min(500px,40vw)}}
+.carrier{display:none}
+[data-mode="film"] .carrier{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:16;pointer-events:none}
+.carry-img,.carry-clone{position:fixed;z-index:16;pointer-events:none;display:none}
+.dancers{transform-origin:50% 50%}
 .signal{display:none}
 [data-mode="film"] .signal{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0}
 [data-mode="film"] .dancers{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0}
@@ -477,6 +481,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 
 <main id="text" tabindex="-1">
 <svg class="signal film-only" id="signal" aria-hidden="true"></svg>
+<svg class="carrier" id="carrier" aria-hidden="true"></svg><img class="carry-img" id="carry-img" alt=""><svg class="carry-clone" id="carry-clone" viewBox="0 0 300 340" aria-hidden="true"></svg>
 <svg class="dancers film-only" id="dancers" viewBox="0 0 600 600" aria-hidden="true"></svg>
 
 <!-- 0 · title -->
@@ -588,8 +593,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="paper" data-a="where" data-b="totem" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
-
 <!-- 5 · totem -->
 <section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" data-fig="a totem of cubes" style="--len:280vh">
   <div class="frame has-fig">
@@ -606,20 +609,16 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="paper" data-to="ink" data-a="totem" data-b="covid" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
-
 <!-- 6 · covid -->
 <section class="scene" data-tone="ink" data-name="2020" id="covid" data-fig="what remains" style="--len:240vh">
   <div class="frame has-fig">
-    <div class="side-fig backdrop-m" aria-hidden="true"><svg id="covid-fig" viewBox="0 0 300 340" style="overflow:hidden"></svg><p class="fig-cap">what remains</p></div>
+    <div class="side-fig backdrop-m" aria-hidden="true"><svg id="covid-fig" viewBox="0 0 300 340" style="overflow:hidden"></svg><p class="fig-cap">what remains: the question</p></div>
     <p class="label"><span class="md">##</span>2020</p>
     <p class="drop b" data-at=".05">−95%</p>
     <h2 class="big b" data-at=".2" style="font-size:clamp(26px,3.6vw,52px);max-width:22ch">Covid. Revenue fell by 95%. Restructuring meant difficult decisions, for people I knew well.</h2>
     <p class="lede b" data-at=".55">Being coached through that period changed how I approached responsibility — and my own choices.</p>
   </div>
 </section>
-
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="covid" data-b="space" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 7 · the space: two neurons -->
 <section class="scene" data-tone="ink" data-name="the space" id="space" data-fig="the synapse" style="--len:420vh">
@@ -769,6 +768,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 'use strict';
 (function(){
   const root=document.documentElement;
+  let tessMeHidden=false,dancerCalm=0,mobK=1,antScreen=null,antHide=false,resHold=false,povSnap=null,povTone=1;
+
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scenes=[...document.querySelectorAll('.scene')];
   const toggle=document.getElementById('mode-toggle');
@@ -885,13 +886,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       if(qr.top>0){qf.style.clipPath='circle(0px at 50% 50%)'}
       else if(zoomQ>=1){qf.style.clipPath=''}
       
-      // two faces of one cube: the flat staircase turns away, the 3D one comes up from below
-      {const pf=document.getElementById('program').firstElementChild,pv=document.getElementById('pov'),vf=pv.firstElementChild,pvr=pv.getBoundingClientRect(),h=vh/2;
-       if(pvr.top>0&&pvr.top<vh){const t=1-pvr.top/vh;
-         pf.style.transform='translateY('+(t*vh).toFixed(1)+'px) perspective(1600px) translateZ('+(-h)+'px) rotateX('+(t*90).toFixed(2)+'deg) translateZ('+h+'px)';
-         vf.style.transform='translateY('+(-pvr.top).toFixed(1)+'px) perspective(1600px) translateZ('+(-h)+'px) rotateX('+(t*90-90).toFixed(2)+'deg) translateZ('+h+'px)';
-         pf.style.zIndex=t<.5?2:1;vf.style.zIndex=t<.5?1:2;
-       }else{pf.style.transform='';vf.style.transform=''}}
       const helixVisible=topR.bottom>0||(qr.top<vh&&zoomQ<1);
       helixBg.classList.toggle('on',helixVisible);
       helixBg.style.opacity=helixVisible?String(1-clamp((zoomQ-.8)/.2)):'0';
@@ -918,10 +912,17 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       // one continuous darkness: the dancers' tiling fades in over the growing band and stays still into the next scene
       const wr=document.getElementById('zoom').getBoundingClientRect(),dr=document.getElementById('dance').getBoundingClientRect();
       const wp=clamp(-wr.top/Math.max(1,wr.height-vh)),gIn=clamp((wp-.93)/.05),dp=clamp(-dr.top/Math.max(1,dr.height-vh));
-      let op=0;if(dr.top<vh&&dr.bottom>0)op=dr.top>0?Math.max(gIn,1):clamp(dr.bottom/(vh*.6));else if(wr.bottom>0&&wr.top<vh)op=gIn;
+      let op=0,leave=0;if(dr.top<vh&&dr.bottom>0){op=1;if(dr.bottom<vh)leave=1-dr.bottom/vh}else if(wr.bottom>0&&wr.top<vh)op=gIn;
+      const wkF=document.getElementById('work-fig').parentElement;
+      if(leave>0){const e=sm(leave),wf=document.getElementById('work-fig').getBoundingClientRect(),dx=(wf.left+wf.width/2-innerWidth/2)*e,dy=(wf.top+wf.height*.42-vh/2)*e,sc=1+(wf.width/innerWidth*1.5-1)*e;
+        dancersSvg.style.transform='translate('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px) perspective(1400px) rotateX('+(55*e).toFixed(1)+'deg) rotateZ('+(-45*e).toFixed(1)+'deg) scale('+sc.toFixed(3)+')';
+        op=1-sm(clamp((leave-.78)/.22));wkF.style.opacity=sm(clamp((leave-.6)/.35)).toFixed(3)}
+      else{dancersSvg.style.transform='';wkF.style.opacity=''}
+      dancerCalm=leave;
       dancersSvg.style.opacity=op.toFixed(3);
       if(op>0)drawDancers(dr.top>0?0:dp);
     }
+    if(film)updateCarriers();
     if(active!==current){
       current=active;
       {const ai=scenes.indexOf(active);if(ai>reached){reached=ai;try{localStorage.setItem('being-reached',String(ai))}catch(e){}}}
@@ -995,8 +996,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     let out='',me='';
     for(let r=0;r<TR;r++)for(let c=0;c<TC;c++){
       const x=c*TS,y=r*TS,d=tilePath(x,y,m(c),m(c-.5),m(c+.5),0);
-      if(r===ME_R&&c===ME_C&&mine){
-        out+='<path class="'+(lift>.02?'gap':'me')+'" d="'+d+'"/>';
+      if(r===ME_R&&c===ME_C){
+        out+='<path id="tess-me" class="'+(lift>.02&&mine?'gap':'me')+'" d="'+d+'" style="visibility:'+(tessMeHidden?'hidden':'visible')+'"/>';
         if(lift>.02)me='<path class="me" d="'+tilePath(x,y,m(c),m(c-.5),m(c+.5),.9*lift)+'" transform="translate('+(x+TS/2)+' '+(y+TS/2-55*lift)+') rotate('+(Math.sin(p*90)*24*dance).toFixed(1)+') scale('+(1+.35*lift+.12*dance*Math.abs(Math.sin(p*90)))+') translate('+(-x-TS/2)+' '+(-y-TS/2)+')"/>';
       } else out+='<path class="'+((r+c)%2?'ta':'tb')+'" d="'+d+'"/>';
     }
@@ -1182,7 +1183,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
   function initPov(){
     const T=window.THREE;if(!T||pov)return;
-    let renderer;try{renderer=new T.WebGLRenderer({antialias:true,alpha:true})}catch(e){return}
+    let renderer;try{renderer=new T.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true})}catch(e){return}
     const dpr=Math.min(devicePixelRatio,2);renderer.setPixelRatio(dpr);
     povStage.append(renderer.domElement);
     const scene=new T.Scene(),cam=new T.OrthographicCamera(-1,1,1,-1,-200,200);
@@ -1280,23 +1281,20 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // totem: one cube per milestone
   const totemFig=document.getElementById('totem-fig');
   const TL=['2017 · a question','€10m raised','40 people','15,000 a month'];
-  totemFig.innerHTML=hatchDefs('tt')+TL.map((l,i)=>'<g class="cube off" data-i="'+i+'">'+box(0,i,0,1,62,118,250,'tt',i===3)+'<text class="iso-lbl" x="'+(ISO(1,i+.5,0,62,118,250)[0]+14).toFixed(0)+'" y="'+(ISO(1,i+.5,0,62,118,250)[1]+4).toFixed(0)+'">'+l+'</text></g>').join('');
+  totemFig.innerHTML=hatchDefs('tt')+TL.map((l,i)=>'<g class="cube'+(i?' off':'')+'" data-i="'+i+'">'+box(0,i,0,1,62,118,250,'tt',i===0)+'<text class="iso-lbl" x="'+(ISO(1,i+.5,0,62,118,250)[0]+14).toFixed(0)+'" y="'+(ISO(1,i+.5,0,62,118,250)[1]+4).toFixed(0)+'">'+l+'</text></g>').join('');
   const totemCubes=[...totemFig.querySelectorAll('.cube')];
-  function drawTotem(p){totemCubes.forEach((c,i)=>c.classList.toggle('off',p<.12+i*.12))}
+  function drawTotem(p){totemCubes.forEach((c,i)=>c.classList.toggle('off',i>0&&p<.12+i*.12))}
 
   // 2020: 95% of the cubes fall, one remains
   const covidFig=document.getElementById('covid-fig');
-  const cv=[];for(let y=0;y<5;y++)for(let x=0;x<2;x++)for(let z=0;z<2;z++)cv.push([x,y,z]);
-  cv.sort((a,b)=>(a[1]-b[1])||((a[0]+a[2])-(b[0]+b[2])));
-  const KEEP=cv.findIndex(c=>c[0]===1&&c[1]===0&&c[2]===1);
-  covidFig.innerHTML=hatchDefs('cv')+cv.map((c,i)=>'<g data-i="'+i+'">'+box(c[0],c[1],c[2],1,34,150,250,'cv',false)+'</g>').join('');
+  covidFig.innerHTML=hatchDefs('cv')+TL.map((l,i)=>'<g data-i="'+i+'">'+box(0,i,0,1,62,118,250,'cv',i===0)+'<text class="iso-lbl" x="'+(ISO(1,i+.5,0,62,118,250)[0]+14).toFixed(0)+'" y="'+(ISO(1,i+.5,0,62,118,250)[1]+4).toFixed(0)+'">'+l+'</text></g>').join('');
   const covidGs=[...covidFig.querySelectorAll('g[data-i]')];
   function drawCovid(p){
     covidGs.forEach((g,i)=>{
-      if(i===KEEP){g.querySelector('.cu-t').classList.toggle('cu-me',p>.55);return}
-      const order=(cv.length-i)*.018,f=clamp((p-.08-order)/.3),sx=((i*37)%7-3)*14;
-      g.setAttribute('transform','translate('+(sx*f).toFixed(1)+' '+(f*f*520).toFixed(1)+') rotate('+(f*((i%2)?60:-45)).toFixed(1)+' 150 200)');
-      g.style.opacity=(1-f*.9).toFixed(2);
+      if(i===0)return;
+      const f=clamp((p-.06-(3-i)*.07)/.32),sx=(i%2?1:-1)*46;
+      g.setAttribute('transform','translate('+(sx*f).toFixed(1)+' '+(f*f*560).toFixed(1)+') rotate('+(f*(i%2?50:-40)).toFixed(1)+' 150 '+(250-i*62)+')');
+      g.style.opacity=(1-f).toFixed(2);
     });
   }
 
@@ -1304,7 +1302,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const workFig=document.getElementById('work-fig');
   const WC=[[1,1,1.7,'build','[x]'],[3,1,1,'coach','[~]'],[3,4,.3,'write','[ ]']];
   function drawWork(p){
-    const e=ease(clamp((p-.15)/.6));let out=hatchDefs('wk');
+    const e=ease(clamp((p-.68)/.3));let out=hatchDefs('wk');
     const cells=[];for(let x=0;x<5;x++)for(let z=0;z<5;z++)cells.push([x,z]);
     cells.sort((a,b)=>(a[0]+a[1])-(b[0]+b[1]));
     for(const [x,z] of cells){
@@ -1443,14 +1441,14 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const c=mob.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
     const fg='#15140f',bg='#efe9dc',NU=90,NV=4,Wd=.42,ax=1.1+.12*Math.sin(t*.0004),ay=t*.00022,sc=W*.33;
     const ca=Math.cos(ax),sa=Math.sin(ax),cb=Math.cos(ay),sb=Math.sin(ay);
-    const P=(u,v)=>{const R=1+v*Math.cos(u/2);let x=R*Math.cos(u),y=R*Math.sin(u),zz=v*Math.sin(u/2);const x1=x*cb-y*sb,y1=x*sb+y*cb;return [W/2+x1*sc,H/2+(y1*ca-zz*sa)*sc,y1*sa+zz*ca]};
+    const P=(u,v)=>{const R=1+v*Math.cos(mobK*u/2);let x=R*Math.cos(u),y=R*Math.sin(u),zz=v*Math.sin(mobK*u/2);const x1=x*cb-y*sb,y1=x*sb+y*cb;return [W/2+x1*sc,H/2+(y1*ca-zz*sa)*sc,y1*sa+zz*ca]};
     const q=[];
     for(let iu=0;iu<NU;iu++)for(let iv=0;iv<NV;iv++){
       const u0=iu/NU*2*Math.PI,u1=(iu+1)/NU*2*Math.PI,v0=-Wd+iv/NV*2*Wd,v1=v0+2*Wd/NV;
       const a=P(u0,v0),b=P(u1,v0),cc=P(u1,v1),e=P(u0,v1);
       q.push({p:[a,b,cc,e],z:(a[2]+b[2]+cc[2]+e[2])/4,k:(Math.floor(iu/3)+iv)%2});
     }
-    const ua=(t*.0006)%(4*Math.PI),A=P(ua,0);q.push({ant:A,z:A[2]+.02});
+    const ua=(t*.0006)%(4*Math.PI),A=P(ua,0);{const mr=mob.getBoundingClientRect();antScreen={x:mr.left+A[0],y:mr.top+A[1],s:W*.018}}if(mobK>.95&&!antHide)q.push({ant:A,z:A[2]+.02});
     q.sort((m,n)=>m.z-n.z);
     for(const it of q){
       if(it.ant){c.fillStyle='#c98260';c.beginPath();c.arc(it.ant[0],it.ant[1],W*.018,0,7);c.fill();continue}
@@ -1499,7 +1497,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const v=+resIn.value,k=Math.min(KMAX,Math.floor(v/100*(KMAX+.999))),n=1<<k,c=resCv.getContext('2d');
     c.setTransform(1,0,0,1,0,0);c.fillStyle='#efe9dc';c.fillRect(0,0,RW,RW);
     const cell=RW/n,{L,W}=PYR[k];
-    if(n===1){resTile=resTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));c.save();c.translate(RW/2,RW/2);c.scale(RW/60*.55,RW/60*.55);c.fillStyle='#c98260';c.fill(resTile);c.restore()}
+    if(n===1){if(!resHold){resTile=resTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));c.save();c.translate(RW/2,RW/2);c.scale(RW/60*.55,RW/60*.55);c.fillStyle='#c98260';c.fill(resTile);c.restore()}}
     else for(let y=0;y<n;y++)for(let x=0;x<n;x++){
       const i=y*n+x,dark=Math.pow(1-L[i],.9),step=Math.round(Math.min(1,dark*1.1)*15),warm=W[i]>.5;
       if(warm){c.fillStyle=W[i]>.85?'#d99a7a':'#e6b79e';c.fillRect(x*cell,y*cell,cell+.5,cell+.5)}
@@ -1599,8 +1597,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     }
     o+='</g>';
     // music: rings that cross everyone; nobody else moves
-    for(let k=0;k<5;k++){const f=((p*4+k/5)%1),R=40+f*Math.hypot(W,H);o+='<circle cx="'+mx+'" cy="'+my+'" r="'+R.toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="'+(2.4*(1-f)+.4).toFixed(2)+'" stroke-opacity="'+(.7*(1-f)).toFixed(2)+'"/>'}
-    const beat=Math.sin(p*70),lift=5+Math.abs(beat)*8;
+    for(let k=0;k<5;k++){const f=((p*4+k/5)%1),R=40+f*Math.hypot(W,H);o+='<circle cx="'+mx+'" cy="'+my+'" r="'+R.toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="'+(2.4*(1-f)+.4).toFixed(2)+'" stroke-opacity="'+(.7*(1-f)*(1-dancerCalm)).toFixed(2)+'"/>'}
+    const calm=1-dancerCalm,beat=Math.sin(p*70)*calm,lift=(5+Math.abs(beat)*8)*calm;
     o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*12).toFixed(1)+') translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mx-S/2,my-S/2,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
     for(let k=0;k<3;k++){const ph=(p*7+k/3)%1;o+='<text x="'+(mx+S*.6+ph*40).toFixed(1)+'" y="'+(my-S*.6-ph*70).toFixed(1)+'" fill="#c98260" fill-opacity="'+(1-ph).toFixed(2)+'" font-size="'+(16+k*4)+'" font-family="Georgia,serif">♪</text>'}
     dancersSvg.innerHTML=o;
@@ -1630,6 +1628,74 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     for(let k=0;k<4;k++){const f=((t*.00045+k/4)%1),a=f*len;o+='<circle cx="'+(fx+ux*a).toFixed(1)+'" cy="'+(fy+uy*a).toFixed(1)+'" r="9" fill="#c98260"/>'}
     if(ink){const g=1-clamp(zP/.06);o+='<circle cx="'+ex.toFixed(1)+'" cy="'+ey.toFixed(1)+'" r="'+(10+30*(1-g)).toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="3" stroke-opacity="'+g.toFixed(2)+'"/>'}
     signalSvg.innerHTML=o;
+  }
+
+  // ---- carriers: one object handed from a scene to the next
+  const carrierSvg=document.getElementById('carrier'),carryImg=document.getElementById('carry-img'),carryClone=document.getElementById('carry-clone');
+  const unitTile=(()=>{const a=.6,N=14,e=u=>a*(.2*Math.sin(2*Math.PI*u)+.07*Math.sin(4*Math.PI*u)),P=[];
+    for(let i=0;i<N;i++){const u=i/N;P.push([u,e(u)])}
+    for(let i=0;i<N;i++){const v=i/N;P.push([1+e(v),v])}
+    for(let i=0;i<N;i++){const u=1-i/N;P.push([u,1+e(u)])}
+    for(let i=0;i<N;i++){const v=1-i/N;P.push([e(v),v])}
+    return P})();
+  const unitDiamond=(()=>{const C=[[.5,0],[1,.5],[.5,1],[0,.5]],P=[];for(let k=0;k<4;k++)for(let i=0;i<14;i++){const a=C[k],b=C[(k+1)%4],f=i/14;P.push([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f])}return P})();
+  const unitCircle=unitTile.map((_,i)=>{const a=i/56*2*Math.PI-Math.PI*.75;return [.5+.5*Math.cos(a),.5+.5*Math.sin(a)]});
+  const rectOf=el=>{const r=el.getBoundingClientRect();return {x:r.left,y:r.top,w:r.width,h:r.height}};
+  const lerpR=(a,b,e)=>({x:a.x+(b.x-a.x)*e,y:a.y+(b.y-a.y)*e,w:a.w+(b.w-a.w)*e,h:a.h+(b.h-a.h)*e});
+  const shapeD=(A,B,e,r)=>'M'+A.map((q,i)=>(r.x+(q[0]+(B[i][0]-q[0])*e)*r.w).toFixed(1)+' '+(r.y+(q[1]+(B[i][1]-q[1])*e)*r.h).toFixed(1)).join('L')+'Z';
+  const passIn=id=>{const r=document.getElementById(id).getBoundingClientRect(),vh=innerHeight;return r.top>=vh?0:r.top<=0?1:1-r.top/vh};
+  const toRGB=(a,b,t)=>'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')+')';
+  function updateCarriers(){
+    const W=innerWidth,vh=innerHeight,INKc=[21,20,15],PAPc=[239,233,220];let svg='';
+    carrierSvg.setAttribute('viewBox','0 0 '+W+' '+vh);
+    const pf=document.getElementById('program').firstElementChild,pvS=document.getElementById('pov'),pvF=pvS.firstElementChild,pvr=pvS.getBoundingClientRect();
+    // 3 · the same staircase: the 3D one takes the drawing's place in the drawing's colours, then the light comes in
+    const tP=pvr.top>0&&pvr.top<vh?1-pvr.top/vh:0,tI=passIn('inherited');
+    povTone=pvr.top>0?0:sm(clamp((povP-.04)/.22));
+    pvF.style.setProperty('--bg',toRGB(INKc,PAPc,povTone));pvF.style.setProperty('--fg',toRGB(PAPc,INKc,povTone));pvF.style.setProperty('--dim',toRGB([143,137,123],[125,118,102],povTone));
+    if(tP>0){const e=sm(tP);pf.style.transform='translateY('+(tP*vh).toFixed(1)+'px)';pf.style.opacity=(1-e).toFixed(3);pvF.style.transform='translateY('+(-pvr.top).toFixed(1)+'px)';pvF.style.opacity=e.toFixed(3);pvF.style.zIndex='2'}
+    else{pf.style.transform='';pf.style.opacity='';pvF.style.transform='';pvF.style.zIndex='';pvF.style.opacity=''}
+    // 4 · it was a drawing: the 3D world shrinks into the point of the inherited pencil
+    if(tI>0&&tI<1&&pov){
+      if(!povSnap){povSnap=pov.renderer.domElement.toDataURL();carryImg.src=povSnap}
+      const pt=handsSvg.createSVGPoint();pt.x=416;pt.y=316;const sp=pt.matrixTransform(handsSvg.getScreenCTM()),e=sm(tI),k=Math.pow(1-e,2.4);
+      const w=W*k+10*(1-k),h=vh*k+10*(1-k),cx=W/2+(sp.x-W/2)*e,cy=vh/2+(sp.y-vh/2)*e;
+      Object.assign(carryImg.style,{display:'block',left:(cx-w/2)+'px',top:(cy-h/2)+'px',width:w+'px',height:h+'px',opacity:String(1-clamp((tI-.85)/.15))});
+      pvF.style.opacity='0';
+    }else{carryImg.style.display='none';if(tI===0)povSnap=null}
+    // 5 · your finished hand folds into the orange tile of the grid
+    const tW=passIn('where'),tT=passIn('totem'),me=document.getElementById('tess-me');
+    tessMeHidden=(tW>0&&tW<1)||(tT>0&&tT<1);
+    if(me)me.style.visibility=tessMeHidden?'hidden':'visible';
+    if(tW>0&&tW<1&&me){const hb=handsSvg.querySelectorAll('g[transform^="rotate"]'),src=rectOf(hb[hb.length-1]||handsSvg),s0={x:src.x+src.w*.3,y:src.y+src.h*.25,w:src.w*.4,h:src.h*.5},e=sm(tW);
+      svg+='<path d="'+shapeD(unitTile,unitTile,0,lerpR(s0,rectOf(me),e))+'" fill="#c98260" stroke="#15140f" stroke-width="1.2" opacity="'+Math.min(1,tW*5).toFixed(2)+'"/>'}
+    // 6 · the tile takes volume: it becomes the top of the founding cube of the totem
+    const c0=totemCubes[0],c0top=c0.querySelector('.cu-t');
+    if(tT>0&&tT<1&&me){const e=sm(tT);svg+='<path d="'+shapeD(unitTile,unitDiamond,e,lerpR(rectOf(me),rectOf(c0top),e))+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/>';c0.style.visibility='hidden'}
+    else c0.style.visibility='';
+    // 7 · no cut: the same totem stays while the background turns to night
+    const cr=document.getElementById('covid').getBoundingClientRect();
+    if(cr.top>0&&cr.top<vh){const r=totemFig.getBoundingClientRect(),dy=vh-cr.top;
+      if(!carryClone.dataset.on){carryClone.innerHTML=totemFig.innerHTML.replace(/(id="|#)tt([LR])/g,'$1cr$2');carryClone.dataset.on='1'}
+      Object.assign(carryClone.style,{display:'block',left:r.left+'px',top:(r.top+dy)+'px',width:r.width+'px',height:r.height+'px'});
+      totemFig.style.visibility='hidden';covidFig.style.visibility='hidden'}
+    else{carryClone.style.display='none';delete carryClone.dataset.on;totemFig.style.visibility='';covidFig.style.visibility=''}
+    // 8 · the founding cube falls into the axon and becomes the first impulse
+    const tS=passIn('space'),cg0=covidGs[0];
+    if(tS>0&&tS<1){const e=sm(tS),sr=document.getElementById('synapse').getBoundingClientRect(),hor=sr.width>=sr.height*.9;
+      const tx=hor?sr.left+30:sr.left+sr.width/2,ty=hor?sr.top+sr.height/2:sr.top+30,r=lerpR(rectOf(cg0),{x:tx-9,y:ty-9,w:18,h:18},e);r.y-=Math.sin(Math.PI*e)*vh*.1;
+      svg+='<path d="'+shapeD(unitDiamond,unitCircle,e,r)+'" fill="#c98260"/>';cg0.style.visibility='hidden'}
+    else cg0.style.visibility='';
+    // 12 · the plane closes on itself
+    const er=document.getElementById('eof').getBoundingClientRect(),ep=clamp((vh-er.top)/(vh*1.2));
+    mobK=sm(clamp((ep-.25)/.5));
+    // 13 · the orange point leaves the strip and becomes the single tile of the portrait
+    const tR=passIn('real');
+    if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.55;
+      const src={x:antScreen.x-antScreen.s,y:antScreen.y-antScreen.s,w:antScreen.s*2,h:antScreen.s*2},dst={x:rc.left+rc.width/2-side/2,y:rc.top+rc.height/2-side/2,w:side,h:side};
+      svg+='<path d="'+shapeD(unitCircle,unitTile,e,lerpR(src,dst,e))+'" fill="#c98260"/>';antHide=true;if(!resHold){resHold=true;drawRes()}}
+    else{antHide=false;if(resHold){resHold=false;drawRes()}}
+    carrierSvg.innerHTML=svg;
   }
 
   // inherited sorter
