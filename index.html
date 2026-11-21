@@ -1463,7 +1463,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const c=helixBg.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
     helixTile=helixTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));
     const lin=(a,b,t)=>a+(b-a)*t,big=W>900;
-    const e0=clamp(cosmosP/.85),e=e0*e0*(3-2*e0);                       // 0 on the home page, 1 once the strands are screen-wide
+    const e=0;                       // 0 on the home page, 1 once the strands are screen-wide
     helixDrift+=Math.min(50,now-helixLast||0)*.0006*(1-e);helixLast=now;  // it turns on its own while you look at it
     const g0=helixScenes[0].offsetTop,g1=g0+H*4,freeze=helixScenes[1].offsetTop,sY=g0,turn=Math.min(scrollY,freeze)/H*2.4;
     const pitch=lin(H*.42,H*1.3,e),cx=lin(W*(big?.73:.5),W*.5,e),R=lin(big?Math.min(W*.1,130):Math.min(W*.28,110),W*.47,e);
@@ -1486,10 +1486,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // the question opens from the orange tile nearest the centre
     const ez=zoomQ*zoomQ*(3-2*zoomQ),qf=helixScenes[1].firstElementChild;
     if(zoomQ===0)helixFocus=null;
-    else if(!helixFocus&&oranges.length)helixFocus=oranges.reduce((b,o)=>Math.hypot(o.x-W/2,o.y-H/2)<Math.hypot(b.x-W/2,b.y-H/2)?o:b);
+    else if(!helixFocus&&oranges.length)helixFocus=oranges.reduce((b,o)=>Math.hypot(o.x-cx,o.y-H/2)<Math.hypot(b.x-cx,b.y-H/2)?o:b);
     let fx=W/2,fy=H/2,Z=1,cxN=W/2,cyN=H/2;
     const F=helixFocus;
-    if(F&&zoomQ>0){fx=F.x;fy=F.y;const kEnd=Math.hypot(W,H)/34;Z=Math.exp(ez*Math.log(kEnd/(F.sz*.86)));cxN=fx+(W/2-fx)*ez;cyN=fy+(H/2-fy)*ez}
+    if(F&&zoomQ>0){fx=F.x;fy=F.y;const md=Math.max(Math.hypot(fx,fy),Math.hypot(W-fx,fy),Math.hypot(fx,H-fy),Math.hypot(W-fx,H-fy)),kEnd=md/16;Z=Math.exp(ez*Math.log(kEnd/(F.sz*.86)));cxN=fx;cyN=fy}
     c.save();c.translate(cxN,cyN);c.scale(Z,Z);c.translate(-fx,-fy);
     segs.sort((a,b)=>a.z-b.z).forEach(sg=>sg.draw());
     if(F&&zoomQ>0){c.save();c.translate(fx,fy);c.rotate(F.rot);c.scale(F.sz,F.sz);c.globalAlpha=1;c.fillStyle='#c98260';c.fill(helixTile);c.restore()}
