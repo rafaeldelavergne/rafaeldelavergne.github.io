@@ -1476,7 +1476,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     helixTile=helixTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));
     const lin=(a,b,t)=>a+(b-a)*t,big=W>900;
     const e=0;                       // 0 on the home page, 1 once the strands are screen-wide
-    helixDrift+=Math.min(50,now-helixLast||0)*.0006*(1-e);helixLast=now;  // it turns on its own while you look at it
+    helixDrift+=Math.min(50,now-helixLast||0)*.0006*(zoomQ>0?0:1);helixLast=now;  // it turns on its own while you look at it
     const g0=helixScenes[0].offsetTop,g1=g0+H*4,freeze=helixScenes[1].offsetTop,sY=g0,turn=Math.min(scrollY,freeze)/H*2.4;
     const pitch=lin(H*.42,H*1.3,e),cx=lin(W*(big?.73:.5),W*.5,e),R=lin(big?Math.min(W*.1,130):Math.min(W*.28,110),W*.47,e);
     const tileMin=lin(big?15:11,22,e),tileMax=lin(big?27:19,44,e),strength=lin(2.6,1,e),step=H*.075;
@@ -1493,18 +1493,23 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     for(let y=Math.ceil((y0-g0)/step)*step+g0;y<y1;y+=step){
       const a=ph(y),x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),f=fade(y),sy=y-sY,n=Math.round((y-g0)/step);
       segs.push({z:-1.5,draw:()=>{c.strokeStyle='rgba(239,233,220,'+Math.min(.45,.08*f*strength*1.6).toFixed(3)+')';c.lineWidth=2;c.setLineDash(e<.5?[]:[2,7]);c.beginPath();c.moveTo(x1,sy);c.lineTo(x2,sy);c.stroke();c.setLineDash([])}});
-      for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]]){if(n%7===3&&k===0)oranges.push({x,y:sy,sz:lin(tileMin,tileMax,(z+1)/2)/60,rot:a*.4+k});segs.push({z:z+.01,draw:()=>{const sz=lin(tileMin,tileMax,(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=Math.min(1,(.10+.30*(z+1)/2)*f*strength);c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}})}
+      for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]]){if(n%7===3&&k===0)oranges.push({x,y:sy,z,sz:lin(tileMin,tileMax,(z+1)/2)/60,rot:a*.4+k});segs.push({z:z+.01,draw:()=>{const sz=lin(tileMin,tileMax,(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=Math.min(1,(.10+.30*(z+1)/2)*f*strength);c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}})}
     }
     // the question opens from the orange tile nearest the centre
     const ez=zoomQ*zoomQ*(3-2*zoomQ),qf=helixScenes[1].firstElementChild;
-    if(zoomQ===0)helixFocus=null;
-    else if(!helixFocus&&oranges.length)helixFocus=oranges.reduce((b,o)=>Math.hypot(o.x-cx,o.y-H/2)<Math.hypot(b.x-cx,b.y-H/2)?o:b);
+    if(zoomQ===0){
+      const vis=oranges.filter(o=>o.y>H*.12&&o.y<H*.88),front=vis.filter(o=>o.z>.15),pool=front.length?front:vis;
+      helixFocus=pool.length?pool.reduce((b,o)=>Math.abs(o.y-H/2)-o.z*40<Math.abs(b.y-H/2)-b.z*40?o:b):null;
+    }
     let fx=W/2,fy=H/2,Z=1,cxN=W/2,cyN=H/2;
     const F=helixFocus;
     if(F&&zoomQ>0){fx=F.x;fy=F.y;const md=Math.max(Math.hypot(fx,fy),Math.hypot(W-fx,fy),Math.hypot(fx,H-fy),Math.hypot(W-fx,H-fy)),kEnd=md/16;Z=Math.exp(ez*Math.log(kEnd/(F.sz*.86)));cxN=fx;cyN=fy}
     c.save();c.translate(cxN,cyN);c.scale(Z,Z);c.translate(-fx,-fy);
     segs.sort((a,b)=>a.z-b.z).forEach(sg=>sg.draw());
-    if(F&&zoomQ>0){c.save();c.translate(fx,fy);c.rotate(F.rot);c.scale(F.sz,F.sz);c.globalAlpha=1;c.fillStyle='#c98260';c.fill(helixTile);c.restore()}
+    if(F){c.save();c.translate(F.x,F.y);c.rotate(F.rot);c.scale(F.sz,F.sz);c.globalAlpha=1;c.fillStyle='#c98260';c.strokeStyle='#efe9dc';c.lineWidth=1.5/F.sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}
+    // before the zoom: show which tile we are about to enter
+    const near=clamp((scrollY-(helixScenes[1].offsetTop-H*.9))/(H*.9));
+    if(F&&zoomQ===0&&near>0){const pr=F.sz*60*(.75+.25*Math.sin(now*.006));c.save();c.globalAlpha=near*.9;c.strokeStyle='#c98260';c.lineWidth=2;c.beginPath();c.arc(F.x,F.y,pr+8*near,0,7);c.stroke();c.globalAlpha=near*.35;c.beginPath();c.arc(F.x,F.y,pr+22*near,0,7);c.stroke();c.restore()}
     c.restore();
     if(F&&zoomQ>0&&zoomQ<1){
       helixPts=helixPts||tile4(-30,-30,.6,.6,.6,.6).match(/-?\d+(\.\d+)?/g).map(Number);
