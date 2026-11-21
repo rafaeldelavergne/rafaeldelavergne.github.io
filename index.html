@@ -1702,9 +1702,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // 8 · the founding cube falls into the axon and becomes the first impulse
     const tS=passIn('space'),cg0=covidGs[0];
     if(tS>0&&tS<1){const e=sm(tS),sr=document.getElementById('synapse').getBoundingClientRect(),hor=sr.width>=sr.height*.9;
-      const tx=hor?sr.left+30:sr.left+sr.width/2,ty=hor?sr.top+sr.height/2:sr.top+30,r=lerpR(rectOf(cg0),{x:tx-9,y:ty-9,w:18,h:18},e);r.y-=Math.sin(Math.PI*e)*vh*.1;
-      svg+='<path d="'+shapeD(unitDiamond,unitCircle,e,r)+'" fill="#c98260"/>';cg0.style.visibility='hidden'}
-    else cg0.style.visibility='';
+      const top0=cg0.querySelector('.cu-t'),tx=hor?sr.left+30:sr.left+sr.width/2,ty=hor?sr.top+sr.height/2:sr.top+30,r=lerpR(rectOf(top0),{x:tx-9,y:ty-9,w:18,h:18},e);r.y-=Math.sin(Math.PI*e)*vh*.1;
+      svg+='<path d="'+shapeD(unitDiamond,unitCircle,e,r)+'" fill="#c98260" stroke="var(--bg)" stroke-width="'+(1.2*(1-e)).toFixed(2)+'"/>';top0.style.visibility='hidden';cg0.style.opacity=(1-sm(clamp(tS/.5))).toFixed(3)}
+    else{cg0.style.opacity='';const t0=cg0.querySelector('.cu-t');if(t0)t0.style.visibility=''}
     // 12 · the plane closes on itself
     const er=document.getElementById('eof').getBoundingClientRect(),ep=clamp((vh-er.top)/(vh*1.2));
     mobK=sm(clamp((ep-.25)/.5));
