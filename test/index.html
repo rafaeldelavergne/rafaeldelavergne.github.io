@@ -673,8 +673,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="paper" data-a="dance" data-b="work" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
-
 <!-- 9 · what I do with it -->
 <section class="scene free" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane">
   <div class="frame has-fig">
@@ -1572,8 +1570,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     o+='</g>';
     // music: rings that cross everyone; nobody else moves
     for(let k=0;k<5;k++){const f=((p*4+k/5)%1),R=40+f*Math.hypot(W,H);o+='<circle cx="'+mx+'" cy="'+my+'" r="'+R.toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="'+(2.4*(1-f)+.4).toFixed(2)+'" stroke-opacity="'+(.7*(1-f)).toFixed(2)+'"/>'}
-    const beat=Math.sin(p*70),lift=10+Math.abs(beat)*16;
-    o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*24).toFixed(1)+') translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mx-S/2,my-S/2,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
+    const beat=Math.sin(p*70),lift=5+Math.abs(beat)*8;
+    o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*12).toFixed(1)+') translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mx-S/2,my-S/2,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
     for(let k=0;k<3;k++){const ph=(p*7+k/3)%1;o+='<text x="'+(mx+S*.6+ph*40).toFixed(1)+'" y="'+(my-S*.6-ph*70).toFixed(1)+'" fill="#c98260" fill-opacity="'+(1-ph).toFixed(2)+'" font-size="'+(16+k*4)+'" font-family="Georgia,serif">♪</text>'}
     dancersSvg.innerHTML=o;
   }
