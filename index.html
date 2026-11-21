@@ -904,7 +904,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       if(t>0&&t<1&&qMe&&cl){
         const a=qMe.getBoundingClientRect(),b=cl.getBoundingClientRect(),e=t*t*(3-2*t);
         const h=a.height+(b.height-a.height)*e,w=h*20/31;
-        const x=a.left+a.width/2+(b.left+b.width/2-a.left-a.width/2)*e,yb=a.bottom+(b.bottom-a.bottom)*e-Math.sin(Math.PI*t)*vh*.18;
+        const x=a.left+a.width/2+(b.left+b.width/2-a.left-a.width/2)*e,yb=a.bottom+(b.bottom-a.bottom)*(t*t);
         faller.style.display='block';faller.style.width=w+'px';faller.style.height=h+'px';
         faller.style.transform='translate('+(x-w/2).toFixed(1)+'px,'+(yb-h).toFixed(1)+'px) rotate('+(720*e).toFixed(1)+'deg)';
         qMe.style.visibility='hidden';cl.style.visibility='hidden';
@@ -945,7 +945,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const mob=innerWidth<900,S=mob?9.5:7.4,a=W/H,ox=mob?0:-S*a*.32,oy=mob?S*.42:0;
     const N={l:-S*a+ox,r:S*a+ox,t:S+oy,b:-S+oy};
     const Sc=S*(mob?.7:.68),Xc=-2.3,treadY=1.25,fx=mob?.5:.66,fy=mob?.6:.3;
-    const C={l:Xc-fx*2*Sc*a,r:Xc+(1-fx)*2*Sc*a,t:treadY+fy*2*Sc,b:treadY+fy*2*Sc-2*Sc};
+    // the climber stands right under the orange figure of the sphere, so it falls straight down
+    const qm=document.getElementById('q-me'),qx=qm?(()=>{const r=qm.getBoundingClientRect();return r.width?(r.left+r.width/2)/innerWidth:fx})():fx,Xclimb=-3/Math.SQRT2;
+    const C={l:Xclimb-qx*2*Sc*a,r:Xclimb+(1-qx)*2*Sc*a,t:treadY+fy*2*Sc,b:treadY+fy*2*Sc-2*Sc};
     const e=zoom*zoom*(3-2*zoom),L=(k)=>C[k]+(N[k]-C[k])*e;
     return {l:L('l'),r:L('r'),t:L('t'),b:L('b')};
   }
