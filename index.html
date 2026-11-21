@@ -1177,7 +1177,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
         'float h1=ln(p.x-p.y*.55,4.2,max(0.,d-.22)*1.9);float h2=d>.6?ln(p.x+p.y*1.3,4.6,(d-.6)*2.4):0.;'+
         'float k=max(h1,h2);gl_FragColor=vec4(mix(uP,uI,k),1.);}'
     });
-    const stone=litho(0xefe9dc,0x15140f,0),inkM=new T.MeshBasicMaterial({color:0x15140f}),meM=litho(0xc98260,0x6b3a24,-.1);
+    const stone=litho(0xefe9dc,0x15140f,0),inkM=new T.MeshBasicMaterial({color:0x15140f}),meM=litho(0xd08a68,0xb36a4c,-.1);
     const lineMat=new T.LineBasicMaterial({color:0x15140f});
     const group=new T.Group();
     const flights=[[1,0,9],[0,1,9],[-1,0,5],[0,-1,5]],N=28,RISE=4/N,BASE=-7;
@@ -1208,7 +1208,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       const tip=new T.Mesh(new T.ConeGeometry(.07,.16,8),headMat);tip.position.set(0,.74,-.03);tip.rotation.x=-.5;g.add(tip);
       group.add(g);return g};
     const monks=[];for(let k=0;k<9;k++)monks.push({g:monk(inkM,inkM),off:k*N/9,dir:1});
-    monks.push({g:monk(meM,inkM),off:N/18,dir:-1});
+    monks.push({g:monk(meM,meM),off:N/18,dir:-1});
     group.position.set(-4.5,-1,-4.5);scene.add(group);
     pov={renderer,scene,cam,cells,monks,N};
     sizePov();
