@@ -262,6 +262,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 
 /* the dancers */
 [data-mode="film"] .dance-frame{align-items:center;justify-content:center;text-align:center}
+@media (min-width:901px){[data-mode="film"] .dance-frame{align-items:flex-start;text-align:left}[data-mode="film"] .dance-copy{max-width:min(500px,40vw)}}
 [data-mode="film"] .dancers{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0}
 [data-mode="film"] #dance>.frame{z-index:3;background:transparent}
 [data-mode="film"] .dance-copy{background:color-mix(in srgb,#15140f 82%,transparent);padding:28px 32px;border:1px solid rgba(239,233,220,.18)}
@@ -579,18 +580,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<!-- 5b · the dancers -->
-<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="the one who hears" style="--len:240vh">
-  <div class="frame dance-frame">
-    <div class="dance-copy">
-      <p class="label"><span class="md">##</span>the music</p>
-      <blockquote class="big b" data-at=".1" style="margin:0">“And those who were dancing were thought to be insane by those who could not hear the music.”</blockquote>
-      <p class="cite b" data-at=".3">— often attributed to Friedrich Nietzsche</p>
-    </div>
-  </div>
-</section>
-
-<div class="seam film-only" data-from="ink" data-to="paper" data-a="dance" data-b="totem" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<div class="seam film-only" data-from="paper" data-to="paper" data-a="where" data-b="totem" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 5 · totem -->
 <section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" data-fig="a totem of cubes" style="--len:280vh">
@@ -645,7 +635,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 8 · energy -->
-<section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:460vh">
+<section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:560vh">
   <div class="frame energy">
     <div>
       <p class="label"><span class="md">##</span>energy</p>
@@ -672,7 +662,18 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   </div>
 </section>
 
-<div class="seam film-only" data-from="ink" data-to="paper" data-a="zoom" data-b="work" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+<!-- 5b · the dancers -->
+<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="the one who hears" style="--len:240vh">
+  <div class="frame dance-frame">
+    <div class="dance-copy">
+      <p class="label"><span class="md">##</span>the music</p>
+      <blockquote class="big b" data-at=".1" style="margin:0">“And those who were dancing were thought to be insane by those who could not hear the music.”</blockquote>
+      <p class="cite b" data-at=".3">— often attributed to Friedrich Nietzsche</p>
+    </div>
+  </div>
+</section>
+
+<div class="seam film-only" data-from="ink" data-to="paper" data-a="dance" data-b="work" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 9 · what I do with it -->
 <section class="scene free" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane">
@@ -797,7 +798,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // index menu: my path, in five acts
   const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn'),menu=document.getElementById('menu'),menuBtn=document.getElementById('menu-btn');
   const trailSvg=document.getElementById('trail-svg'),walkedEl=document.getElementById('walked');
-  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','dance','totem','covid']],['IV','the space',['space','zoom']],['V','what I do with it',['work','eof','real']]];
+  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','totem','covid']],['IV','the space',['space','zoom','dance']],['V','what I do with it',['work','eof','real']]];
   const sceneIdx=id=>scenes.findIndex(x=>x.id===id);
   let reached=0;try{reached=+localStorage.getItem('being-reached')||0}catch(e){}
   ACTS.forEach(([n,name,ids])=>{
@@ -915,8 +916,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     }
     if(film){
       // one continuous darkness: the dancers' tiling fades in over the growing band and stays still into the next scene
-      const wr=document.getElementById('where').getBoundingClientRect(),dr=document.getElementById('dance').getBoundingClientRect();
-      const wp=clamp(-wr.top/Math.max(1,wr.height-vh)),gIn=clamp((wp-.84)/.14),dp=clamp(-dr.top/Math.max(1,dr.height-vh));
+      const wr=document.getElementById('zoom').getBoundingClientRect(),dr=document.getElementById('dance').getBoundingClientRect();
+      const wp=clamp(-wr.top/Math.max(1,wr.height-vh)),gIn=clamp((wp-.93)/.05),dp=clamp(-dr.top/Math.max(1,dr.height-vh));
       let op=0;if(dr.top<vh&&dr.bottom>0)op=dr.top>0?Math.max(gIn,1):clamp(dr.bottom/(vh*.6));else if(wr.bottom>0&&wr.top<vh)op=gIn;
       dancersSvg.style.opacity=op.toFixed(3);
       if(op>0)drawDancers(dr.top>0?0:dp);
@@ -1000,7 +1001,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       } else out+='<path class="'+((r+c)%2?'ta':'tb')+'" d="'+d+'"/>';
     }
     // stage 3 becomes the way out: the band grows over the screen and turns to ink
-    const gm=clamp((p-.72)/.24),ge=gm*gm*(3-2*gm),lerpC=(a,b)=>'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*ge)).join(',')+')';
+    const gm=0,ge=0,lerpC=(a,b)=>'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*ge)).join(',')+')';
     const ink=[21,20,15],paper=[239,233,220],dim=[44,42,35];
     tess.style.setProperty('--ta',lerpC(ink,dim));tess.style.setProperty('--tb',lerpC(paper,ink));
     if(ge>0){tess.style.transform='';const r=tess.getBoundingClientRect(),w=r.width,h=r.height,cx=r.left+r.width/2,cy=r.top+r.height/2;
@@ -1553,20 +1554,25 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     for(let i=0;i<=N;i++){const v=1-i/N;P.push([x+arm(v),y+v*S])}
     return 'M'+P.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')+'Z';
   }
+  function dancerTileScreen(){const mob=innerWidth<700,W=600,H=mob?900:600,k=Math.max(innerWidth/W,innerHeight/H);return (mob?63:72)*k}
   function drawDancers(p){
     const mob=innerWidth<700,S=mob?63:72,W=600,H=mob?900:600;
     dancersSvg.setAttribute('viewBox','0 0 '+W+' '+H);dancersSvg.setAttribute('preserveAspectRatio','xMidYMid slice');
     const cols=Math.ceil(W/S)+2,rows=Math.ceil(H/S)+2,mc=Math.floor(cols*(mob?.5:.24)),mr=Math.floor(rows*(mob?.8:.56));
-    const mx=mc*S-S+S/2,my=mr*S-S+S/2;
+    let mx=mc*S-S+S/2,my=mr*S-S+S/2,gx=0,gy=0;
+    if(dancerAnchor){const k=Math.max(innerWidth/W,innerHeight/H),ox=(innerWidth-W*k)/2,oy=(innerHeight-H*k)/2,ax=(dancerAnchor.x-ox)/k,ay=(dancerAnchor.y-oy)/k;gx=ax-mx;gy=ay-my;mx=ax;my=ay}
     let o='';
-    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    o+='<g transform="translate('+gx.toFixed(1)+' '+gy.toFixed(1)+')">';
+    const c0=-Math.ceil(gx/S)-2,c1=cols-Math.floor(gx/S)+2,r0=-Math.ceil(gy/S)-2,r1=rows-Math.floor(gy/S)+2;
+    for(let r=r0;r<r1;r++)for(let c=c0;c<c1;c++){
       if(r===mr&&c===mc){o+='<path d="'+personD(c*S-S,r*S-S,S)+'" fill="#15140f" stroke="#c98260" stroke-opacity=".5" stroke-dasharray="3 4"/>';continue}
       o+='<path d="'+personD(c*S-S,r*S-S,S)+'" fill="'+((r+c)%2?'#2c2a23':'#15140f')+'" stroke="#efe9dc" stroke-opacity=".14" stroke-width="1"/>';
     }
+    o+='</g>';
     // music: rings that cross everyone; nobody else moves
     for(let k=0;k<5;k++){const f=((p*4+k/5)%1),R=40+f*Math.hypot(W,H);o+='<circle cx="'+mx+'" cy="'+my+'" r="'+R.toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="'+(2.4*(1-f)+.4).toFixed(2)+'" stroke-opacity="'+(.7*(1-f)).toFixed(2)+'"/>'}
     const beat=Math.sin(p*70),lift=10+Math.abs(beat)*16;
-    o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*24).toFixed(1)+') translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mc*S-S,mr*S-S,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
+    o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*24).toFixed(1)+') translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mx-S/2,my-S/2,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
     for(let k=0;k<3;k++){const ph=(p*7+k/3)%1;o+='<text x="'+(mx+S*.6+ph*40).toFixed(1)+'" y="'+(my-S*.6-ph*70).toFixed(1)+'" fill="#c98260" fill-opacity="'+(1-ph).toFixed(2)+'" font-size="'+(16+k*4)+'" font-family="Georgia,serif">♪</text>'}
     dancersSvg.innerHTML=o;
   }
@@ -1607,7 +1613,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const growStep=document.getElementById('grow-step');
   let scrollLevels=START.slice();
   function energyScroll(p){
-    if(touched)return;
+    energyMorph(p);
+    if(touched||p>.9)return;
     const shown=Math.min(6,Math.floor(clamp((p-.03)/.25)*6.99));
     const ls=START.slice();let step=-1;
     GROW.forEach(([idx],k)=>{const g=sm(clamp((p-.52-k*.065)/.06));ls[idx]=1+2*g;if(g>0)step=k});
@@ -1619,6 +1626,26 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     growStep.textContent=step>=0?GROW[step][1]+' → '+GROW[step][2]:'';
     if(p>=.82&&!core.textContent)core.innerHTML='<strong>Tap a dimension.</strong>Set where you are today.';
     if(p<.82)core.textContent='';
+  }
+  // the end of energy: the six-sided shape becomes a figure, the one who dances next
+  let dancerAnchor=null;
+  function energyMorph(p){
+    const m=clamp((p-.9)/.06),wrap=shape.ownerSVGElement;
+    const r=wrap.getBoundingClientRect();
+    if(p<.98)dancerAnchor={x:r.left+r.width/2,y:r.top+r.height/2,px:r.width/200};
+    if(m<=0){shape.style.fill='';return}
+    const ls=touched?dimBtns.map(b=>+b.dataset.l):scrollLevels,N=72;
+    const hexP=[];for(let i=0;i<6;i++){const q=pt(i,ls[i]).split(',').map(Number);hexP.push(q)}
+    const along=[];for(let i=0;i<N;i++){const t=i/N*6,k=Math.floor(t),f=t-k,a=hexP[k],b=hexP[(k+1)%6];along.push([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f])}
+    const S=dancerTileScreen()/(r.width/200);
+    const per=personD(-S/2,-S/2,S).slice(1).split('L').map(q=>q.trim().split(' ').map(Number));
+    const tgt=[];for(let i=0;i<N;i++){const q=per[Math.floor(i/N*per.length)];tgt.push(q)}
+    // align starts: begin both at the top-most point
+    const top=a=>a.reduce((bi,q,i)=>q[1]<a[bi][1]?i:bi,0),ra=a=>{const t=top(a);return a.slice(t).concat(a.slice(0,t))};
+    const A=ra(along),B=ra(tgt),e=m*m*(3-2*m);
+    shape.setAttribute('points',A.map((q,i)=>(q[0]+(B[i][0]-q[0])*e).toFixed(1)+','+(q[1]+(B[i][1]-q[1])*e).toFixed(1)).join(' '));
+    shape.style.fill=e>.5?'#c98260':'';
+    dimLis.forEach(li=>li.style.opacity=(1-e).toFixed(2));
   }
   function drawEnergy(){
     const ls=dimBtns.map(b=>+b.dataset.l),min=Math.min(...ls);
