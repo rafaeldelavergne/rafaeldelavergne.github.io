@@ -259,6 +259,14 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
   [data-mode="film"] .side-fig .fig-cap{display:none}
 }
 
+/* the dancers */
+[data-mode="film"] .dance-frame{align-items:center;justify-content:center;text-align:center}
+[data-mode="film"] .dancers{position:absolute;left:50%;top:50%;width:min(92vw,92vh);height:min(92vw,92vh);transform:translate(-50%,-50%);z-index:0}
+[data-mode="film"] .dance-copy{position:relative;z-index:1;max-width:min(560px,70vw)}
+[data-mode="film"] .dance-copy .big{font-style:italic;font-size:clamp(24px,3vw,44px);max-width:none}
+[data-mode="film"] .dance-copy .label{margin-bottom:1.4em}
+@media (max-width:700px){[data-mode="film"] .dancers{width:100vw;height:84vh}[data-mode="film"] .dance-copy{max-width:70vw}[data-mode="film"] .dance-copy .big{font-size:20px}}
+
 /* point of view (3D) */
 [data-mode="film"] .pov-frame{padding:0}
 [data-mode="film"] .pov-stage{position:absolute;inset:0;cursor:grab;touch-action:pan-y}
@@ -549,7 +557,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       <li><span class="phrase">Rest is something you earn.</span><span class="choices"><button type="button" data-v="keep" aria-pressed="false">keep</button><button type="button" data-v="question" aria-pressed="false">question</button></span></li>
     </ul>
     <p class="tally" id="tally" role="status" aria-live="polite"></p>
-    <div class="side-fig hands-fig" aria-hidden="true"><svg class="hands" id="hands" viewBox="0 0 400 300"></svg><p class="fig-cap">you were drawn; now you draw · after M.C. Escher’s drawing hands</p></div>
+    <div class="side-fig hands-fig" aria-hidden="true"><svg class="hands" id="hands" viewBox="0 0 600 420"></svg><p class="fig-cap">you were drawn; now you draw · after M.C. Escher’s drawing hands</p></div>
   </div>
 </section>
 
@@ -559,14 +567,30 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <p class="label"><span class="md">##</span>three stages of a life</p>
     <div class="phases">
       <div class="phase b" data-at="0" data-out=".36"><h2 class="big">1 · Adapting</h2><p class="lede">Growing up, we build adaptation software: to our parents, our siblings, our friends, society. Like a sponge, the brain optimises other people’s energy. Each of us takes the shape our neighbours leave us.</p></div>
-      <div class="phase b" data-at=".33" data-out=".52"><h2 class="big">2 · Becoming yourself</h2><p class="lede">Often after a shock, you rewrite what is good and bad for you, across all six dimensions. For me that meant entrepreneurship, philosophy, coaching, neuroscience, wisdom traditions — even shamanism. You become yourself, but mostly among your own.</p></div>
-      <div class="phase b dance" data-at=".52" data-out=".74"><blockquote class="big" style="margin:0">“And those who were dancing were thought to be insane by those who could not hear the music.”</blockquote><p class="cite">— often attributed to Friedrich Nietzsche</p></div>
-      <div class="phase b" data-at=".74"><h2 class="big">3 · Yourself, among everyone</h2><p class="lede">Recharge alone or with your own, then go back out to create and change things. Back and forth, like riding a bicycle. The goal: a wanderer who can go anywhere and remain yourself.</p></div>
+      <div class="phase b" data-at=".33" data-out=".68"><h2 class="big">2 · Becoming yourself</h2><p class="lede">Often after a shock, you rewrite what is good and bad for you, across all six dimensions. For me that meant entrepreneurship, philosophy, coaching, neuroscience, wisdom traditions — even shamanism. You become yourself, but mostly among your own.</p></div>
+      <div class="phase b" data-at=".68"><h2 class="big">3 · Yourself, among everyone</h2><p class="lede">Recharge alone or with your own, then go back out to create and change things. Back and forth, like riding a bicycle. The goal: a wanderer who can go anywhere and remain yourself.</p></div>
     </div>
     <svg class="tess film-only" id="tess" viewBox="0 0 840 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
     <p class="fig-cap film-only">tiles shaped by their neighbours · after M.C. Escher’s metamorphoses</p>
   </div>
 </section>
+
+<div class="seam film-only" data-from="paper" data-to="ink" data-a="where" data-b="dance" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
+
+<!-- 5b · the dancers -->
+<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="a round of dancers" style="--len:240vh">
+  <div class="frame dance-frame">
+    <svg class="dancers film-only" id="dancers" viewBox="-300 -300 600 600" aria-hidden="true"></svg>
+    <div class="dance-copy">
+      <p class="label"><span class="md">##</span>the music</p>
+      <blockquote class="big b" data-at=".1" style="margin:0">“And those who were dancing were thought to be insane by those who could not hear the music.”</blockquote>
+      <p class="cite b" data-at=".3">— often attributed to Friedrich Nietzsche</p>
+      <p class="lede b" data-at=".5">More than half my evenings, I dance. It is how I process a day.</p>
+    </div>
+  </div>
+</section>
+
+<div class="seam film-only" data-from="ink" data-to="paper" data-a="dance" data-b="totem" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 5 · totem -->
 <section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" data-fig="a totem of cubes" style="--len:280vh">
@@ -773,7 +797,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // index menu: my path, in five acts
   const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn'),menu=document.getElementById('menu'),menuBtn=document.getElementById('menu-btn');
   const trailSvg=document.getElementById('trail-svg'),walkedEl=document.getElementById('walked');
-  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','totem','covid']],['IV','the space',['space','zoom']],['V','what I do with it',['work','eof','real']]];
+  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','dance','totem','covid']],['IV','the space',['space','zoom']],['V','what I do with it',['work','eof','real']]];
   const sceneIdx=id=>scenes.findIndex(x=>x.id===id);
   let reached=0;try{reached=+localStorage.getItem('being-reached')||0}catch(e){}
   ACTS.forEach(([n,name,ids])=>{
@@ -847,6 +871,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       if(s.id==='space')synP=p;
       if(s.id==='pov')povP=p;
       if(s.id==='zoom')energyScroll(p);
+      if(s.id==='dance')drawDancers(p);
       if(s.id==='top')cosmosP=p;
       if(s.id==='totem')drawTotem(p);
       if(s.id==='covid')drawCovid(p);
@@ -956,7 +981,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
   function drawTess(p){
     const m=c=>{const t=clamp(p*2.4-.15-(c/TC)*1.1);return t*t*(3-2*t)};
-    const lift=clamp((p-.36)/.1)*(1-clamp((p-.72)/.1)),dance=clamp((p-.52)/.04)*(1-clamp((p-.72)/.04));
+    const lift=clamp((p-.36)/.1)*(1-clamp((p-.72)/.1)),dance=0;
     const mine=p>=.36;
     let out='',me='';
     for(let r=0;r<TR;r++)for(let c=0;c<TC;c++){
@@ -1064,6 +1089,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     zoom:hexR([.88,.42,.8,.36,.74,.5]),                                                                                              // radar of six energies
     work:[[0,-.62],[.9,-.1],[.9,.12],[0,.64],[-.9,.12],[-.9,-.1]],                                                                  // a tile out of the plane
     eof:curve(t=>{const a=2*Math.PI*t,d=1+Math.sin(a)*Math.sin(a);return [.92*Math.cos(a)/d,1.25*.92*Math.sin(a)*Math.cos(a)/d]}),   // möbius / infinity
+    dance:curve(t=>{const a=2*Math.PI*t;const r=.55+.3*Math.sin(5*a);return [Math.cos(a)*r,Math.sin(a)*r]}),                   // a round dance
     real:curve(t=>{const a=2*Math.PI*t;const head=[Math.cos(a)*.42,-.32+Math.sin(a)*.46];return a>Math.PI*.15&&a<Math.PI*.85?[Math.cos(a)*.9,.25+Math.sin(a)*.6]:head})   // a person
   };
   const RG={};for(const k in GLYPHS)RG[k]=resample(GLYPHS[k]);
@@ -1270,29 +1296,66 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     workFig.innerHTML=out;
   }
 
-  // inherited: drawing hands. The inherited hand draws yours; each choice draws one part of it
+  // inherited: drawing hands, engraved. The inherited hand draws yours; each choice draws one part of it
   const handsSvg=document.getElementById('hands');
-  const HAND=[
-    'M0 55 L40 50 L46 122 L4 128 Z',                                                         // cuff
-    'M40 50 C70 38 100 36 122 46',                                                            // back of the hand
-    'M122 46 C140 56 156 72 166 92 C160 96 150 94 142 86 C134 80 126 76 118 78',             // index finger
-    'M46 122 C70 128 96 124 112 110 C122 102 132 98 142 100 C136 108 124 116 110 122',      // thumb
-    'M118 78 C112 92 104 100 96 104 M100 64 C108 74 112 84 110 96 M84 70 C92 80 94 92 90 102' // fingers curled in
-  ];
-  const PALM='M40 52 L120 46 L150 80 L140 100 L112 122 L46 122 Z';
-  const pen=(col)=>'<g><path d="M128 58 L174 104" stroke="'+col+'" stroke-width="6" stroke-linecap="round"/><path d="M174 104 L182 114 L170 108 Z" fill="'+col+'"/></g>';
+  const HP={ // pieces of a writing hand, local coordinates
+    cuff:'M0 34 L60 26 C66 62 66 96 62 120 L2 128 C-4 96 -4 64 0 34 Z',
+    back:'M60 32 C92 18 140 10 186 22 C196 26 202 34 200 44 C186 52 160 66 140 80 C110 100 84 112 62 118 C66 92 66 60 60 32 Z',
+    curled:'M196 46 C210 58 212 78 200 92 C192 100 180 100 172 92 C176 104 170 116 156 118 C146 118 140 112 140 104 C138 116 128 124 116 122 C106 120 102 110 108 100 C120 90 150 72 196 46 Z',
+    index:'M182 22 C206 28 230 44 250 64 C258 72 258 82 250 86 C244 88 238 84 232 80 C220 70 206 62 196 56 C192 48 188 32 182 22 Z',
+    thumb:'M66 118 C96 122 130 118 160 104 C182 94 200 88 214 90 C224 92 226 102 218 108 C204 116 186 124 162 132 C128 142 96 142 70 132 Z'
+  };
+  const HSH={ // where each piece turns away from the light
+    cuff:'M38 10 L80 10 L80 140 L38 140 Z',
+    back:'M58 84 C100 96 150 74 214 40 L214 150 L58 150 Z',
+    curled:'M90 40 L230 40 L230 140 L90 140 Z',
+    index:'M188 50 C214 62 236 76 262 84 L262 104 L188 104 Z',
+    thumb:'M60 126 C110 140 170 124 232 98 L232 160 L60 160 Z'
+  };
+  const DET={ // inner lines: folds, tendons, knuckles, joints, nails
+    cuff:'M8 40 C11 70 11 100 8 122 M46 30 C50 60 50 90 47 118 M30 72 a3.5 3.5 0 1 0 .1 0',
+    back:'M70 40 C110 30 150 24 180 26 M70 52 C108 46 140 42 168 46 M72 66 C104 62 130 60 152 64 M178 21 q9 3 11 12 M165 40 q8 3 9 11 M148 57 q7 3 8 10',
+    curled:'M172 92 C168 84 168 74 174 66 M140 104 C137 96 139 88 146 82 M193 84 q7 -1 7 7 M163 108 q6 -1 6 6 M128 113 q6 -1 6 6',
+    index:'M214 37 q-4 9 -11 13 M236 57 q-4 7 -11 9 M243 69 C250 71 255 78 252 85 C247 85 241 80 239 75 Z',
+    thumb:'M170 97 q5 9 2 17 M209 92 C218 91 223 98 221 105 C214 105 208 100 205 95 Z M120 126 q22 2 40 -6'
+  };
+  const SKETCH='M0 34 C-22 29 -44 33 -64 44 M2 128 C-20 133 -44 129 -66 118 M-6 50 L-40 58 M-8 70 L-46 76 M-8 90 L-48 94 M-6 110 L-44 110';
+  function hatch(id,ang,sp,bend){let d='';for(let y=-90;y<240;y+=sp)d+='M-120 '+y+' Q150 '+(y+bend)+' 420 '+y;return '<g transform="rotate('+ang+' 150 70)"><path d="'+d+'" fill="none" stroke-width=".75"/></g>'}
+  function pencil(col){
+    const tx=270,ty=112,ex=176,ey=-14,dx=ex-tx,dy=ey-ty,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,nx=-uy,ny=ux,w=5;
+    const P=(t,o)=>(tx+ux*t+nx*o).toFixed(1)+' '+(ty+uy*t+ny*o).toFixed(1);
+    return '<g stroke="'+col+'" stroke-linejoin="round"><path d="M'+P(22,-w)+' L'+P(L,-w)+' L'+P(L,w)+' L'+P(22,w)+' Z" fill="#f6f1e6" stroke-width="1.3"/>'+
+      '<path d="M'+P(24,0)+' L'+P(L-2,0)+'" stroke-width=".7"/><path d="M'+P(L-14,-w)+' L'+P(L-14,w)+' M'+P(L-10,-w)+' L'+P(L-10,w)+'" stroke-width=".8"/>'+
+      '<path d="M'+P(0,0)+' L'+P(22,-w)+' L'+P(22,w)+' Z" fill="#f6f1e6" stroke-width="1.2"/><path d="M'+P(4,-1.3)+' L'+P(16,-3.6)+' M'+P(8,0)+' L'+P(18,0)+' M'+P(4,1.3)+' L'+P(16,3.6)+'" stroke-width=".6"/>'+
+      '<path d="M'+P(0,0)+' L'+P(7,-1.6)+' L'+P(7,1.6)+' Z" fill="'+col+'"/></g>';
+  }
+  function hand(pre,states,withPencil,penCol){
+    // states: piece -> 'ink' | 'me' | 'sketch'
+    const order=['curled','back','cuff','PENCIL','index','thumb'];
+    let o='<defs>'+Object.keys(HP).map(k=>'<clipPath id="'+pre+k+'"><path d="'+HP[k]+'"/></clipPath><clipPath id="'+pre+k+'s"><path d="'+HSH[k]+'"/></clipPath>').join('')+'</defs>';
+    o+='<path d="'+SKETCH+'" fill="none" stroke="#15140f" stroke-width=".8" stroke-opacity=".45" stroke-linecap="round"/>';
+    for(const k of order){
+      if(k==='PENCIL'){if(withPencil)o+=pencil(penCol);continue}
+      const st=states[k],col=st==='me'?'#c98260':'#15140f';
+      if(st==='sketch'){o+='<path d="'+HP[k]+'" fill="#f6f1e6" stroke="#15140f" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="3 5" stroke-linejoin="round"/>';continue}
+      o+='<path d="'+HP[k]+'" fill="#f6f1e6"/>';
+      o+='<g clip-path="url(#'+pre+k+')" stroke="'+col+'" stroke-opacity=".75">'+hatch(pre+k,{cuff:80,back:-24,curled:-40,index:34,thumb:-14}[k],3.4,{cuff:4,back:10,curled:8,index:6,thumb:-8}[k])+
+        '<g clip-path="url(#'+pre+k+'s)">'+hatch(pre+k+'x',{cuff:-10,back:52,curled:46,index:-48,thumb:62}[k],2.6,-6)+'</g></g>';
+      o+='<path d="'+HP[k]+'" fill="none" stroke="'+col+'" stroke-width="1.8" stroke-linejoin="round"/><path d="'+DET[k]+'" fill="none" stroke="'+col+'" stroke-width="1.05" stroke-linecap="round"/>';
+    }
+    return o;
+  }
+  const PIECE_OF_CHOICE=['cuff','back','index','thumb','curled'];
   function drawHands(){
     const lis=[...document.querySelectorAll('#sorter li')],st=lis.map(li=>li.classList.contains('kept')?'keep':li.classList.contains('questioned')?'question':'');
-    const done=st.filter(Boolean).length,all=done===HAND.length;
-    let o='<defs><pattern id="hh" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><line x1="0" y1="0" x2="0" y2="5" stroke="#15140f" stroke-width="1"/></pattern>'+
-      '<pattern id="hhme" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="5" stroke="#c98260" stroke-width="1.2"/></pattern></defs>';
-    o+='<path d="M14 18 L390 8 L386 290 L8 282 Z" fill="#f6f1e6" stroke="#15140f" stroke-width="1"/><circle cx="24" cy="28" r="3" fill="#15140f"/><circle cx="378" cy="20" r="3" fill="#15140f"/><circle cx="374" cy="278" r="3" fill="#15140f"/><circle cx="20" cy="272" r="3" fill="#15140f"/>';
-    // the inherited hand, fully drawn
-    o+='<g transform="translate(22 140)"><path d="'+PALM+'" fill="url(#hh)" opacity=".55"/>'+HAND.map(d=>'<path d="'+d+'" fill="none" stroke="#15140f" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>').join('')+(all?'':pen('#15140f'))+'</g>';
-    // your hand, drawn line by line
-    o+='<g transform="rotate(180 200 150) translate(22 140)"><path d="'+PALM+'" fill="url(#'+(st.filter(x=>x==='question').length>st.filter(x=>x==='keep').length?'hhme':'hh')+')" opacity="'+(.55*done/HAND.length).toFixed(2)+'"/>'+
-      HAND.map((d,k)=>{const v=st[k];return '<path d="'+d+'" fill="none" stroke="'+(v==='question'?'#c98260':'#15140f')+'" stroke-width="'+(v?(v==='question'?3:2.4):1.4)+'" stroke-dasharray="'+(v?'none':'3 5')+'" stroke-opacity="'+(v?1:.45)+'" stroke-linejoin="round" stroke-linecap="round"/>'}).join('')+(all?pen('#c98260'):'')+'</g>';
-    o+='<text x="24" y="296" font-family="JetBrains Mono,monospace" font-size="11" fill="#7d7666">inherited</text><text x="378" y="6" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="11" fill="'+(all?'#c98260':'#7d7666')+'" dy="12">you'+(all?' · now drawing':'')+'</text>';
+    const done=st.filter(Boolean).length,all=done===PIECE_OF_CHOICE.length;
+    const mine={};PIECE_OF_CHOICE.forEach((k,i)=>mine[k]=st[i]==='keep'?'ink':st[i]==='question'?'me':'sketch');
+    const inh={cuff:'ink',back:'ink',curled:'ink',index:'ink',thumb:'ink'};
+    let o='<defs><filter id="pshadow" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#15140f" flood-opacity=".18"/></filter></defs>';
+    o+='<g transform="translate(92 236)">'+hand('hA',inh,!all,'#15140f')+'</g>';
+    o+='<g transform="rotate(180 300 210) translate(92 236)">'+hand('hB',mine,all,'#c98260')+'</g>';
+    o+='<text x="40" y="388" font-family="JetBrains Mono,monospace" font-size="12" fill="#7d7666">inherited</text>';
+    o+='<text x="560" y="44" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="12" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · now drawing':' · '+done+'/5')+'</text>';
     handsSvg.innerHTML=o;
   }
   drawHands();
@@ -1440,6 +1503,23 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   }
 
   const faller=document.getElementById('faller');
+  // the dancers: a still round, and one who hears the music
+  const dancersSvg=document.getElementById('dancers');
+  function drawDancers(p){
+    const mob=innerWidth<700,Rx=mob?250:232,Ry=mob?400:232,N=14,rot=p*120;
+    dancersSvg.setAttribute('viewBox',mob?'-300 -450 600 900':'-300 -300 600 600');
+    let o='<ellipse rx="'+Rx+'" ry="'+Ry+'" fill="none" stroke="#efe9dc" stroke-opacity=".12" stroke-dasharray="2 8"/>';
+    for(let i=0;i<N;i++){
+      const a=(i/N*360+rot)*Math.PI/180,x=Math.cos(a)*Rx,y=Math.sin(a)*Ry,me=i===3,sc=mob?1.5:1;
+      const beat=me?Math.sin(p*60):0,lift=me?Math.abs(beat)*14:0,tilt=me?beat*28:0;
+      o+='<g transform="translate('+x.toFixed(1)+' '+(y-lift).toFixed(1)+') rotate('+tilt.toFixed(1)+') scale('+sc+')">'+
+        '<path d="M-9 14 L-4 -10 Q0 -15 4 -10 L9 14 Z" fill="'+(me?'#c98260':'#efe9dc')+'" fill-opacity="'+(me?1:.35)+'"/><circle cy="-15" r="6" fill="'+(me?'#c98260':'#efe9dc')+'" fill-opacity="'+(me?1:.35)+'"/>'+
+        (me?'<path d="M-4 -6 L-16 '+(-14-beat*8).toFixed(1)+' M4 -6 L16 '+(-14+beat*8).toFixed(1)+'" stroke="#c98260" stroke-width="3" stroke-linecap="round"/>':'')+'</g>';
+      if(me){for(let k=0;k<3;k++){const ph=(p*6+k/3)%1;o+='<text x="'+(x+18+ph*30).toFixed(1)+'" y="'+(y-30-ph*50).toFixed(1)+'" fill="#c98260" fill-opacity="'+(1-ph).toFixed(2)+'" font-size="'+(14+k*3)+'" font-family="Georgia,serif">♪</text>'}}
+    }
+    dancersSvg.innerHTML=o;
+  }
+
   // inherited sorter
   const tally=document.getElementById('tally');
   document.getElementById('sorter').addEventListener('click',e=>{
