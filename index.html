@@ -140,6 +140,9 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .helix-bg.on{opacity:1}
 [data-mode="film"] .in-helix{background:transparent!important;perspective:1500px;position:relative;z-index:1}
 [data-mode="film"] .in-helix>.frame{transform-origin:50% 50%;will-change:transform}
+[data-mode="film"] #program,[data-mode="film"] #pov{background:transparent}
+[data-mode="film"] #program>.frame,[data-mode="film"] #pov>.frame{backface-visibility:hidden;transform-origin:50% 50%;background:repeating-linear-gradient(118deg,color-mix(in srgb,var(--fg) 4%,transparent) 0 1px,transparent 1px 6px),var(--bg)}
+[data-mode="film"] #question>.frame{background:repeating-linear-gradient(118deg,color-mix(in srgb,var(--fg) 4%,transparent) 0 1px,transparent 1px 6px),var(--bg)}
 [data-mode="film"] main{position:relative;z-index:1}
 .seam svg{width:100%;height:100%;display:block}
 .seam[data-kind="fold"]{perspective:1100px;perspective-origin:50% 0%;overflow:hidden}
@@ -442,7 +445,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 1 · the question -->
-<section class="scene in-helix" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:260vh">
+<section class="scene in-helix" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:340vh">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true">
       <svg viewBox="-110 -110 220 220">
@@ -472,7 +475,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 2 · the stairs -->
-<section class="scene in-helix" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
+<section class="scene" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
   <div class="frame stairs-frame" id="stairs-frame">
     <div>
       <h2 class="big"><span class="b" data-at=".02">Am I living the life I want,</span><br><span class="b" data-at=".08">or running someone else’s program?</span></h2>
@@ -490,8 +493,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     </div>
   </div>
 </section>
-
-<div class="seam film-only" data-from="ink" data-to="paper" data-a="program" data-b="pov" data-kind="fold" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 2b · point of view (3D) -->
 <section class="scene" data-tone="paper" data-name="point of view" id="pov" data-fig="an impossible loop" style="--len:360vh">
@@ -817,7 +818,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       s.style.setProperty('--p',p.toFixed(4));
       s.querySelectorAll('.b').forEach(b=>b.classList.toggle('on',p>=parseFloat(b.dataset.at||0)&&p<parseFloat(b.dataset.out||9)));
       const ws=s.querySelectorAll('.w');
-      ws.forEach((w,i)=>w.classList.toggle('on',p>=.05+i*(.7/ws.length)));
+      const w0=s.id==='question'?.44:.05,wsp=s.id==='question'?.4:.7;ws.forEach((w,i)=>w.classList.toggle('on',p>=w0+i*(wsp/ws.length)));
       s.querySelectorAll('[data-count]').forEach(el=>{
         const t=ease(clamp((p-.3)/.35)),to=+el.dataset.count;
         el.textContent=(el.dataset.pre||'')+fmt(Math.round(to*t),'sep' in el.dataset)+(el.dataset.suf||'');
@@ -833,16 +834,22 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       if(s.id==='work')drawWork(p);
     }
     if(film){
-      // the page is a DNA strand: each scene turns in, faces you, turns out
-      let helixVisible=false;
-      for(const sc of helixScenes){
-        const r=sc.getBoundingClientRect();if(r.bottom<-vh||r.top>vh*1.5)continue;
-        if(r.bottom>0&&r.top<vh)helixVisible=true;
-        let a=0;if(r.top>0)a=30*clamp(r.top/vh);else if(r.bottom<vh)a=-30*clamp((vh-r.bottom)/vh);
-        sc.firstElementChild.style.transform=a?'translateZ(-520px) rotateY('+a.toFixed(2)+'deg) translateZ(520px)':'';
-        sc.firstElementChild.style.opacity=(1-Math.abs(a)/30*.35).toFixed(3);
-      }
+      // the DNA leads into the question: it stops, we zoom into it, the scene opens from its centre
+      const qs=helixScenes[1],qr=qs.getBoundingClientRect(),qf=qs.firstElementChild,topR=helixScenes[0].getBoundingClientRect();
+      zoomQ=clamp(-qr.top/vh);const ez=zoomQ*zoomQ*(3-2*zoomQ);
+      if(qr.top>0){qf.style.clipPath='circle(0px at 50% 50%)'}
+      else if(zoomQ>=1){qf.style.clipPath=''}
+      else{const Rv=ez*Math.hypot(innerWidth,vh)*.53;qf.style.clipPath='circle('+Rv.toFixed(1)+'px at 50% 50%)'}
+      // two faces of one cube: the flat staircase turns away, the 3D one comes up from below
+      {const pf=document.getElementById('program').firstElementChild,pv=document.getElementById('pov'),vf=pv.firstElementChild,pvr=pv.getBoundingClientRect(),h=vh/2;
+       if(pvr.top>0&&pvr.top<vh){const t=1-pvr.top/vh;
+         pf.style.transform='translateY('+(t*vh).toFixed(1)+'px) perspective(1600px) translateZ('+(-h)+'px) rotateX('+(t*90).toFixed(2)+'deg) translateZ('+h+'px)';
+         vf.style.transform='translateY('+(-pvr.top).toFixed(1)+'px) perspective(1600px) translateZ('+(-h)+'px) rotateX('+(t*90-90).toFixed(2)+'deg) translateZ('+h+'px)';
+         pf.style.zIndex=t<.5?2:1;vf.style.zIndex=t<.5?1:2;
+       }else{pf.style.transform='';vf.style.transform=''}}
+      const helixVisible=topR.bottom>0||(qr.top<vh&&zoomQ<1);
       helixBg.classList.toggle('on',helixVisible);
+      helixBg.style.opacity=helixVisible?String(1-clamp((zoomQ-.8)/.2)):'0';
       if(helixVisible)drawHelixBg();
       for(const se of seams){const r=se.getBoundingClientRect();if(r.bottom<-50||r.top>vh+50)continue;drawSeam(se,clamp((vh-r.top)/(vh+r.height)))}
       const pr=document.getElementById('pov').getBoundingClientRect();
@@ -1338,7 +1345,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   resIn.addEventListener('input',()=>{if(resQueued)return;resQueued=true;requestAnimationFrame(()=>{resQueued=false;drawRes()})});drawRes();
 
   // the background strand the first scenes turn around
-  const helixScenes=[...document.querySelectorAll('.in-helix')],helixBg=document.getElementById('helix-bg');
+  const helixScenes=[...document.querySelectorAll('.in-helix')],helixBg=document.getElementById('helix-bg');let zoomQ=0;
   // the page is the DNA: two strands as wide as the screen, attached to the page, so you scroll along them
   let helixTile=null;
   let helixDrift=0,helixLast=0;
@@ -1350,25 +1357,29 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const lin=(a,b,t)=>a+(b-a)*t,big=W>900;
     const e0=clamp(cosmosP/.85),e=e0*e0*(3-2*e0);                       // 0 on the home page, 1 once the strands are screen-wide
     helixDrift+=Math.min(50,now-helixLast||0)*.0006*(1-e);helixLast=now;  // it turns on its own while you look at it
-    const g0=helixScenes[0].offsetTop,g1=helixScenes[2].offsetTop+helixScenes[2].offsetHeight;
+    const g0=helixScenes[0].offsetTop,g1=helixScenes[1].offsetTop+H*4,freeze=helixScenes[1].offsetTop,sY=Math.min(scrollY,freeze);
     const pitch=lin(H*.42,H*1.3,e),cx=lin(W*(big?.73:.5),W*.5,e),R=lin(big?Math.min(W*.1,130):Math.min(W*.28,110),W*.47,e);
     const tileMin=lin(big?15:11,22,e),tileMax=lin(big?27:19,44,e),strength=lin(2.6,1,e),step=H*.075;
-    const y0=Math.max(g0,scrollY-60),y1=Math.min(g1,scrollY+H+60);if(y1<=y0)return;
+    const y0=Math.max(g0,sY-60),y1=Math.min(g1,sY+H+60);if(y1<=y0)return;
     const ph=y=>(y-g0)/pitch*Math.PI*2+helixDrift;
     const fade=y=>Math.max(0,Math.min(1,(g1-y)/(H*.5)));
     const segs=[];
     for(let y=y0-(y0%10);y<y1;y+=10){
       for(const k of [0,1]){
         const a=ph(y)+k*Math.PI,a2=ph(y+10)+k*Math.PI,z=Math.sin(a);
-        segs.push({z,draw:()=>{c.strokeStyle='rgba(239,233,220,'+Math.min(.5,(.05+.16*(z+1)/2)*fade(y)*strength).toFixed(3)+')';c.lineWidth=lin(2,4,e)+lin(4,10,e)*(z+1)/2;c.lineCap='round';c.beginPath();c.moveTo(cx+R*Math.cos(a),y-scrollY);c.lineTo(cx+R*Math.cos(a2),y+10-scrollY);c.stroke()}});
+        segs.push({z,draw:()=>{c.strokeStyle='rgba(239,233,220,'+Math.min(.5,(.05+.16*(z+1)/2)*fade(y)*strength).toFixed(3)+')';c.lineWidth=lin(2,4,e)+lin(4,10,e)*(z+1)/2;c.lineCap='round';c.beginPath();c.moveTo(cx+R*Math.cos(a),y-sY);c.lineTo(cx+R*Math.cos(a2),y+10-sY);c.stroke()}});
       }
     }
     for(let y=Math.ceil((y0-g0)/step)*step+g0;y<y1;y+=step){
-      const a=ph(y),x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),f=fade(y),sy=y-scrollY,n=Math.round((y-g0)/step);
+      const a=ph(y),x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),f=fade(y),sy=y-sY,n=Math.round((y-g0)/step);
       segs.push({z:-1.5,draw:()=>{c.strokeStyle='rgba(239,233,220,'+Math.min(.45,.08*f*strength*1.6).toFixed(3)+')';c.lineWidth=2;c.setLineDash(e<.5?[]:[2,7]);c.beginPath();c.moveTo(x1,sy);c.lineTo(x2,sy);c.stroke();c.setLineDash([])}});
       for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]])segs.push({z:z+.01,draw:()=>{const sz=lin(tileMin,tileMax,(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=Math.min(1,(.10+.30*(z+1)/2)*f*strength);c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}});
     }
+    const ez=zoomQ*zoomQ*(3-2*zoomQ),Z=Math.exp(ez*Math.log(9));
+    c.save();c.translate(W/2,H/2);c.scale(Z,Z);c.translate(-W/2,-H/2);
     segs.sort((a,b)=>a.z-b.z).forEach(sg=>sg.draw());
+    c.restore();
+    if(zoomQ>0&&zoomQ<1){const Rv=ez*Math.hypot(W,H)*.53;c.strokeStyle='#c98260';c.lineWidth=3+5*ez;c.beginPath();c.arc(W/2,H/2,Math.max(2,Rv),0,7);c.stroke()}
   }
 
   // inherited sorter
