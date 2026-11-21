@@ -219,7 +219,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 .stairs .riser{fill:url(#hatchRiser);stroke:var(--fg);stroke-width:1}
 .stairs .h-line{stroke:var(--fg);stroke-width:1.1}
 .stairs .h-faint{stroke:color-mix(in srgb,var(--fg) 40%,transparent);stroke-width:1}
-.stairs .lbl{font:12px var(--mono);fill:var(--fg);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+.stairs .lbl{font:10.5px var(--mono);fill:var(--fg);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
 .stairs #sg{transition:opacity 1s}
 .off .stairs #sg{opacity:.35}
 .stairs .climber{fill:var(--fg);stroke:var(--fg)}
@@ -944,7 +944,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   function stairFrustum(W,H,zoom){
     const mob=innerWidth<900,S=mob?9.5:7.4,a=W/H,ox=mob?0:-S*a*.32,oy=mob?S*.42:0;
     const N={l:-S*a+ox,r:S*a+ox,t:S+oy,b:-S+oy};
-    const Sc=S*(mob?.52:.5),Xc=-2.3,treadY=1.25,fx=mob?.5:.66,fy=mob?.6:.3;
+    const Sc=S*(mob?.7:.68),Xc=-2.3,treadY=1.25,fx=mob?.5:.66,fy=mob?.6:.3;
     const C={l:Xc-fx*2*Sc*a,r:Xc+(1-fx)*2*Sc*a,t:treadY+fy*2*Sc,b:treadY+fy*2*Sc-2*Sc};
     const e=zoom*zoom*(3-2*zoom),L=(k)=>C[k]+(N[k]-C[k])*e;
     return {l:L('l'),r:L('r'),t:L('t'),b:L('b')};
@@ -961,27 +961,30 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   function stairCam(){const W=stairs.clientWidth||innerWidth,H=stairs.clientHeight||innerHeight;return Object.assign({W,H},stairFrustum(W,H,0))}
   function proj(c,x,y,z){x-=4.5;y-=1;z-=4.5;const X=(x-z)/Math.SQRT2,Y=(-x+2*y-z)/Math.sqrt(6);return [(X-c.l)/(c.r-c.l)*c.W,(c.t-Y)/(c.t-c.b)*c.H]}
   const PT=a=>a.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ');
-  function stairPos(c,t){const k=Math.max(0,Math.min(4,Math.floor(t))),f=t-k;return proj(c,4,(23+k)*S_RISE,9-k-f)}
+  function stairPos(c,t){return proj(c,4,(23+t)*S_RISE,9-t)}
   function drawStairs(p){
     const c=stairCam(),u=c.H/(c.t-c.b);let o='';
-    const LB=['prépa','the best school','20/20','consulting','finance'];
-    for(let n=4;n>=0;n--){
-      const x=4,z=9-n,t=(23+n)*S_RISE,B=S_BASE,q=(X,Y,Z)=>proj(c,X,Y,Z);
+    // the steps slide down under the climbers: climbing without rising (at rest, they sit exactly on the 3D wall)
+    const climbS=clamp((p-.1)/.75)*14,kS=Math.floor(climbS),fS=climbS-kS;
+    for(let n=5;n>=-1;n--){
+      const pos=n-fS,al=clamp(1-Math.max(0,-pos-.5,pos-4.5)*2.2);if(al<=0)continue;
+      const x=4,z=9-pos,t=(23+pos)*S_RISE,B=S_BASE,q=(X,Y,Z)=>proj(c,X,Y,Z),lb=SL[((n+kS)%SL.length+SL.length)%SL.length];
+      o+='<g opacity="'+al.toFixed(2)+'">';
       o+='<polygon class="side" points="'+PT([q(x-.5,t,z+.5),q(x+.5,t,z+.5),q(x+.5,B,z+.5),q(x-.5,B,z+.5)])+'"/>';
       o+='<polygon class="riser" points="'+PT([q(x+.5,t,z-.5),q(x+.5,t,z+.5),q(x+.5,B,z+.5),q(x+.5,B,z-.5)])+'"/>';
-      if(n%2===0){const wy=t-2.1;o+='<polygon fill="var(--bg)" points="'+PT([q(x+.51,wy-.32,z-.16),q(x+.51,wy-.32,z+.16),q(x+.51,wy+.1,z+.16),q(x+.51,wy+.23,z+.08),q(x+.51,wy+.23,z-.08),q(x+.51,wy+.1,z-.16)])+'"/>'}
+      if(((n+kS)%2+2)%2===0){const wy=t-2.1;o+='<polygon fill="var(--bg)" points="'+PT([q(x+.51,wy-.32,z-.16),q(x+.51,wy-.32,z+.16),q(x+.51,wy+.1,z+.16),q(x+.51,wy+.23,z+.08),q(x+.51,wy+.23,z-.08),q(x+.51,wy+.1,z-.16)])+'"/>'}
       o+='<polygon class="tread" points="'+PT([q(x-.5,t,z-.5),q(x+.5,t,z-.5),q(x+.5,t,z+.5),q(x-.5,t,z+.5)])+'"/>';
-      const lc=q(x,t,z);o+='<text class="lbl" x="'+lc[0].toFixed(1)+'" y="'+(lc[1]+4).toFixed(1)+'" text-anchor="middle">'+LB[n]+'</text>';
+      const lc=q(x,t,z);o+='<text class="lbl" x="'+lc[0].toFixed(1)+'" y="'+(lc[1]+4).toFixed(1)+'" text-anchor="middle">'+lb+'</text></g>';
     }
     sg.innerHTML=o;
     const gy=23*S_RISE,g0=proj(c,3.5,gy,10.5),g1=proj(c,4.5,gy,10.5),g2=proj(c,4.5,gy,12.5),g3=proj(c,3.5,gy,12.5);
     sground.setAttribute('d','M'+PT([g0,g1,g2,g3]).replace(/ /g,' L')+'Z');
     const sc=(u*.82/27).toFixed(3),climb=clamp((p-.1)/.75)*14,k=Math.floor(climb),f=climb-k;
-    let og='';for(const ph of [.3,.8]){const tt=((climb*.5+ph*4)%4),pp=stairPos(c,tt);og+='<g transform="translate('+pp[0].toFixed(1)+' '+(pp[1]-Math.abs(Math.sin(tt*Math.PI))*3).toFixed(1)+') scale('+sc+')"><path d="'+FIG+'" fill="var(--fg)"/><circle cy="-23" r="4.6" fill="var(--fg)"/></g>'}
+    let og='';for(const [st,ph] of [[1,.5],[3,.25]]){const pp=stairPos(c,st);og+='<g transform="translate('+pp[0].toFixed(1)+' '+(pp[1]-Math.abs(Math.sin((f+ph)*Math.PI))*5).toFixed(1)+') scale('+sc+')"><path d="'+FIG+'" fill="var(--fg)"/><circle cy="-23" r="4.6" fill="var(--fg)"/></g>'}
     others.innerHTML=og;
     if(off){const gp=proj(c,4,23*S_RISE,11.5);climber.style.transform='translate('+gp[0].toFixed(1)+'px,'+gp[1].toFixed(1)+'px) scale('+sc+')';return}
-    const me=stairPos(c,1+(climb%3));
-    climber.style.transform='translate('+me[0].toFixed(1)+'px,'+(me[1]-Math.abs(Math.sin(f*Math.PI))*4).toFixed(1)+'px) scale('+sc+')';
+    const me=stairPos(c,2);
+    climber.style.transform='translate('+me[0].toFixed(1)+'px,'+(me[1]-Math.abs(Math.sin(f*Math.PI))*6).toFixed(1)+'px) scale('+sc+')';
     climbed=k;meter.innerHTML='steps climbed: <b>'+k+'</b> · height gained: <b>0 m</b>';
   }
   addEventListener('resize',()=>{const pr=document.getElementById('program').getBoundingClientRect();if(pr.bottom>0&&pr.top<innerHeight)drawStairs(clamp(-pr.top/Math.max(1,pr.height-innerHeight)))});
