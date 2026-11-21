@@ -1698,7 +1698,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const er=document.getElementById('eof').getBoundingClientRect(),ep=clamp((vh-er.top)/(vh*1.2));
     mobK=sm(clamp((ep-.25)/.5));
     // 13 · the orange point leaves the strip and becomes the single tile of the portrait
-    const tR=passIn('real');
+    const rrT=document.getElementById('real').getBoundingClientRect().top,tR=+resIn.value>0?1:clamp((vh-rrT)/(vh*.7));
     if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.55;
       const src={x:antScreen.x-antScreen.s,y:antScreen.y-antScreen.s,w:antScreen.s*2,h:antScreen.s*2},dst={x:rc.left+rc.width/2-side/2,y:rc.top+rc.height/2-side/2,w:side,h:side};
       svg+='<path d="'+shapeD(unitCircle,unitTile,e,lerpR(src,dst,e))+'" fill="#c98260"/>';antHide=true;if(!resHold){resHold=true;drawRes()}}
