@@ -144,6 +144,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .scene{background:repeating-linear-gradient(118deg,color-mix(in srgb,var(--fg) 4%,transparent) 0 1px,transparent 1px 6px),var(--bg);color:var(--fg)}
 .seam{height:56vh;position:relative}
 .helix-bg{display:none}
+.faller{position:fixed;left:0;top:0;z-index:15;pointer-events:none;display:none;overflow:visible;transform-origin:50% 100%}
 .journey{display:none}
 [data-mode="film"] .journey{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity .35s}
 [data-mode="film"] .journey.on{opacity:1}
@@ -448,6 +449,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <a class="skip" href="#text" data-to-text>Skip to the text</a>
 <div class="progress" aria-hidden="true"></div>
 <canvas class="helix-bg film-only" id="helix-bg" aria-hidden="true"></canvas>
+<svg class="faller" id="faller" viewBox="-10 -30 20 31" aria-hidden="true"><path d="M-7 0L-3-19Q0-23 3-19L7 0Z" fill="#c98260"/><circle cy="-23" r="4.6" fill="#c98260"/></svg>
 
 <header class="filebar">
   <a class="name" href="/"><span class="pre">rafaeldelavergne / </span><strong>being.md</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· a working draft</small></a>
@@ -486,7 +488,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
           </g>
           <path d="M-62-58Q-40-74-14-70L-18-36Q-40-38-58-26Z" fill="var(--fg)" opacity=".9"/>
           <path d="M-38-72L-40-34M-62-46Q-38-56-15-52" stroke="var(--bg)" stroke-width="2.4" fill="none"/>
-          <g transform="translate(6 22)"><path d="M-6 16L-3-2Q0-6 3-2L6 16Z" fill="var(--accent)"/><circle cy="-7" r="4.2" fill="var(--accent)"/></g>
+          <g id="q-me" transform="translate(6 22)"><path d="M-6 16L-3-2Q0-6 3-2L6 16Z" fill="var(--accent)"/><circle cy="-7" r="4.2" fill="var(--accent)"/></g>
           <text x="0" y="-8" text-anchor="middle" font-family="Instrument Serif,serif" font-style="italic" font-size="15" fill="var(--fg)" transform="scale(1.25 .8)">?</text>
         </g>
       </svg>
@@ -872,6 +874,19 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       const pr=document.getElementById('pov').getBoundingClientRect();
       povVisible=pr.bottom>0&&pr.top<vh;
       if(pr.top<vh*2.5&&pr.bottom>-vh)loadThree();
+    }
+    if(film){
+      // the orange figure falls out of the sphere onto the staircase
+      const pr=document.getElementById('program').getBoundingClientRect(),qMe=document.getElementById('q-me'),cl=document.getElementById('climber');
+      const t=pr.top>0&&pr.top<vh?1-pr.top/vh:(pr.top<=0?1:0);
+      if(t>0&&t<1&&qMe&&cl){
+        const a=qMe.getBoundingClientRect(),b=cl.getBoundingClientRect(),e=t*t*(3-2*t);
+        const h=a.height+(b.height-a.height)*e,w=h*20/31;
+        const x=a.left+a.width/2+(b.left+b.width/2-a.left-a.width/2)*e,yb=a.bottom+(b.bottom-a.bottom)*e-Math.sin(Math.PI*t)*vh*.18;
+        faller.style.display='block';faller.style.width=w+'px';faller.style.height=h+'px';
+        faller.style.transform='translate('+(x-w/2).toFixed(1)+'px,'+(yb-h).toFixed(1)+'px) rotate('+(720*e).toFixed(1)+'deg)';
+        qMe.style.visibility='hidden';cl.style.visibility='hidden';
+      }else{faller.style.display='none';if(qMe)qMe.style.visibility='';if(cl)cl.style.visibility=''}
     }
     if(active!==current){
       current=active;
@@ -1424,6 +1439,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     }
   }
 
+  const faller=document.getElementById('faller');
   // inherited sorter
   const tally=document.getElementById('tally');
   document.getElementById('sorter').addEventListener('click',e=>{
