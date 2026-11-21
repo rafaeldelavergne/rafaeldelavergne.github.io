@@ -840,7 +840,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       zoomQ=clamp(-qr.top/vh);const ez=zoomQ*zoomQ*(3-2*zoomQ);
       if(qr.top>0){qf.style.clipPath='circle(0px at 50% 50%)'}
       else if(zoomQ>=1){qf.style.clipPath=''}
-      else{const Rv=ez*Math.hypot(innerWidth,vh)*.53;qf.style.clipPath='circle('+Rv.toFixed(1)+'px at 50% 50%)'}
+      
       // two faces of one cube: the flat staircase turns away, the 3D one comes up from below
       {const pf=document.getElementById('program').firstElementChild,pv=document.getElementById('pov'),vf=pv.firstElementChild,pvr=pv.getBoundingClientRect(),h=vh/2;
        if(pvr.top>0&&pvr.top<vh){const t=1-pvr.top/vh;
@@ -1349,7 +1349,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const helixScenes=[...document.querySelectorAll('.in-helix')],helixBg=document.getElementById('helix-bg');let zoomQ=0;
   // the page is the DNA: two strands as wide as the screen, attached to the page, so you scroll along them
   let helixTile=null;
-  let helixDrift=0,helixLast=0;
+  let helixDrift=0,helixLast=0,helixFocus=null,helixPts=null;
   function drawHelixBg(){
     const W=innerWidth,H=innerHeight,d=Math.min(devicePixelRatio,2),now=performance.now();
     if(helixBg.width!==Math.round(W*d)||helixBg.height!==Math.round(H*d)){helixBg.width=Math.round(W*d);helixBg.height=Math.round(H*d)}
@@ -1364,7 +1364,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const y0=Math.max(g0,sY-60),y1=Math.min(g1,sY+H+60);if(y1<=y0)return;
     const ph=y=>(y-g0)/pitch*Math.PI*2+helixDrift;
     const fade=y=>Math.max(0,Math.min(1,(g1-y)/(H*.5)));
-    const segs=[];
+    const segs=[],oranges=[];
     for(let y=y0-(y0%10);y<y1;y+=10){
       for(const k of [0,1]){
         const a=ph(y)+k*Math.PI,a2=ph(y+10)+k*Math.PI,z=Math.sin(a);
@@ -1374,13 +1374,25 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     for(let y=Math.ceil((y0-g0)/step)*step+g0;y<y1;y+=step){
       const a=ph(y),x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),f=fade(y),sy=y-sY,n=Math.round((y-g0)/step);
       segs.push({z:-1.5,draw:()=>{c.strokeStyle='rgba(239,233,220,'+Math.min(.45,.08*f*strength*1.6).toFixed(3)+')';c.lineWidth=2;c.setLineDash(e<.5?[]:[2,7]);c.beginPath();c.moveTo(x1,sy);c.lineTo(x2,sy);c.stroke();c.setLineDash([])}});
-      for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]])segs.push({z:z+.01,draw:()=>{const sz=lin(tileMin,tileMax,(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=Math.min(1,(.10+.30*(z+1)/2)*f*strength);c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}});
+      for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]]){if(n%7===3&&k===0)oranges.push({x,y:sy,sz:lin(tileMin,tileMax,(z+1)/2)/60,rot:a*.4+k});segs.push({z:z+.01,draw:()=>{const sz=lin(tileMin,tileMax,(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=Math.min(1,(.10+.30*(z+1)/2)*f*strength);c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}})}
     }
-    const ez=zoomQ*zoomQ*(3-2*zoomQ),Z=Math.exp(ez*Math.log(9));
-    c.save();c.translate(W/2,H/2);c.scale(Z,Z);c.translate(-W/2,-H/2);
+    // the question opens from the orange tile nearest the centre
+    const ez=zoomQ*zoomQ*(3-2*zoomQ),qf=helixScenes[1].firstElementChild;
+    if(zoomQ===0)helixFocus=null;
+    else if(!helixFocus&&oranges.length)helixFocus=oranges.reduce((b,o)=>Math.hypot(o.x-W/2,o.y-H/2)<Math.hypot(b.x-W/2,b.y-H/2)?o:b);
+    let fx=W/2,fy=H/2,Z=1,cxN=W/2,cyN=H/2;
+    const F=helixFocus;
+    if(F&&zoomQ>0){fx=F.x;fy=F.y;const kEnd=Math.hypot(W,H)/34;Z=Math.exp(ez*Math.log(kEnd/(F.sz*.86)));cxN=fx+(W/2-fx)*ez;cyN=fy+(H/2-fy)*ez}
+    c.save();c.translate(cxN,cyN);c.scale(Z,Z);c.translate(-fx,-fy);
     segs.sort((a,b)=>a.z-b.z).forEach(sg=>sg.draw());
+    if(F&&zoomQ>0){c.save();c.translate(fx,fy);c.rotate(F.rot);c.scale(F.sz,F.sz);c.globalAlpha=1;c.fillStyle='#c98260';c.fill(helixTile);c.restore()}
     c.restore();
-    if(zoomQ>0&&zoomQ<1){const Rv=ez*Math.hypot(W,H)*.53;c.strokeStyle='#c98260';c.lineWidth=3+5*ez;c.beginPath();c.arc(W/2,H/2,Math.max(2,Rv),0,7);c.stroke()}
+    if(F&&zoomQ>0&&zoomQ<1){
+      helixPts=helixPts||tile4(-30,-30,.6,.6,.6,.6).match(/-?\d+(\.\d+)?/g).map(Number);
+      const k=F.sz*Z*.86,cr=Math.cos(F.rot),sr=Math.sin(F.rot);let d='';
+      for(let m=0;m<helixPts.length;m+=2){const px=helixPts[m]*k,py=helixPts[m+1]*k;d+=(m?'L':'M')+(cxN+px*cr-py*sr).toFixed(1)+' '+(cyN+px*sr+py*cr).toFixed(1)}
+      qf.style.clipPath="path('"+d+"Z')";
+    }
   }
 
   // inherited sorter
