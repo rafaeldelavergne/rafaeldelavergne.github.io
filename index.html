@@ -981,7 +981,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     sg.innerHTML=o;
     const gy=23*S_RISE,g0=proj(c,3.5,gy,10.5),g1=proj(c,4.5,gy,10.5),g2=proj(c,4.5,gy,12.5),g3=proj(c,3.5,gy,12.5);
     sground.setAttribute('d','M'+PT([g0,g1,g2,g3]).replace(/ /g,' L')+'Z');
-    const sc=(u*.82/27).toFixed(3),climb=clamp((p-.1)/.75)*14,k=Math.floor(climb),f=climb-k;
+    const sc=(u*.82*Math.sqrt(2/3)/27).toFixed(3),climb=clamp((p-.1)/.75)*14,k=Math.floor(climb),f=climb-k;
     let og='';for(const [st,ph] of [[1,0],[3,0]]){const pp=stairPos(c,st);og+='<g transform="translate('+pp[0].toFixed(1)+' '+(pp[1]-Math.abs(Math.sin((f+ph)*Math.PI))*5).toFixed(1)+') scale('+sc+')"><path d="'+FIG+'" fill="var(--fg)"/><circle cy="-23" r="4.6" fill="var(--fg)"/></g>'}
     others.innerHTML=og;
     if(off){const gp=proj(c,4,23*S_RISE,11.5);climber.style.transform='translate('+gp[0].toFixed(1)+'px,'+gp[1].toFixed(1)+'px) scale('+sc+')';return}
@@ -1344,22 +1344,29 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 
   // inherited: drawing hands. An engraving of my own hand, drawn twice: each pencil touches the other's wrist
   const handsSvg=document.getElementById('hands');
-  const HD={w:900,h:682,wrist:[16,333],tip:[891,661]},HC=[(HD.wrist[0]+HD.tip[0])/2,(HD.wrist[1]+HD.tip[1])/2];
-  const BANDS=[[0,190],[190,370],[370,530],[530,690],[690,900]],PIECE_OF_CHOICE=BANDS;
-  const B_T='rotate(180 '+HC[0]+' '+HC[1]+')';
-  handsSvg.setAttribute('viewBox','-10 -46 '+(2*HC[0]+20)+' '+(2*HC[1]+92));
+  const HD={w:900,h:610,wrist:[15,423],tip:[890,374]},HC=[(HD.wrist[0]+HD.tip[0])/2,(HD.wrist[1]+HD.tip[1])/2],HDY=170;
+  const BANDS=[0,1,2,3,4],PIECE_OF_CHOICE=BANDS;
+  const HTILES={"T":25.0,"tiles":[[425.0,75.0,0],[300.0,225.0,1],[450.0,25.0,2],[300.0,125.0,3],[0.0,250.0,4],[125.0,350.0,0],[550.0,175.0,1],[475.0,350.0,2],[500.0,150.0,3],[325.0,375.0,4],[725.0,275.0,0],[75.0,175.0,1],[400.0,25.0,2],[175.0,375.0,3],[200.0,25.0,4],[0.0,575.0,0],[225.0,200.0,1],[550.0,75.0,2],[75.0,425.0,3],[0.0,300.0,4],[475.0,150.0,0],[125.0,250.0,1],[600.0,150.0,2],[475.0,200.0,3],[375.0,300.0,4],[650.0,175.0,0],[175.0,250.0,1],[550.0,250.0,2],[275.0,225.0,3],[150.0,250.0,4],[150.0,425.0,0],[0.0,475.0,1],[450.0,125.0,2],[475.0,225.0,3],[500.0,275.0,4],[500.0,300.0,0],[350.0,150.0,1],[600.0,250.0,2],[0.0,425.0,3],[225.0,400.0,4],[200.0,325.0,0],[325.0,25.0,1],[200.0,375.0,2],[325.0,100.0,3],[525.0,100.0,4],[175.0,125.0,0],[250.0,425.0,1],[775.0,300.0,2],[375.0,150.0,3],[125.0,375.0,4],[125.0,225.0,0],[25.0,450.0,1],[475.0,275.0,2],[300.0,25.0,3],[250.0,250.0,4],[450.0,175.0,0],[275.0,75.0,1],[100.0,350.0,2],[150.0,325.0,3],[125.0,450.0,4],[175.0,350.0,0],[0.0,500.0,1],[600.0,100.0,2],[300.0,325.0,3],[200.0,200.0,4],[675.0,275.0,0],[575.0,200.0,1],[475.0,50.0,2],[50.0,525.0,3],[100.0,400.0,4],[300.0,350.0,0],[250.0,350.0,1],[525.0,250.0,2],[100.0,300.0,3],[275.0,0.0,4],[50.0,200.0,0],[25.0,500.0,1],[600.0,300.0,2],[625.0,275.0,3],[300.0,275.0,4],[350.0,350.0,0],[100.0,225.0,1],[100.0,500.0,2],[375.0,325.0,3],[250.0,175.0,4],[275.0,150.0,0],[325.0,125.0,1],[175.0,475.0,2],[175.0,25.0,3],[200.0,50.0,4],[0.0,350.0,0],[275.0,275.0,1],[325.0,150.0,2],[0.0,325.0,3],[350.0,200.0,4],[225.0,325.0,0],[75.0,375.0,1],[225.0,225.0,2],[525.0,375.0,3],[550.0,275.0,4],[800.0,325.0,0],[350.0,100.0,1],[350.0,50.0,2],[325.0,300.0,3],[375.0,250.0,4],[475.0,300.0,0],[250.0,275.0,1],[150.0,275.0,2],[0.0,550.0,3],[25.0,275.0,4],[500.0,200.0,0],[550.0,150.0,1],[350.0,25.0,2],[500.0,125.0,3],[50.0,425.0,4],[150.0,475.0,0],[525.0,125.0,1],[75.0,525.0,2],[625.0,225.0,3],[725.0,300.0,4],[50.0,300.0,0],[400.0,125.0,1],[200.0,175.0,2],[525.0,225.0,3],[425.0,200.0,4],[575.0,175.0,0],[500.0,75.0,1],[225.0,100.0,2],[175.0,225.0,3],[575.0,375.0,4],[150.0,450.0,0],[375.0,100.0,1],[150.0,350.0,2],[675.0,200.0,3],[125.0,150.0,4],[100.0,450.0,0],[25.0,400.0,1],[575.0,350.0,2],[50.0,225.0,3],[325.0,175.0,4],[225.0,125.0,0],[550.0,300.0,1],[275.0,25.0,2],[225.0,250.0,3],[75.0,325.0,4],[50.0,350.0,0],[250.0,100.0,1],[425.0,100.0,2],[200.0,450.0,3],[500.0,100.0,4],[0.0,400.0,0],[750.0,275.0,1],[275.0,350.0,2],[525.0,175.0,3],[125.0,400.0,4],[25.0,300.0,0],[400.0,100.0,1],[175.0,150.0,2],[400.0,300.0,3],[50.0,250.0,4],[325.0,225.0,0],[100.0,325.0,1],[125.0,425.0,2],[350.0,125.0,3],[250.0,225.0,4],[300.0,250.0,0],[175.0,200.0,1],[250.0,300.0,2],[50.0,375.0,3],[75.0,200.0,4],[150.0,400.0,0],[225.0,25.0,1],[625.0,175.0,2],[625.0,250.0,3],[575.0,225.0,4],[150.0,300.0,0],[575.0,250.0,1],[500.0,250.0,2],[325.0,75.0,3],[325.0,50.0,4],[425.0,125.0,0],[600.0,275.0,1],[375.0,175.0,2],[300.0,300.0,3],[25.0,375.0,4],[50.0,500.0,0],[850.0,350.0,1],[350.0,175.0,2],[550.0,400.0,3],[550.0,200.0,4],[100.0,150.0,0],[575.0,100.0,1],[250.0,375.0,2],[50.0,325.0,3],[50.0,400.0,4],[275.0,375.0,0],[675.0,250.0,1],[250.0,50.0,2],[275.0,300.0,3],[250.0,400.0,4],[225.0,150.0,0],[175.0,425.0,1],[125.0,200.0,2],[375.0,75.0,3],[400.0,325.0,4],[225.0,0.0,0],[600.0,350.0,1],[775.0,325.0,2],[825.0,350.0,3],[625.0,125.0,4],[500.0,50.0,0],[0.0,525.0,1],[125.0,175.0,2],[300.0,100.0,3],[225.0,50.0,4],[125.0,500.0,0],[175.0,50.0,1],[400.0,275.0,2],[75.0,225.0,3],[50.0,475.0,4],[450.0,50.0,0],[225.0,275.0,1],[450.0,150.0,2],[425.0,150.0,3],[400.0,150.0,4],[275.0,200.0,0],[450.0,250.0,1],[25.0,350.0,2],[200.0,275.0,3],[325.0,250.0,4],[125.0,475.0,0],[375.0,275.0,1],[225.0,175.0,2],[425.0,25.0,3],[75.0,250.0,4],[350.0,225.0,0],[200.0,225.0,1],[75.0,350.0,2],[600.0,175.0,3],[100.0,275.0,4],[425.0,225.0,0],[550.0,375.0,1],[475.0,125.0,2],[300.0,200.0,3],[600.0,200.0,4],[250.0,150.0,0],[100.0,200.0,1],[575.0,150.0,2],[450.0,350.0,3],[250.0,0.0,4],[250.0,125.0,0],[125.0,125.0,1],[25.0,475.0,2],[450.0,200.0,3],[525.0,300.0,4],[75.0,300.0,0],[250.0,25.0,1],[300.0,175.0,2],[450.0,300.0,3],[475.0,375.0,4],[150.0,150.0,0],[475.0,75.0,1],[225.0,350.0,2],[275.0,175.0,3],[200.0,250.0,4],[600.0,225.0,0],[650.0,250.0,1],[625.0,300.0,2],[125.0,275.0,3],[200.0,125.0,4],[250.0,200.0,0],[475.0,250.0,1],[50.0,450.0,2],[575.0,125.0,3],[200.0,400.0,4],[825.0,325.0,0],[350.0,250.0,1],[200.0,425.0,2],[475.0,175.0,3],[100.0,125.0,4],[500.0,350.0,0],[100.0,175.0,1],[500.0,375.0,2],[175.0,300.0,3],[450.0,100.0,4],[600.0,125.0,0],[550.0,225.0,1],[525.0,275.0,2],[375.0,25.0,3],[450.0,225.0,4],[275.0,250.0,0],[325.0,200.0,1],[325.0,275.0,2],[650.0,200.0,3],[0.0,450.0,4],[250.0,75.0,0],[700.0,275.0,1],[150.0,200.0,2],[150.0,100.0,3],[75.0,475.0,4],[450.0,275.0,0],[525.0,325.0,1],[300.0,375.0,2],[500.0,225.0,3],[375.0,225.0,4],[225.0,375.0,0],[450.0,325.0,1],[100.0,425.0,2],[400.0,75.0,3],[300.0,50.0,4],[0.0,275.0,0],[125.0,300.0,1],[25.0,550.0,2],[75.0,450.0,3],[550.0,125.0,4],[25.0,425.0,0],[425.0,300.0,1],[525.0,400.0,2],[25.0,525.0,3],[200.0,350.0,4],[375.0,200.0,0],[350.0,275.0,1],[400.0,225.0,2],[200.0,300.0,3],[575.0,300.0,4],[100.0,375.0,0],[475.0,325.0,1],[450.0,75.0,2],[425.0,175.0,3],[175.0,400.0,4],[500.0,175.0,0],[525.0,200.0,1],[650.0,225.0,2],[425.0,275.0,3],[225.0,425.0,4],[575.0,275.0,0],[25.0,225.0,1],[75.0,275.0,2],[750.0,300.0,3],[225.0,300.0,4],[525.0,150.0,0],[325.0,350.0,1],[175.0,450.0,2],[325.0,325.0,3],[225.0,75.0,4],[125.0,325.0,0],[200.0,100.0,1],[100.0,250.0,2],[300.0,150.0,3],[0.0,375.0,4],[275.0,400.0,0],[550.0,325.0,1],[275.0,100.0,2],[200.0,150.0,3],[75.0,400.0,4],[275.0,325.0,0],[625.0,200.0,1],[425.0,325.0,2],[475.0,100.0,3],[25.0,325.0,4],[275.0,125.0,0],[100.0,475.0,1],[400.0,200.0,2],[150.0,125.0,3],[250.0,325.0,4],[375.0,50.0,0],[150.0,175.0,1],[425.0,50.0,2],[425.0,250.0,3],[600.0,325.0,4],[500.0,325.0,0],[200.0,75.0,1],[75.0,500.0,2],[525.0,350.0,3],[550.0,350.0,4],[175.0,175.0,0],[550.0,100.0,1],[350.0,325.0,2],[175.0,75.0,3],[50.0,275.0,4],[175.0,325.0,0],[125.0,100.0,1],[400.0,175.0,2],[300.0,75.0,3],[700.0,250.0,4],[175.0,275.0,0],[525.0,75.0,1],[275.0,50.0,2],[625.0,150.0,3],[350.0,300.0,4],[150.0,75.0,0],[575.0,325.0,1],[25.0,250.0,2],[175.0,100.0,3],[800.0,300.0,4],[350.0,75.0,0],[400.0,50.0,1],[150.0,375.0,2],[400.0,250.0,3],[375.0,125.0,4],[150.0,225.0,0]]};
+  const tileAt=(x,y,T)=>{const N=8,e=u=>.6*T*(.2*Math.sin(2*Math.PI*u)+.07*Math.sin(4*Math.PI*u)),P=[];
+    for(let i=0;i<N;i++){const u=i/N;P.push([x+u*T,y+e(u)])}for(let i=0;i<N;i++){const v=i/N;P.push([x+T+e(v),y+v*T])}
+    for(let i=0;i<N;i++){const u=1-i/N;P.push([x+u*T,y+T+e(u)])}for(let i=0;i<N;i++){const v=1-i/N;P.push([x+e(v),y+v*T])}
+    return 'M'+P.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')+'Z'};
+  const TILE_D=HTILES.tiles.map(t=>tileAt(t[0],t[1],HTILES.T)),GROUP_D=[0,1,2,3,4].map(g=>HTILES.tiles.map((t,i)=>t[2]===g?TILE_D[i]:'').join('')),ALL_D=TILE_D.join('');
+  const B_T='translate(0 '+HDY+') rotate(180 '+HC[0]+' '+HC[1]+')';
+  handsSvg.setAttribute('viewBox','-10 -46 920 '+(2*HC[1]+HDY+92));
   const IMG=k=>'<image href="img/hand_'+k+'.webp" width="'+HD.w+'" height="'+HD.h+'"/>';
   const choices=()=>[...document.querySelectorAll('#sorter li')].map(li=>li.classList.contains('kept')?'keep':li.classList.contains('questioned')?'question':'');
   function drawHands(){
     const st=choices(),done=st.filter(Boolean).length,all=done===5;
-    let o='<defs>'+BANDS.map((b,i)=>'<clipPath id="hb'+i+'"><rect x="'+b[0]+'" y="-30" width="'+(b[1]-b[0])+'" height="'+(HD.h+60)+'"/></clipPath>').join('')+'<clipPath id="hbw"><rect id="hbw-r" x="0" y="-30" width="0" height="'+(HD.h+60)+'"/></clipPath></defs>';
-    const band=(i,top)=>st[i]?'<g data-b="'+i+'"'+(top?' data-top="1"':'')+' clip-path="url(#hb'+i+')">'+IMG(st[i]==='keep'?'ink':'me')+'</g>':'';
-    // yours first (sketch, then the parts already drawn), then the inherited hand, then your pencil on top of its wrist
-    o+='<g class="hand-b" transform="'+B_T+'">'+IMG('sketch')+BANDS.map((_,i)=>band(i)).join('')+'</g>';
-    o+='<g class="hand-a">'+IMG('ink')+'</g>';
-    o+='<g class="hand-b-top" transform="'+B_T+'">'+band(4,true)+'</g>';
+    let o='<defs>'+GROUP_D.map((d,i)=>'<clipPath id="hb'+i+'"><path d="'+d+'"/></clipPath>').join('')+'<clipPath id="hbw"><path id="hbw-p" d=""/></clipPath><clipPath id="hbt"><rect x="700" y="-30" width="230" height="'+(HD.h+60)+'"/></clipPath></defs>';
+    const parts=top=>BANDS.map(i=>st[i]?'<g data-b="'+i+'" clip-path="url(#hb'+i+')">'+IMG(st[i]==='keep'?'ink':'me')+'</g>':'').join('');
+    const motif=op=>'<path d="'+ALL_D+'" fill="none" stroke="#15140f" stroke-opacity="'+op+'" stroke-width="1"/>';
+    // yours: a sketch paved with tiles; each phrase fills about 80 of them
+    o+='<g class="hand-b" transform="'+B_T+'">'+IMG('sketch')+motif(.14)+parts()+'</g>';
+    o+='<g class="hand-a">'+IMG('ink')+'<g style="mix-blend-mode:multiply">'+motif(.1)+'</g></g>';
+    o+='<g class="hand-b-top" transform="'+B_T+'"><g clip-path="url(#hbt)">'+parts(true)+'</g></g>';
     o+='<text x="10" y="-14" font-family="JetBrains Mono,monospace" font-size="26" fill="#7d7666">inherited</text>';
-    o+='<text x="'+(2*HC[0]+10)+'" y="'+(2*HC[1]+36)+'" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="26" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · drawing each other':' · '+done+'/5')+'</text>';
+    o+='<text x="900" y="'+(2*HC[1]+HDY+36)+'" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="26" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · drawing each other':' · '+done+'/5')+'</text>';
     handsSvg.innerHTML=o;
   }
   // keep: that part of the inherited hand turns over onto yours; question: you draw your own, in orange
@@ -1370,14 +1377,14 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const T0=performance.now();
     if(kind==='keep'){
       targets.forEach(t=>t.style.opacity='0');
-      const fly=document.createElementNS('http://www.w3.org/2000/svg','g');fly.setAttribute('clip-path','url(#hb'+idx+')');fly.innerHTML=IMG('ink');handsSvg.append(fly);
+      const fly=document.createElementNS('http://www.w3.org/2000/svg','g');fly.innerHTML='<g clip-path="url(#hb'+idx+')">'+IMG('ink')+'</g>';handsSvg.append(fly);
       (function step(now){const t=Math.min(1,(now-T0)/1100),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-        fly.setAttribute('transform','rotate('+(180*e).toFixed(2)+' '+HC[0]+' '+HC[1]+')');
+        fly.setAttribute('transform','translate(0 '+(HDY*e).toFixed(1)+') rotate('+(180*e).toFixed(2)+' '+HC[0]+' '+HC[1]+')');
         if(t<1)requestAnimationFrame(step);else{fly.remove();targets.forEach(x=>x.style.opacity='')}})(T0);
     }else{
-      const r=handsSvg.querySelector('#hbw-r'),b=BANDS[idx];targets.forEach(t=>t.setAttribute('clip-path','url(#hbw)'));
-      (function step(now){const t=Math.min(1,(now-T0)/1000),e=1-Math.pow(1-t,3);
-        r.setAttribute('x',b[0]);r.setAttribute('width',((b[1]-b[0])*e).toFixed(1));
+      const wp=handsSvg.querySelector('#hbw-p'),mine=HTILES.tiles.map((t,i)=>t[2]===idx?TILE_D[i]:null).filter(Boolean);targets.forEach(t=>t.setAttribute('clip-path','url(#hbw)'));
+      (function step(now){const t=Math.min(1,(now-T0)/1200);
+        wp.setAttribute('d',mine.slice(0,Math.ceil(mine.length*t)).join(''));
         if(t<1)requestAnimationFrame(step);else targets.forEach(x=>x.setAttribute('clip-path','url(#hb'+idx+')'))})(T0);
     }
   }
@@ -1634,7 +1641,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const tW=passIn('where'),tT=passIn('totem'),me=document.getElementById('tess-me');
     tessMeHidden=(tW>0&&tW<1)||(tT>0&&tT<1);
     if(me)me.style.visibility=tessMeHidden?'hidden':'visible';
-    if(tW>0&&tW<1&&me){const hb=handsSvg.querySelectorAll('g[transform^="rotate"]'),src=rectOf(hb[hb.length-1]||handsSvg),s0={x:src.x+src.w*.3,y:src.y+src.h*.25,w:src.w*.4,h:src.h*.5},e=sm(tW);
+    if(tW>0&&tW<1&&me){const hb=handsSvg.querySelectorAll('.hand-b'),src=rectOf(hb[0]||handsSvg),s0={x:src.x+src.w*.3,y:src.y+src.h*.25,w:src.w*.4,h:src.h*.5},e=sm(tW);
       svg+='<path d="'+shapeD(unitTile,unitTile,0,lerpR(s0,rectOf(me),e))+'" fill="#c98260" stroke="#15140f" stroke-width="1.2" opacity="'+Math.min(1,tW*5).toFixed(2)+'"/>'}
     // 6 · the tile takes volume: it becomes the top of the founding cube of the totem
     const c0=totemCubes[0],c0top=c0.querySelector('.cu-t');
