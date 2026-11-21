@@ -214,12 +214,12 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .off .off-txt{opacity:1;transform:none}
 [data-mode="film"] .off .stepoff button{opacity:.4;pointer-events:none}
 .stairs{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:0;max-height:none!important}
-.stairs .side{fill:url(#hatchSide);stroke:color-mix(in srgb,var(--fg) 45%,transparent);stroke-width:.8}
+.stairs .side{fill:url(#hatchSide);stroke:var(--bg);stroke-width:1}
 .stairs .tread{fill:var(--fg);stroke:var(--bg);stroke-width:1}
-.stairs .riser{fill:url(#hatchRiser);stroke:var(--fg);stroke-width:1}
-.stairs .h-line{stroke:var(--fg);stroke-width:1.1}
-.stairs .h-faint{stroke:color-mix(in srgb,var(--fg) 40%,transparent);stroke-width:1}
-.stairs .lbl{font:10.5px var(--mono);fill:var(--fg);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+.stairs .riser{fill:url(#hatchRiser);stroke:var(--bg);stroke-width:1}
+.stairs .h-line{stroke:var(--bg);stroke-width:1.3}
+.stairs .h-faint{stroke:var(--bg);stroke-width:.9}
+.stairs .lbl{font:10.5px var(--mono);fill:var(--bg)}
 .stairs #sg{transition:opacity 1s}
 .off .stairs #sg{opacity:.35}
 .stairs .climber{fill:var(--fg);stroke:var(--fg)}
@@ -954,7 +954,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const stairs=document.getElementById('stairs'),sframe=document.getElementById('stairs-frame'),meter=document.getElementById('meter');
   const SL=['prépa','the best school','20/20','consulting','finance','the next title','a bigger salary','the right postcode','what others expect'];
   const S_RISE=4/28,S_BASE=-7,FIG='M-7 0L-3-19Q0-23 3-19L7 0Z';
-  stairs.innerHTML='<defs><pattern id="hatchRiser" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><line class="h-line" x1="0" y1="0" x2="0" y2="4"/></pattern><pattern id="hatchSide" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)"><line class="h-faint" x1="0" y1="0" x2="0" y2="5"/></pattern></defs><g id="sg"></g><path class="ground" id="sground"/><g id="others"></g><g id="climber"><path d="'+FIG+'" fill="var(--accent)"/><circle cy="-23" r="4.6" fill="var(--accent)"/></g>';
+  stairs.innerHTML='<defs><pattern id="hatchRiser" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><rect width="4" height="4" fill="color-mix(in srgb,var(--fg) 78%,var(--bg))"/><line class="h-line" x1="0" y1="0" x2="0" y2="4"/></pattern><pattern id="hatchSide" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)"><rect width="5" height="5" fill="var(--fg)"/><line class="h-faint" x1="0" y1="0" x2="0" y2="5"/></pattern></defs><g id="sg"></g><path class="ground" id="sground"/><g id="others"></g><g id="climber"><path d="'+FIG+'" fill="var(--accent)"/><circle cy="-23" r="4.6" fill="var(--accent)"/></g>';
   const sg=stairs.querySelector('#sg'),climber=stairs.querySelector('#climber'),others=stairs.querySelector('#others'),sground=stairs.querySelector('#sground');
   let climbed=0,off=false;
   // the same orthographic camera as the 3D scene (azimuth 45°, isometric elevation, same frustum)
@@ -980,7 +980,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const gy=23*S_RISE,g0=proj(c,3.5,gy,10.5),g1=proj(c,4.5,gy,10.5),g2=proj(c,4.5,gy,12.5),g3=proj(c,3.5,gy,12.5);
     sground.setAttribute('d','M'+PT([g0,g1,g2,g3]).replace(/ /g,' L')+'Z');
     const sc=(u*.82/27).toFixed(3),climb=clamp((p-.1)/.75)*14,k=Math.floor(climb),f=climb-k;
-    let og='';for(const [st,ph] of [[1,.5],[3,.25]]){const pp=stairPos(c,st);og+='<g transform="translate('+pp[0].toFixed(1)+' '+(pp[1]-Math.abs(Math.sin((f+ph)*Math.PI))*5).toFixed(1)+') scale('+sc+')"><path d="'+FIG+'" fill="var(--fg)"/><circle cy="-23" r="4.6" fill="var(--fg)"/></g>'}
+    let og='';for(const [st,ph] of [[1,0],[3,0]]){const pp=stairPos(c,st);og+='<g transform="translate('+pp[0].toFixed(1)+' '+(pp[1]-Math.abs(Math.sin((f+ph)*Math.PI))*5).toFixed(1)+') scale('+sc+')"><path d="'+FIG+'" fill="var(--fg)"/><circle cy="-23" r="4.6" fill="var(--fg)"/></g>'}
     others.innerHTML=og;
     if(off){const gp=proj(c,4,23*S_RISE,11.5);climber.style.transform='translate('+gp[0].toFixed(1)+'px,'+gp[1].toFixed(1)+'px) scale('+sc+')';return}
     const me=stairPos(c,2);
