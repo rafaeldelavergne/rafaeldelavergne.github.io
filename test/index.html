@@ -1256,36 +1256,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const W=cosmos.clientWidth,H=cosmos.clientHeight;if(!W)return;
     const d=Math.min(devicePixelRatio,2);if(cosmos.width!==Math.round(W*d)){cosmos.width=Math.round(W*d);cosmos.height=Math.round(H*d)}
     const c=cosmos.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
-    c.fillStyle='#efe9dc';for(const st of stars){c.globalAlpha=.12+.35*st[2];c.fillRect((st[0]*.5+.5)*W,(st[1]*.5+.5)*H,1.2,1.2)}c.globalAlpha=1;
-    const dt=Math.min(50,t-lastHT||0);lastHT=t;helixPhase+=dt*.0007*(1-clamp(cosmosP*1.6));
-    const vert=W>900,L=vert?H*1.15:W*1.1,R=vert?Math.min(W*.11,130):Math.min(H*.09,70);
-    const ax0=vert?W*.73:W*.5,ay0=vert?H*.5:H*.8,N=34,ME=17;
-    const P=(along,across)=>vert?[ax0+across,ay0-L/2+along]:[ax0-L/2+along,ay0+across];
-    const items=[];
-    for(let i=0;i<N;i++){
-      const a=i/(N-1)*L,ph=i*.45+helixPhase,ca=Math.cos(ph),sa=Math.sin(ph);
-      const A=P(a,R*ca),B=P(a,-R*ca),zA=sa,zB=-sa;
-      items.push({rung:[A,B],z:-1.5,alt:i%2});
-      items.push({p:A,z:zA,sz:(vert?24:16)*(1+.28*zA),ink:i%2,me:i===ME,rot:ph});
-      items.push({p:B,z:zB,sz:(vert?24:16)*(1+.28*zB),ink:(i+1)%2,me:false,rot:-ph});
-    }
-    const me=items.find(it=>it.me);
-    const zMax=1.8*Math.max(W,H)/me.sz,z=Math.exp(Math.pow(clamp(cosmosP/.92),2.2)*Math.log(zMax)),fx=me.p[0],fy=me.p[1];
-    c.save();c.translate(fx,fy);c.scale(z,z);c.translate(-fx,-fy);
-    for(const it of items.filter(x=>x.rung)){
-      const [A,B]=it.rung,mx=(A[0]+B[0])/2,my=(A[1]+B[1])/2;
-      c.lineWidth=2.2/z*1.2;c.strokeStyle=it.alt?'rgba(239,233,220,.55)':'rgba(239,233,220,.28)';
-      c.beginPath();c.moveTo(A[0],A[1]);c.lineTo(mx,my);c.stroke();
-      c.strokeStyle=it.alt?'rgba(239,233,220,.28)':'rgba(239,233,220,.55)';
-      c.beginPath();c.moveTo(mx,my);c.lineTo(B[0],B[1]);c.stroke();
-    }
-    for(const it of items.filter(x=>!x.rung).sort((a,b)=>a.z-b.z)){
-      c.save();c.translate(it.p[0],it.p[1]);c.rotate(it.rot*.25+Math.PI/4);const k=it.sz/60;c.scale(k,k);
-      c.globalAlpha=.55+.45*(it.z*.5+.5);
-      c.fillStyle=it.me?'#c98260':it.ink?'#15140f':'#efe9dc';c.strokeStyle='#efe9dc';c.lineWidth=1.1/k/z;
-      c.fill(tileP);c.stroke(tileP);c.restore();
-    }
-    c.globalAlpha=1;c.restore();
+    c.fillStyle='#efe9dc';for(const st of stars){c.globalAlpha=(.12+.35*st[2])*(1-clamp(cosmosP*1.4));c.fillRect((st[0]*.5+.5)*W,(st[1]*.5+.5)*H,1.2,1.2)}c.globalAlpha=1;
   }
 
   // möbius strip: one side, no end
@@ -1314,7 +1285,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   function animLoop(t){
     if(root.dataset.mode==='film'){
       const vh=innerHeight;
-      const tr=document.getElementById('top').getBoundingClientRect();if(tr.bottom>0)drawCosmos(t);
+      const tr=document.getElementById('top').getBoundingClientRect();if(tr.bottom>0){drawCosmos(t);if(helixBg.classList.contains('on'))drawHelixBg()}
       const er=mob.getBoundingClientRect();if(er.bottom>0&&er.top<vh)drawMobius(t);
       const sr=document.getElementById('space').getBoundingClientRect();if(sr.bottom>0&&sr.top<vh)drawSynapse(t);
     }
@@ -1371,30 +1342,32 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const helixScenes=[...document.querySelectorAll('.in-helix')],helixBg=document.getElementById('helix-bg');
   // the page is the DNA: two strands as wide as the screen, attached to the page, so you scroll along them
   let helixTile=null;
+  let helixDrift=0,helixLast=0;
   function drawHelixBg(){
-    const W=innerWidth,H=innerHeight,d=Math.min(devicePixelRatio,2);
+    const W=innerWidth,H=innerHeight,d=Math.min(devicePixelRatio,2),now=performance.now();
     if(helixBg.width!==Math.round(W*d)||helixBg.height!==Math.round(H*d)){helixBg.width=Math.round(W*d);helixBg.height=Math.round(H*d)}
     const c=helixBg.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
     helixTile=helixTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));
-    const g0=helixScenes[0].offsetTop+H*.6,g1=helixScenes[2].offsetTop+helixScenes[2].offsetHeight;
-    const pitch=H*1.3,cx=W/2,R=W*.47,y0=Math.max(g0,scrollY-60),y1=Math.min(g1,scrollY+H+60);
-    if(y1<=y0)return;
-    const ph=y=>(y-g0)/pitch*Math.PI*2;
-    const fade=y=>Math.min(1,(y-g0)/(H*.5),(g1-y)/(H*.5));
+    const lin=(a,b,t)=>a+(b-a)*t,big=W>900;
+    const e0=clamp(cosmosP/.85),e=e0*e0*(3-2*e0);                       // 0 on the home page, 1 once the strands are screen-wide
+    helixDrift+=Math.min(50,now-helixLast||0)*.0006*(1-e);helixLast=now;  // it turns on its own while you look at it
+    const g0=helixScenes[0].offsetTop,g1=helixScenes[2].offsetTop+helixScenes[2].offsetHeight;
+    const pitch=lin(H*.42,H*1.3,e),cx=lin(W*(big?.73:.5),W*.5,e),R=lin(big?Math.min(W*.1,130):Math.min(W*.28,110),W*.47,e);
+    const tileMin=lin(big?15:11,22,e),tileMax=lin(big?27:19,44,e),strength=lin(2.6,1,e),step=H*.075;
+    const y0=Math.max(g0,scrollY-60),y1=Math.min(g1,scrollY+H+60);if(y1<=y0)return;
+    const ph=y=>(y-g0)/pitch*Math.PI*2+helixDrift;
+    const fade=y=>Math.max(0,Math.min(1,(g1-y)/(H*.5)));
     const segs=[];
-    // backbones: fine segments, thicker and brighter in front
     for(let y=y0-(y0%10);y<y1;y+=10){
       for(const k of [0,1]){
         const a=ph(y)+k*Math.PI,a2=ph(y+10)+k*Math.PI,z=Math.sin(a);
-        segs.push({z,draw:()=>{const f=Math.max(0,fade(y));c.strokeStyle='rgba(239,233,220,'+((.05+.16*(z+1)/2)*f).toFixed(3)+')';c.lineWidth=4+10*(z+1)/2;c.lineCap='round';c.beginPath();c.moveTo(cx+R*Math.cos(a),y-scrollY);c.lineTo(cx+R*Math.cos(a2),y+10-scrollY);c.stroke()}});
+        segs.push({z,draw:()=>{c.strokeStyle='rgba(239,233,220,'+Math.min(.5,(.05+.16*(z+1)/2)*fade(y)*strength).toFixed(3)+')';c.lineWidth=lin(2,4,e)+lin(4,10,e)*(z+1)/2;c.lineCap='round';c.beginPath();c.moveTo(cx+R*Math.cos(a),y-scrollY);c.lineTo(cx+R*Math.cos(a2),y+10-scrollY);c.stroke()}});
       }
     }
-    // base pairs: rungs across the whole width, a tile at each end
-    const step=H*.11;
     for(let y=Math.ceil((y0-g0)/step)*step+g0;y<y1;y+=step){
-      const a=ph(y),x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),f=Math.max(0,fade(y)),sy=y-scrollY,n=Math.round((y-g0)/step);
-      segs.push({z:-1.5,draw:()=>{c.strokeStyle='rgba(239,233,220,'+(.08*f).toFixed(3)+')';c.lineWidth=2;c.setLineDash([2,7]);c.beginPath();c.moveTo(x1,sy);c.lineTo(x2,sy);c.stroke();c.setLineDash([])}});
-      for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]])segs.push({z:z+.01,draw:()=>{const sz=(22+22*(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=(.10+.30*(z+1)/2)*f;c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}});
+      const a=ph(y),x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),f=fade(y),sy=y-scrollY,n=Math.round((y-g0)/step);
+      segs.push({z:-1.5,draw:()=>{c.strokeStyle='rgba(239,233,220,'+Math.min(.45,.08*f*strength*1.6).toFixed(3)+')';c.lineWidth=2;c.setLineDash(e<.5?[]:[2,7]);c.beginPath();c.moveTo(x1,sy);c.lineTo(x2,sy);c.stroke();c.setLineDash([])}});
+      for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]])segs.push({z:z+.01,draw:()=>{const sz=lin(tileMin,tileMax,(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=Math.min(1,(.10+.30*(z+1)/2)*f*strength);c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}});
     }
     segs.sort((a,b)=>a.z-b.z).forEach(sg=>sg.draw());
   }
