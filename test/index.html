@@ -838,10 +838,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       let helixVisible=false;
       for(const sc of helixScenes){
         const r=sc.getBoundingClientRect();if(r.bottom<-vh||r.top>vh*1.5)continue;
-        if(r.bottom>0&&r.top<vh&&sc.id!=='top')helixVisible=true;
-        let a=0;if(r.top>0)a=72*clamp(r.top/vh);else if(r.bottom<vh)a=-72*clamp((vh-r.bottom)/vh);
+        if(r.bottom>0&&r.top<vh)helixVisible=true;
+        let a=0;if(r.top>0)a=30*clamp(r.top/vh);else if(r.bottom<vh)a=-30*clamp((vh-r.bottom)/vh);
         sc.firstElementChild.style.transform=a?'translateZ(-520px) rotateY('+a.toFixed(2)+'deg) translateZ(520px)':'';
-        sc.firstElementChild.style.opacity=(1-Math.abs(a)/72*.55).toFixed(3);
+        sc.firstElementChild.style.opacity=(1-Math.abs(a)/30*.35).toFixed(3);
       }
       helixBg.classList.toggle('on',helixVisible);
       if(helixVisible)drawHelixBg();
@@ -1369,19 +1369,34 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 
   // the background strand the first scenes turn around
   const helixScenes=[...document.querySelectorAll('.in-helix')],helixBg=document.getElementById('helix-bg');
+  // the page is the DNA: two strands as wide as the screen, attached to the page, so you scroll along them
+  let helixTile=null;
   function drawHelixBg(){
     const W=innerWidth,H=innerHeight,d=Math.min(devicePixelRatio,2);
-    if(helixBg.width!==Math.round(W*d)){helixBg.width=Math.round(W*d);helixBg.height=Math.round(H*d)}
+    if(helixBg.width!==Math.round(W*d)||helixBg.height!==Math.round(H*d)){helixBg.width=Math.round(W*d);helixBg.height=Math.round(H*d)}
     const c=helixBg.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
-    const g0=helixScenes[1].offsetTop,g1=helixScenes[2].offsetTop+helixScenes[2].offsetHeight,g=clamp((scrollY-g0)/(g1-g0));
-    const ph=g*Math.PI*2*2.2,cx=W*.5,R=Math.min(W*.16,210),N=26,tileB=new Path2D(tile4(-30,-30,.6,.6,.6,.6));
-    const items=[];
-    for(let i=-2;i<N+2;i++){
-      const y=i/N*H,a=ph+i*.5,x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),z2=-z1;
-      items.push({z:-2,f:()=>{c.strokeStyle='rgba(239,233,220,.10)';c.lineWidth=2;c.beginPath();c.moveTo(x1,y);c.lineTo(x2,y);c.stroke()}});
-      for(const [x,z,k] of [[x1,z1,0],[x2,z2,1]])items.push({z,f:()=>{const sz=(12+8*(z+1)/2)/60;c.save();c.translate(x,y);c.rotate(a*.3+k);c.scale(sz,sz);c.globalAlpha=.10+.16*(z+1)/2;c.fillStyle=(i+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(tileB);c.stroke(tileB);c.restore()}});
+    helixTile=helixTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));
+    const g0=helixScenes[0].offsetTop+H*.6,g1=helixScenes[2].offsetTop+helixScenes[2].offsetHeight;
+    const pitch=H*1.3,cx=W/2,R=W*.47,y0=Math.max(g0,scrollY-60),y1=Math.min(g1,scrollY+H+60);
+    if(y1<=y0)return;
+    const ph=y=>(y-g0)/pitch*Math.PI*2;
+    const fade=y=>Math.min(1,(y-g0)/(H*.5),(g1-y)/(H*.5));
+    const segs=[];
+    // backbones: fine segments, thicker and brighter in front
+    for(let y=y0-(y0%10);y<y1;y+=10){
+      for(const k of [0,1]){
+        const a=ph(y)+k*Math.PI,a2=ph(y+10)+k*Math.PI,z=Math.sin(a);
+        segs.push({z,draw:()=>{const f=Math.max(0,fade(y));c.strokeStyle='rgba(239,233,220,'+((.05+.16*(z+1)/2)*f).toFixed(3)+')';c.lineWidth=4+10*(z+1)/2;c.lineCap='round';c.beginPath();c.moveTo(cx+R*Math.cos(a),y-scrollY);c.lineTo(cx+R*Math.cos(a2),y+10-scrollY);c.stroke()}});
+      }
     }
-    items.sort((a,b)=>a.z-b.z).forEach(it=>it.f());
+    // base pairs: rungs across the whole width, a tile at each end
+    const step=H*.11;
+    for(let y=Math.ceil((y0-g0)/step)*step+g0;y<y1;y+=step){
+      const a=ph(y),x1=cx+R*Math.cos(a),x2=cx-R*Math.cos(a),z1=Math.sin(a),f=Math.max(0,fade(y)),sy=y-scrollY,n=Math.round((y-g0)/step);
+      segs.push({z:-1.5,draw:()=>{c.strokeStyle='rgba(239,233,220,'+(.08*f).toFixed(3)+')';c.lineWidth=2;c.setLineDash([2,7]);c.beginPath();c.moveTo(x1,sy);c.lineTo(x2,sy);c.stroke();c.setLineDash([])}});
+      for(const [x,z,k] of [[x1,z1,0],[x2,-z1,1]])segs.push({z:z+.01,draw:()=>{const sz=(22+22*(z+1)/2)/60;c.save();c.translate(x,sy);c.rotate(a*.4+k);c.scale(sz,sz);c.globalAlpha=(.10+.30*(z+1)/2)*f;c.fillStyle=n%7===3&&k===0?'#c98260':(n+k)%2?'#efe9dc':'#15140f';c.strokeStyle='#efe9dc';c.lineWidth=1.5/sz;c.fill(helixTile);c.stroke(helixTile);c.restore()}});
+    }
+    segs.sort((a,b)=>a.z-b.z).forEach(sg=>sg.draw());
   }
 
   // inherited sorter
