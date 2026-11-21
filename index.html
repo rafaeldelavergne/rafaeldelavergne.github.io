@@ -1195,6 +1195,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // ---- point of view: the staircase in 3D
   const povStage=document.getElementById('pov-stage');
   let pov=null,povLoading=false,povVisible=false,povP=0,drag=0;
+  let meWalk=0;
   function loadThree(){
     if(povLoading)return;povLoading=true;
     const sc=document.createElement('script');
@@ -1272,13 +1273,17 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     if(!pov)return;
     const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;
     if(povVisible&&root.dataset.mode==='film'){
-      walkT=(walkT+dt*.9)%pov.N;
-      for(const m of pov.monks){
-        const t=((m.off+m.dir*walkT)%pov.N+pov.N)%pov.N,k=Math.floor(t),f=t-k,a=pov.cells[k],b=pov.cells[k+1];
+      // while the wall is still the drawing, the walkers stand exactly where the drawing has them
+      const hold=povGrow<.999;
+      if(hold){walkT=24;meWalk=0}else{walkT=(walkT+dt*.9)%pov.N;meWalk=(meWalk+dt*.9)%pov.N}
+      pov.monks.forEach((m,mi)=>{
+        let t=m.dir<0?((25-meWalk)%pov.N+pov.N)%pov.N:((m.off+walkT)%pov.N+pov.N)%pov.N;
+        if(hold&&mi===1)t=26;
+        const k=Math.floor(t),f=t-k,a=pov.cells[k],b=pov.cells[k+1];
         m.g.position.set(a[0]+(b[0]-a[0])*f,a[1]+Math.abs(Math.sin(f*Math.PI))*.06,a[2]+(b[2]-a[2])*f);
-        const dx=(b[0]-a[0])*m.dir,dz=(b[2]-a[2])*m.dir;m.g.rotation.y=Math.atan2(dx,dz);
-        m.g.visible=povGrow>.98||k>=23;
-      }
+        const dir=m.dir<0?-1:1,dx=(b[0]-a[0])*dir,dz=(b[2]-a[2])*dir;m.g.rotation.y=Math.atan2(dx,dz);
+        m.g.visible=hold?(m.dir<0||mi===0||mi===1):true;
+      });
       for(const c of pov.cols){const s=c.fi===3?1:Math.max(.001,povGrow),y=pov.BASE+c.h*s/2;c.m.scale.y=s;c.ed.scale.y=s;c.m.position.y=y;c.ed.position.y=y;c.wins.forEach(w=>w.visible=s>.98)}
       const turn=ease(clamp((povP-.3)/.4))*1.05+drag;
       const az=Math.PI/4+turn,el=Math.asin(1/Math.sqrt(3)),d=60;
@@ -1337,106 +1342,44 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     workFig.innerHTML=out;
   }
 
-  // inherited: drawing hands, engraved. The inherited hand draws yours; each choice draws one part of it
+  // inherited: drawing hands. An engraving of my own hand, drawn twice: each pencil touches the other's wrist
   const handsSvg=document.getElementById('hands');
-  const HP={ // pieces of a writing hand, local coordinates
-    cuff:'M0 34 L60 26 C66 62 66 96 62 120 L2 128 C-4 96 -4 64 0 34 Z',
-    back:'M60 32 C92 18 140 10 186 22 C196 26 202 34 200 44 C186 52 160 66 140 80 C110 100 84 112 62 118 C66 92 66 60 60 32 Z',
-    curled:'M196 46 C210 58 212 78 200 92 C192 100 180 100 172 92 C176 104 170 116 156 118 C146 118 140 112 140 104 C138 116 128 124 116 122 C106 120 102 110 108 100 C120 90 150 72 196 46 Z',
-    index:'M182 22 C206 28 230 44 250 64 C258 72 258 82 250 86 C244 88 238 84 232 80 C220 70 206 62 196 56 C192 48 188 32 182 22 Z',
-    thumb:'M66 118 C96 122 130 118 160 104 C182 94 200 88 214 90 C224 92 226 102 218 108 C204 116 186 124 162 132 C128 142 96 142 70 132 Z'
-  };
-  const HSH={ // where each piece turns away from the light
-    cuff:'M38 10 L80 10 L80 140 L38 140 Z',
-    back:'M58 84 C100 96 150 74 214 40 L214 150 L58 150 Z',
-    curled:'M90 40 L230 40 L230 140 L90 140 Z',
-    index:'M188 50 C214 62 236 76 262 84 L262 104 L188 104 Z',
-    thumb:'M60 126 C110 140 170 124 232 98 L232 160 L60 160 Z'
-  };
-  const DET={ // inner lines: folds, tendons, knuckles, joints, nails
-    cuff:'M8 40 C11 70 11 100 8 122 M46 30 C50 60 50 90 47 118 M30 72 a3.5 3.5 0 1 0 .1 0',
-    back:'M70 40 C110 30 150 24 180 26 M70 52 C108 46 140 42 168 46 M72 66 C104 62 130 60 152 64 M178 21 q9 3 11 12 M165 40 q8 3 9 11 M148 57 q7 3 8 10',
-    curled:'M172 92 C168 84 168 74 174 66 M140 104 C137 96 139 88 146 82 M193 84 q7 -1 7 7 M163 108 q6 -1 6 6 M128 113 q6 -1 6 6',
-    index:'M214 37 q-4 9 -11 13 M236 57 q-4 7 -11 9 M243 69 C250 71 255 78 252 85 C247 85 241 80 239 75 Z',
-    thumb:'M170 97 q5 9 2 17 M209 92 C218 91 223 98 221 105 C214 105 208 100 205 95 Z M120 126 q22 2 40 -6'
-  };
-  const SKETCH='M0 34 C-22 29 -44 33 -64 44 M2 128 C-20 133 -44 129 -66 118 M-6 50 L-40 58 M-8 70 L-46 76 M-8 90 L-48 94 M-6 110 L-44 110';
-  function hatch(id,ang,sp,bend){let d='';for(let y=-90;y<240;y+=sp)d+='M-120 '+y+' Q150 '+(y+bend)+' 420 '+y;return '<g transform="rotate('+ang+' 150 70)"><path d="'+d+'" fill="none" stroke-width=".75"/></g>'}
-  function pencil(col){
-    const tx=262,ty=242,ex=228,ey=12,dx=ex-tx,dy=ey-ty,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,nx=-uy,ny=ux,w=5;
-    const P=(t,o)=>(tx+ux*t+nx*o).toFixed(1)+' '+(ty+uy*t+ny*o).toFixed(1);
-    return '<g stroke="'+col+'" stroke-linejoin="round"><path d="M'+P(22,-w)+' L'+P(L,-w)+' L'+P(L,w)+' L'+P(22,w)+' Z" fill="#f6f1e6" stroke-width="1.3"/>'+
-      '<path d="M'+P(24,0)+' L'+P(L-2,0)+'" stroke-width=".7"/><path d="M'+P(L-14,-w)+' L'+P(L-14,w)+' M'+P(L-10,-w)+' L'+P(L-10,w)+'" stroke-width=".8"/>'+
-      '<path d="M'+P(0,0)+' L'+P(22,-w)+' L'+P(22,w)+' Z" fill="#f6f1e6" stroke-width="1.2"/><path d="M'+P(4,-1.3)+' L'+P(16,-3.6)+' M'+P(8,0)+' L'+P(18,0)+' M'+P(4,1.3)+' L'+P(16,3.6)+'" stroke-width=".6"/>'+
-      '<path d="M'+P(0,0)+' L'+P(7,-1.6)+' L'+P(7,1.6)+' Z" fill="'+col+'"/></g>';
+  const HD={w:900,h:682,wrist:[16,333],tip:[891,661]},HC=[(HD.wrist[0]+HD.tip[0])/2,(HD.wrist[1]+HD.tip[1])/2];
+  const BANDS=[[0,190],[190,370],[370,530],[530,690],[690,900]],PIECE_OF_CHOICE=BANDS;
+  const B_T='rotate(180 '+HC[0]+' '+HC[1]+')';
+  handsSvg.setAttribute('viewBox','-10 -46 '+(2*HC[0]+20)+' '+(2*HC[1]+92));
+  const IMG=k=>'<image href="img/hand_'+k+'.webp" width="'+HD.w+'" height="'+HD.h+'"/>';
+  const choices=()=>[...document.querySelectorAll('#sorter li')].map(li=>li.classList.contains('kept')?'keep':li.classList.contains('questioned')?'question':'');
+  function drawHands(){
+    const st=choices(),done=st.filter(Boolean).length,all=done===5;
+    let o='<defs>'+BANDS.map((b,i)=>'<clipPath id="hb'+i+'"><rect x="'+b[0]+'" y="-30" width="'+(b[1]-b[0])+'" height="'+(HD.h+60)+'"/></clipPath>').join('')+'<clipPath id="hbw"><rect id="hbw-r" x="0" y="-30" width="0" height="'+(HD.h+60)+'"/></clipPath></defs>';
+    const band=(i,top)=>st[i]?'<g data-b="'+i+'"'+(top?' data-top="1"':'')+' clip-path="url(#hb'+i+')">'+IMG(st[i]==='keep'?'ink':'me')+'</g>':'';
+    // yours first (sketch, then the parts already drawn), then the inherited hand, then your pencil on top of its wrist
+    o+='<g class="hand-b" transform="'+B_T+'">'+IMG('sketch')+BANDS.map((_,i)=>band(i)).join('')+'</g>';
+    o+='<g class="hand-a">'+IMG('ink')+'</g>';
+    o+='<g class="hand-b-top" transform="'+B_T+'">'+band(4,true)+'</g>';
+    o+='<text x="10" y="-14" font-family="JetBrains Mono,monospace" font-size="26" fill="#7d7666">inherited</text>';
+    o+='<text x="'+(2*HC[0]+10)+'" y="'+(2*HC[1]+36)+'" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="26" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · drawing each other':' · '+done+'/5')+'</text>';
+    handsSvg.innerHTML=o;
   }
-  const PIECE_OF_CHOICE=['cuff','back','index','thumb','curled'];
-  // the cuff is a flat drawing on the paper; its outline is traced up to the other hand's pencil point (30,30)
-  const CUFF_TRACE='M60 26 C66 62 66 96 62 120 L2 128 C-4 96 -4 64 0 34 L30 30',CUFF_REST='M30 30 L60 26';
-  function flat(pre,col,drawn,gap){
-    let o='<path d="'+SKETCH+'" fill="none" stroke="#15140f" stroke-width=".8" stroke-opacity=".5" stroke-linecap="round"/>';
-    o+='<path d="'+CUFF_TRACE+'" pathLength="100" fill="none" stroke="'+col+'" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="'+(drawn*100).toFixed(1)+' 200"/>';
-    o+='<path d="'+CUFF_TRACE+'" pathLength="100" fill="none" stroke="#15140f" stroke-opacity=".35" stroke-width="1" stroke-dasharray="2 4" stroke-dashoffset="'+(-drawn*100).toFixed(1)+'" style="clip-path:none"/>';
-    o+=gap?'<path d="'+CUFF_REST+'" fill="none" stroke="#15140f" stroke-opacity=".35" stroke-width="1" stroke-dasharray="2 4"/>':'<path d="'+CUFF_REST+'" fill="none" stroke="'+col+'" stroke-width="1.4"/>';
-    if(drawn>=1)o+='<path d="'+DET.cuff+'" fill="none" stroke="'+col+'" stroke-width=".9" stroke-linecap="round"/>';
-    return o;
-  }
-  function solid(pre,states,withPencil,penCol){
-    const order=['curled','back','PENCIL','index','thumb'];
-    let o='<defs>'+Object.keys(HP).map(k=>'<clipPath id="'+pre+k+'"><path d="'+HP[k]+'"/></clipPath><clipPath id="'+pre+k+'s"><path d="'+HSH[k]+'"/></clipPath>').join('')+
-      '<linearGradient id="'+pre+'g" gradientUnits="userSpaceOnUse" x1="52" y1="0" x2="132" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="1"/></linearGradient>'+
-      '<mask id="'+pre+'m" maskUnits="userSpaceOnUse" x="-100" y="-100" width="500" height="400"><rect x="-100" y="-100" width="500" height="400" fill="url(#'+pre+'g)"/></mask>'+
-      '<filter id="'+pre+'b" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="7"/></filter></defs>';
-    const real=['back','curled','index','thumb'].some(k=>states[k]!=='sketch');
-    if(real)o+='<ellipse cx="178" cy="156" rx="92" ry="13" fill="#15140f" opacity=".16" filter="url(#'+pre+'b)" mask="url(#'+pre+'m)"/>';
-    for(const k of order){
-      if(k==='PENCIL'){if(withPencil)o+=pencil(penCol);continue}
-      const st=states[k],col=st==='me'?'#c98260':'#15140f';
-      if(st==='sketch'){o+='<path d="'+HP[k]+'" fill="none" stroke="#15140f" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="3 5" stroke-linejoin="round"/>';continue}
-      o+='<g data-p="'+k+'">';
-      o+='<path d="'+HP[k]+'" fill="#f6f1e6" mask="url(#'+pre+'m)"/>';
-      o+='<g mask="url(#'+pre+'m)"><g clip-path="url(#'+pre+k+')" stroke="'+col+'" stroke-opacity=".78">'+hatch(pre+k,{back:-24,curled:-40,index:34,thumb:-14}[k],3.2,{back:10,curled:8,index:6,thumb:-8}[k])+
-        '<g clip-path="url(#'+pre+k+'s)">'+hatch(pre+k+'x',{back:52,curled:46,index:-48,thumb:62}[k],2.5,-6)+'</g></g></g>';
-      o+='<path class="ol" pathLength="100" d="'+HP[k]+'" fill="none" stroke="'+col+'" stroke-width="1.7" stroke-linejoin="round"/><path class="dt" pathLength="100" d="'+DET[k]+'" fill="none" stroke="'+col+'" stroke-width="1" stroke-linecap="round"/>';
-      o+='</g>';
-    }
-    return o;
-  }
-  // a choice arrives: keep = the inherited piece travels over to your hand; question = it stops halfway and fades, you draw your own
+  // keep: that part of the inherited hand turns over onto yours; question: you draw your own, in orange
   const reduceHands=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function animateChoice(idx,kind){
-    const k=PIECE_OF_CHOICE[idx];if(k==='cuff'||reduceHands)return;
-    const target=handsSvg.querySelector('g[transform^="rotate"] g[data-p="'+k+'"]');if(!target)return;
-    const src=handsSvg.querySelector('g[transform^="translate"] g[data-p="'+k+'"]');
-    const fly=document.createElementNS('http://www.w3.org/2000/svg','g');
-    fly.innerHTML=src?src.innerHTML:'';handsSvg.append(fly);
-    const T=kind==='keep'?900:700,t0=performance.now();
-    if(kind==='keep')target.style.opacity='0';else target.classList.add('drawing');
-    (function step(now){
-      const t=Math.min(1,(now-t0)/T),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-      if(kind==='keep'){fly.setAttribute('transform','rotate('+(180*e).toFixed(2)+' 300 210) translate(154 74)');fly.style.opacity='1'}
-      else{fly.setAttribute('transform','rotate('+(70*e).toFixed(2)+' 300 210) translate(154 74)');fly.style.opacity=(1-e).toFixed(2)}
-      if(t<1)requestAnimationFrame(step);
-      else{fly.remove();target.style.opacity='';}
-    })(t0);
-  }
-  function drawHands(){
-    const lis=[...document.querySelectorAll('#sorter li')],st=lis.map(li=>li.classList.contains('kept')?'keep':li.classList.contains('questioned')?'question':'');
-    const done=st.filter(Boolean).length,all=done===PIECE_OF_CHOICE.length;
-    const mine={};PIECE_OF_CHOICE.forEach((k,i)=>mine[k]=st[i]==='keep'?'ink':st[i]==='question'?'me':'sketch');
-    const inh={cuff:'ink',back:'ink',curled:'ink',index:'ink',thumb:'ink'};
-    const A='translate(154 74)',B='rotate(180 300 210) translate(154 74)';
-    const bCol=mine.cuff==='me'?'#c98260':'#15140f';
-    let o='';
-    // flat drawings first: each cuff is traced up to the other pencil's point
-    o+='<g transform="'+A+'">'+flat('hA','#15140f',all?1:1,all)+'</g>';
-    o+='<g transform="'+B+'">'+flat('hB',bCol,all?1:Math.max(.12,done/5),true)+'</g>';
-    // then the hands rising out of them
-    o+='<g transform="'+A+'">'+solid('hA',inh,true,'#15140f')+'</g>';
-    o+='<g transform="'+B+'">'+solid('hB',mine,all,'#c98260')+'</g>';
-    o+='<text x="110" y="74" font-family="JetBrains Mono,monospace" font-size="12" fill="#7d7666">inherited</text>';
-    o+='<text x="532" y="360" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="12" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · drawing each other':' · '+done+'/5')+'</text>';
-    handsSvg.innerHTML=o;
+    if(reduceHands)return;
+    const targets=[...handsSvg.querySelectorAll('[data-b="'+idx+'"]')];if(!targets.length)return;
+    const T0=performance.now();
+    if(kind==='keep'){
+      targets.forEach(t=>t.style.opacity='0');
+      const fly=document.createElementNS('http://www.w3.org/2000/svg','g');fly.setAttribute('clip-path','url(#hb'+idx+')');fly.innerHTML=IMG('ink');handsSvg.append(fly);
+      (function step(now){const t=Math.min(1,(now-T0)/1100),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+        fly.setAttribute('transform','rotate('+(180*e).toFixed(2)+' '+HC[0]+' '+HC[1]+')');
+        if(t<1)requestAnimationFrame(step);else{fly.remove();targets.forEach(x=>x.style.opacity='')}})(T0);
+    }else{
+      const r=handsSvg.querySelector('#hbw-r'),b=BANDS[idx];targets.forEach(t=>t.setAttribute('clip-path','url(#hbw)'));
+      (function step(now){const t=Math.min(1,(now-T0)/1000),e=1-Math.pow(1-t,3);
+        r.setAttribute('x',b[0]);r.setAttribute('width',((b[1]-b[0])*e).toFixed(1));
+        if(t<1)requestAnimationFrame(step);else targets.forEach(x=>x.setAttribute('clip-path','url(#hb'+idx+')'))})(T0);
+    }
   }
   drawHands();
   document.getElementById('sorter').addEventListener('click',e=>{
@@ -1682,7 +1625,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // 4 · it was a drawing: the 3D world shrinks into the point of the inherited pencil
     if(tI>0&&tI<1&&pov){
       if(!povSnap){povSnap=pov.renderer.domElement.toDataURL();carryImg.src=povSnap}
-      const pt=handsSvg.createSVGPoint();pt.x=416;pt.y=316;const sp=pt.matrixTransform(handsSvg.getScreenCTM()),e=sm(tI),k=Math.pow(1-e,2.4);
+      const pt=handsSvg.createSVGPoint();pt.x=HD.tip[0];pt.y=HD.tip[1];const sp=pt.matrixTransform(handsSvg.getScreenCTM()),e=sm(tI),k=Math.pow(1-e,2.4);
       const w=W*k+10*(1-k),h=vh*k+10*(1-k),cx=W/2+(sp.x-W/2)*e,cy=vh/2+(sp.y-vh/2)*e;
       Object.assign(carryImg.style,{display:'block',left:(cx-w/2)+'px',top:(cy-h/2)+'px',width:w+'px',height:h+'px',opacity:String(1-clamp((tI-.85)/.15))});
       pvF.style.opacity='0';
