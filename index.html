@@ -168,6 +168,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 #inherited .lede{margin-top:.8em}
 #inherited .sorter{margin-top:1.2em;gap:7px;max-width:560px}
 #inherited .sorter li{padding:7px 10px 7px 14px}
+#inherited .sorter button{pointer-events:none}
 #inherited .sorter li .phrase{font-size:clamp(18px,1.75vw,24px)}
 #inherited .tally{margin-top:.8em}
 [data-mode="film"] #inherited>.frame{padding-top:88px;padding-bottom:64px;min-height:100svh;justify-content:center}
@@ -276,6 +277,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 @media (min-width:901px){[data-mode="film"] .dance-frame{align-items:flex-start;text-align:left}[data-mode="film"] .dance-copy{max-width:min(500px,40vw)}}
 .carrier{display:none}
 [data-mode="film"] .carrier{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:16;pointer-events:none}
+.fly-cv{position:fixed;inset:0;width:100%;height:100%;z-index:16;pointer-events:none;display:none}
 .carry-img,.carry-clone{position:fixed;z-index:16;pointer-events:none;display:none}
 .dancers{transform-origin:50% 50%}
 .signal{display:none}
@@ -489,7 +491,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 
 <main id="text" tabindex="-1">
 <svg class="signal film-only" id="signal" aria-hidden="true"></svg>
-<svg class="carrier" id="carrier" aria-hidden="true"></svg><img class="carry-img" id="carry-img" alt=""><svg class="carry-clone" id="carry-clone" viewBox="0 0 300 340" aria-hidden="true"></svg>
+<svg class="carrier" id="carrier" aria-hidden="true"></svg><canvas class="fly-cv" id="fly-cv" aria-hidden="true"></canvas><img class="carry-img" id="carry-img" alt=""><svg class="carry-clone" id="carry-clone" viewBox="0 0 300 340" aria-hidden="true"></svg>
 <svg class="dancers film-only" id="dancers" viewBox="0 0 600 600" aria-hidden="true"></svg>
 
 <!-- 0 · title -->
@@ -572,7 +574,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   <div class="frame has-fig">
     <p class="label"><span class="md">##</span>inherited</p>
     <h2 class="big">Some of what I’ve inherited is a gift. Some of it I want to question.</h2>
-    <p class="lede">From my parents, from the world around me. Keep it, or rewrite it: each choice draws a line of your own hand.</p>
+    <p class="lede">From my parents, from the world around me. Most of it I keep. One thing I rewrote.</p>
     <ul class="sorter" id="sorter">
       <li><span class="phrase">Work hard, complain little.</span><span class="choices"><button type="button" data-v="keep" aria-pressed="false">keep</button><button type="button" data-v="question" aria-pressed="false">question</button></span></li>
       <li><span class="phrase">Be reasonable.</span><span class="choices"><button type="button" data-v="keep" aria-pressed="false">keep</button><button type="button" data-v="question" aria-pressed="false">question</button></span></li>
@@ -1622,6 +1624,33 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     signalSvg.innerHTML=o;
   }
 
+  // 5 · your hand comes apart: its tiles fly down and pave the strip of stage 1; the orange ones gather into the orange tile
+  const flyCv=document.getElementById('fly-cv');let flySample=null;
+  function flyHand(tW){
+    const tessEl=document.getElementById('tess'),hand=document.getElementById('hands-cv');
+    if(!(tW>0&&tW<1)||!tessEl||root.dataset.mode!=='film'){flyCv.style.display='none';if(hand)hand.style.opacity='';tessEl&&(tessEl.style.opacity='');return}
+    if(!flySample){const st=choices();flySample=HCELLS.filter((q,i)=>i%7===0&&st[q.g]).map(q=>({q,me:st[q.g]==='question',r:Math.random()}))}
+    const W=innerWidth,H=innerHeight,d=Math.min(devicePixelRatio,2);
+    if(flyCv.width!==Math.round(W*d)||flyCv.height!==Math.round(H*d)){flyCv.width=Math.round(W*d);flyCv.height=Math.round(H*d)}
+    flyCv.style.display='block';const c=flyCv.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
+    const hr=handsSvg.getBoundingClientRect(),hk=hr.width/920,tm=tessEl.getScreenCTM(),meEl=document.getElementById('tess-me');
+    const mb=meEl?meEl.getBBox():{x:ME_C*TS,y:ME_R*TS,width:TS,height:TS};
+    const toS=(x,y)=>{const p=tessEl.createSVGPoint();p.x=x;p.y=y;const r=p.matrixTransform(tm);return [r.x,r.y]};
+    const meC=toS(mb.x+mb.width/2,mb.y+mb.height/2),cell=Math.abs(toS(TS,0)[0]-toS(0,0)[0]);
+    const T=new Path2D(tile4(-30,-30,.6,.6,.6,.6)),n=flySample.length,meN=flySample.filter(f=>f.me).length;let mi=0,ii=0;
+    hand.style.opacity=String(1-sm(clamp(tW/.25)));
+    tessEl.style.opacity=String(sm(clamp((tW-.6)/.35)));
+    for(const f of flySample){
+      const cos=Math.PI,dx=f.q.x-HC[0],dy=f.q.y-HC[1],bx=HC[0]-dx,by=HC[1]-dy+HDY;
+      const sx=hr.left+(bx+10)*hk,sy=hr.top+(by+46)*hk;
+      let tx,ty,ts;
+      if(f.me){const a=(mi++/Math.max(1,meN))*Math.PI*2;tx=meC[0]+Math.cos(a)*cell*.18*f.r;ty=meC[1]+Math.sin(a)*cell*.18*f.r;ts=cell*.1}
+      else{const k=ii++,cc=k%(TC*TR),col=cc%TC,row=Math.floor(cc/TC),p0=toS(col*TS+TS*(.2+.6*f.r),row*TS+TS*(.2+.6*((k*7)%10)/10));tx=p0[0];ty=p0[1];ts=cell*.1}
+      const t0=f.r*.35,e=sm(clamp((tW-t0)/(.65))),x=sx+(tx-sx)*e,y=sy+(ty-sy)*e-Math.sin(Math.PI*e)*H*.04,sz=(HG.cs*hk*(.4+f.q.step/15))+(ts-HG.cs*hk)*e;
+      c.save();c.translate(x,y);c.rotate(e*Math.PI*(f.r>.5?1:-1));c.scale(sz/60,sz/60);c.globalAlpha=1-sm(clamp((tW-.72)/.2));c.fillStyle=f.me?MEC:INKC;c.fill(T);c.restore();
+    }
+  }
+
   // ---- carriers: one object handed from a scene to the next
   const carrierSvg=document.getElementById('carrier'),carryImg=document.getElementById('carry-img'),carryClone=document.getElementById('carry-clone');
   const unitTile=(()=>{const a=.6,N=14,e=u=>a*(.2*Math.sin(2*Math.PI*u)+.07*Math.sin(4*Math.PI*u)),P=[];
@@ -1644,7 +1673,11 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // 3 · the same staircase: the 3D one takes the drawing's place in the drawing's colours, then the light comes in
     const tP=pvr.top>0&&pvr.top<vh?1-pvr.top/vh:0,tI=passIn('inherited');
     povTone=pvr.top>0?0:sm(clamp((povP-.04)/.22));povGrow=pvr.top>0?0:clamp((povP-.02)/.2);
-    pvF.style.setProperty('--bg',toRGB(INKc,PAPc,povTone));pvF.style.setProperty('--fg',toRGB(PAPc,INKc,povTone));pvF.style.setProperty('--dim',toRGB([143,137,123],[125,118,102],povTone));
+    pvF.style.setProperty('--bg',toRGB(INKc,PAPc,povTone));
+    // the page around it (bars, body) takes the same colour as the staircase, so no light band at top or bottom
+    {const near=pvr.top<vh&&pvr.bottom>0&&povTone<1;
+     if(near){document.body.style.setProperty('--bg',toRGB(INKc,PAPc,povTone));document.body.style.setProperty('--fg',toRGB(PAPc,INKc,povTone))}
+     else{document.body.style.removeProperty('--bg');document.body.style.removeProperty('--fg')}}pvF.style.setProperty('--fg',toRGB(PAPc,INKc,povTone));pvF.style.setProperty('--dim',toRGB([143,137,123],[125,118,102],povTone));
     if(tP>0){const e=sm(tP);pf.style.transform='translateY('+(tP*vh).toFixed(1)+'px)';pf.style.opacity=(1-e).toFixed(3);pvF.style.transform='translateY('+(-pvr.top).toFixed(1)+'px)';pvF.style.opacity=e.toFixed(3);pvF.style.zIndex='2'}
     else{pf.style.transform='';pf.style.opacity='';pvF.style.transform='';pvF.style.zIndex='';pvF.style.opacity=''}
     // 4 · it was a drawing: the 3D world shrinks into the point of the inherited pencil
@@ -1657,10 +1690,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     }else{carryImg.style.display='none';if(tI===0)povSnap=null}
     // 5 · your finished hand folds into the orange tile of the grid
     const tW=passIn('where'),tT=passIn('totem'),me=document.getElementById('tess-me');
-    tessMeHidden=(tW>0&&tW<1)||(tT>0&&tT<1);
+    tessMeHidden=(tW>0&&tW<.92)||(tT>0&&tT<1);
     if(me)me.style.visibility=tessMeHidden?'hidden':'visible';
-    if(tW>0&&tW<1&&me){const hb=handsSvg.querySelectorAll('.hand-b'),src=rectOf(hb[0]||handsSvg),s0={x:src.x+src.w*.3,y:src.y+src.h*.25,w:src.w*.4,h:src.h*.5},e=sm(tW);
-      svg+='<path d="'+shapeD(unitTile,unitTile,0,lerpR(s0,rectOf(me),e))+'" fill="#c98260" stroke="#15140f" stroke-width="1.2" opacity="'+Math.min(1,tW*5).toFixed(2)+'"/>'}
+    flyHand(tW);
     // 6 · the tile takes volume: it becomes the top of the founding cube of the totem
     const c0=totemCubes[0],c0top=c0.querySelector('.cu-t');
     if(tT>0&&tT<1&&me){const e=sm(tT);svg+='<path d="'+shapeD(unitTile,unitDiamond,e,lerpR(rectOf(me),rectOf(c0top),e))+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/>';c0.style.visibility='hidden'}
@@ -1689,6 +1721,13 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     else{antHide=false;if(resHold){resHold=false;drawRes()}}
     carrierSvg.innerHTML=svg;
   }
+
+  // inherited plays by itself: four kept, one questioned, one after the other when the scene comes into view
+  const AUTO=['keep','keep','question','keep','keep'];let autoDone=false;
+  const autoObs=new IntersectionObserver(es=>{for(const e of es){if(!e.isIntersecting||autoDone)continue;autoDone=true;autoObs.disconnect();
+    const lis=[...document.querySelectorAll('#sorter li')];
+    AUTO.forEach((v,i)=>setTimeout(()=>{const b=lis[i]&&lis[i].querySelector('button[data-v="'+v+'"]');if(b){b.dataset.auto='1';b.click()}},700+i*1500));}},{threshold:.45});
+  autoObs.observe(document.getElementById('inherited'));
 
   // inherited sorter
   const tally=document.getElementById('tally');
