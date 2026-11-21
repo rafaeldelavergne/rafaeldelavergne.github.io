@@ -172,7 +172,13 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 #inherited .sorter li .phrase{font-size:clamp(18px,1.75vw,24px)}
 #inherited .tally{margin-top:.8em}
 [data-mode="film"] #inherited>.frame{padding-top:88px;padding-bottom:64px;min-height:100svh;justify-content:center}
-[data-mode="film"] .hands-fig{width:min(40vw,64vh)}
+.hands .drawing .ol,.hands .drawing .dt{stroke-dasharray:100;stroke-dashoffset:100;animation:drawin .9s ease forwards}
+.hands .drawing .dt{animation-delay:.35s}
+.hands .drawing>g,.hands .drawing>path:first-child{opacity:0;animation:fadein .6s ease .6s forwards}
+@keyframes drawin{to{stroke-dashoffset:0}}
+@keyframes fadein{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hands .drawing *{animation:none!important;opacity:1!important;stroke-dashoffset:0!important}}
+[data-mode="film"] .hands-fig{width:min(44vw,70vh);right:max(16px,4vw)}
 @media (max-width:700px){#inherited .sorter li{flex-direction:row;align-items:center;padding:6px 8px 6px 12px}#inherited .sorter li .phrase{font-size:15px}#inherited .sorter button{padding:3px 8px;font-size:11px}#inherited .sorter li{background:color-mix(in srgb,var(--bg) 85%,transparent)}}
 @media (max-width:900px){[data-mode="film"] #inherited .hands-fig{position:static;transform:none;width:100%;max-width:420px;order:1;margin:1em 0 0}#inherited .sorter{order:2}#inherited .tally{order:3}}
 .tile-mark{display:inline-block;width:12px;height:12px;margin-left:7px;vertical-align:-1px}
@@ -562,7 +568,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       <li><span class="phrase">Rest is something you earn.</span><span class="choices"><button type="button" data-v="keep" aria-pressed="false">keep</button><button type="button" data-v="question" aria-pressed="false">question</button></span></li>
     </ul>
     <p class="tally" id="tally" role="status" aria-live="polite"></p>
-    <div class="side-fig hands-fig" aria-hidden="true"><svg class="hands" id="hands" viewBox="0 0 600 420"></svg><p class="fig-cap">you were drawn; now you draw · after M.C. Escher’s drawing hands</p></div>
+    <div class="side-fig hands-fig" aria-hidden="true"><svg class="hands" id="hands" viewBox="96 52 450 316"></svg><p class="fig-cap">you were drawn; now you draw · after M.C. Escher’s drawing hands</p></div>
   </div>
 </section>
 
@@ -1366,12 +1372,32 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       if(k==='PENCIL'){if(withPencil)o+=pencil(penCol);continue}
       const st=states[k],col=st==='me'?'#c98260':'#15140f';
       if(st==='sketch'){o+='<path d="'+HP[k]+'" fill="none" stroke="#15140f" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="3 5" stroke-linejoin="round"/>';continue}
+      o+='<g data-p="'+k+'">';
       o+='<path d="'+HP[k]+'" fill="#f6f1e6" mask="url(#'+pre+'m)"/>';
       o+='<g mask="url(#'+pre+'m)"><g clip-path="url(#'+pre+k+')" stroke="'+col+'" stroke-opacity=".78">'+hatch(pre+k,{back:-24,curled:-40,index:34,thumb:-14}[k],3.2,{back:10,curled:8,index:6,thumb:-8}[k])+
         '<g clip-path="url(#'+pre+k+'s)">'+hatch(pre+k+'x',{back:52,curled:46,index:-48,thumb:62}[k],2.5,-6)+'</g></g></g>';
-      o+='<path d="'+HP[k]+'" fill="none" stroke="'+col+'" stroke-width="1.7" stroke-linejoin="round"/><path d="'+DET[k]+'" fill="none" stroke="'+col+'" stroke-width="1" stroke-linecap="round"/>';
+      o+='<path class="ol" pathLength="100" d="'+HP[k]+'" fill="none" stroke="'+col+'" stroke-width="1.7" stroke-linejoin="round"/><path class="dt" pathLength="100" d="'+DET[k]+'" fill="none" stroke="'+col+'" stroke-width="1" stroke-linecap="round"/>';
+      o+='</g>';
     }
     return o;
+  }
+  // a choice arrives: keep = the inherited piece travels over to your hand; question = it stops halfway and fades, you draw your own
+  const reduceHands=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animateChoice(idx,kind){
+    const k=PIECE_OF_CHOICE[idx];if(k==='cuff'||reduceHands)return;
+    const target=handsSvg.querySelector('g[transform^="rotate"] g[data-p="'+k+'"]');if(!target)return;
+    const src=handsSvg.querySelector('g[transform^="translate"] g[data-p="'+k+'"]');
+    const fly=document.createElementNS('http://www.w3.org/2000/svg','g');
+    fly.innerHTML=src?src.innerHTML:'';handsSvg.append(fly);
+    const T=kind==='keep'?900:700,t0=performance.now();
+    if(kind==='keep')target.style.opacity='0';else target.classList.add('drawing');
+    (function step(now){
+      const t=Math.min(1,(now-t0)/T),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      if(kind==='keep'){fly.setAttribute('transform','rotate('+(180*e).toFixed(2)+' 300 210) translate(154 74)');fly.style.opacity='1'}
+      else{fly.setAttribute('transform','rotate('+(70*e).toFixed(2)+' 300 210) translate(154 74)');fly.style.opacity=(1-e).toFixed(2)}
+      if(t<1)requestAnimationFrame(step);
+      else{fly.remove();target.style.opacity='';}
+    })(t0);
   }
   function drawHands(){
     const lis=[...document.querySelectorAll('#sorter li')],st=lis.map(li=>li.classList.contains('kept')?'keep':li.classList.contains('questioned')?'question':'');
@@ -1387,12 +1413,16 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // then the hands rising out of them
     o+='<g transform="'+A+'">'+solid('hA',inh,true,'#15140f')+'</g>';
     o+='<g transform="'+B+'">'+solid('hB',mine,all,'#c98260')+'</g>';
-    o+='<text x="60" y="70" font-family="JetBrains Mono,monospace" font-size="12" fill="#7d7666">inherited</text>';
-    o+='<text x="540" y="372" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="12" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · drawing each other':' · '+done+'/5')+'</text>';
+    o+='<text x="110" y="74" font-family="JetBrains Mono,monospace" font-size="12" fill="#7d7666">inherited</text>';
+    o+='<text x="532" y="360" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="12" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · drawing each other':' · '+done+'/5')+'</text>';
     handsSvg.innerHTML=o;
   }
   drawHands();
-  document.getElementById('sorter').addEventListener('click',()=>setTimeout(drawHands,0));
+  document.getElementById('sorter').addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const li=b.closest('li'),idx=[...li.parentElement.children].indexOf(li),prev=li.dataset.prev||'';
+    setTimeout(()=>{drawHands();if(b.dataset.v!==prev)animateChoice(idx,b.dataset.v);li.dataset.prev=b.dataset.v},0);
+  });
 
   // DNA: a double helix of tiles; scroll dives into the orange one
   const cosmos=document.getElementById('cosmos');let cosmosP=0;
