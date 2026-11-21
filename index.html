@@ -268,6 +268,8 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 /* the dancers */
 [data-mode="film"] .dance-frame{align-items:center;justify-content:center;text-align:center}
 @media (min-width:901px){[data-mode="film"] .dance-frame{align-items:flex-start;text-align:left}[data-mode="film"] .dance-copy{max-width:min(500px,40vw)}}
+.signal{display:none}
+[data-mode="film"] .signal{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0}
 [data-mode="film"] .dancers{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0}
 [data-mode="film"] #dance>.frame{z-index:3;background:transparent}
 [data-mode="film"] .dance-copy{background:color-mix(in srgb,#15140f 82%,transparent);padding:28px 32px;border:1px solid rgba(239,233,220,.18)}
@@ -474,6 +476,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </header>
 
 <main id="text" tabindex="-1">
+<svg class="signal film-only" id="signal" aria-hidden="true"></svg>
 <svg class="dancers film-only" id="dancers" viewBox="0 0 600 600" aria-hidden="true"></svg>
 
 <!-- 0 · title -->
@@ -636,8 +639,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <p class="fig-cap film-only syn-cap">two neurons and the space between them · engraved after M.C. Escher</p>
   </div>
 </section>
-
-<div class="seam film-only" data-from="ink" data-to="ink" data-a="space" data-b="zoom" aria-hidden="true"><svg viewBox="0 0 840 420" preserveAspectRatio="xMidYMid slice"></svg></div>
 
 <!-- 8 · energy -->
 <section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:560vh">
@@ -1025,7 +1026,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     let o='<defs><pattern id="synH" width="4.6" height="4.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="4.6" height="4.6" fill="var(--bg)"/><line class="hp" x1="0" y1="0" x2="0" y2="4.6"/></pattern>'+
       '<clipPath id="synL"><rect x="-20" y="-20" width="'+(m1+20)+'" height="'+(Wd+40)+'"/></clipPath><clipPath id="synR"><rect x="'+m2+'" y="-20" width="'+(L-m2+20)+'" height="'+(Wd+40)+'"/></clipPath>'+
       '<path id="ntT" d="'+tile4(-30,-30,.7,.7,.7,.7)+'"/></defs>';
-    o+='<g'+(hor?'':' transform="translate('+W+' 0) rotate(90)"')+'>';
+    const pan=sm(clamp((p-.84)/.14))*(L*.62);
+    o+='<g'+(hor?' transform="translate('+(-pan).toFixed(1)+' 0)"':' transform="translate('+W+' '+(-pan).toFixed(1)+') rotate(90)"')+'>';
     // the space lights up
     const lit=sm(clamp((p-.44)/.16));
     if(lit>0)o+='<rect class="syn-gap" x="'+m1+'" y="-20" width="'+g+'" height="'+(Wd+40)+'" opacity="'+lit.toFixed(3)+'"/>';
@@ -1053,8 +1055,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // labels stay upright
     const M=(x,y)=>hor?[x,y]:[W-y,x];
     const ls=hor?[L*.06,cy+R+28]:[W-16,L*.16],lr=hor?[L*.94,cy+R+28]:[W-16,L*.9];
-    o+='<text class="syn-lbl" x="'+ls[0]+'" y="'+ls[1]+'"'+(hor?'':' text-anchor="end"')+'>stimulus</text><text class="syn-lbl" x="'+lr[0]+'" y="'+lr[1]+'" text-anchor="end">response</text>';
+    o+='<g opacity="'+(1-clamp((p-.82)/.06)).toFixed(2)+'"><text class="syn-lbl" x="'+ls[0]+'" y="'+ls[1]+'"'+(hor?'':' text-anchor="end"')+'>stimulus</text><text class="syn-lbl" x="'+lr[0]+'" y="'+lr[1]+'" text-anchor="end">response</text></g>';
     syn.innerHTML=o;
+    const leave=clamp((p-.82)/.06);cleftText.style.opacity=(1-leave).toFixed(2);document.querySelectorAll('#space .g-notes,#space .syn-cap,#space>.frame>.label').forEach(el=>el.style.opacity=(1-leave).toFixed(2));
+    syn.style.opacity=(1-clamp((p-.96)/.03)).toFixed(2);
     cleftText.style.setProperty('--cw',(hor?Math.max(260,maxGap-56):W-44)+'px');
   }
 
@@ -1460,6 +1464,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       const tr=document.getElementById('top').getBoundingClientRect();if(tr.bottom>0){drawCosmos(t);if(helixBg.classList.contains('on'))drawHelixBg()}
       const er=mob.getBoundingClientRect();if(er.bottom>0&&er.top<vh)drawMobius(t);
       const sr=document.getElementById('space').getBoundingClientRect();if(sr.bottom>0&&sr.top<vh)drawSynapse(t);
+      drawSignal(t);
     }
     requestAnimationFrame(animLoop);
   }
@@ -1601,6 +1606,32 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     dancersSvg.innerHTML=o;
   }
 
+  // the signal: it leaves the synapse along the response neuron and carries on into energy
+  const signalSvg=document.getElementById('signal');
+  function drawSignal(t){
+    const vh=innerHeight,W=innerWidth,sp=document.getElementById('space'),zr=document.getElementById('zoom').getBoundingClientRect(),sr=sp.getBoundingClientRect();
+    const spP=clamp(-sr.top/Math.max(1,sr.height-vh)),zP=clamp(-zr.top/Math.max(1,zr.height-vh));
+    let op=0;
+    if(sr.bottom>0&&sr.top<vh&&sr.top<=0)op=clamp((spP-.9)/.08);
+    if(sr.bottom<vh&&zr.top<vh&&zr.bottom>0)op=1;
+    if(zr.top<=0)op=1-clamp((zP-.045)/.02);
+    signalSvg.style.opacity=op.toFixed(3);
+    if(op<=0)return;
+    const hor=W>=vh*.9,ink=zr.top<=0;
+    const wrap=document.querySelector('#zoom .orbit-wrap').getBoundingClientRect();
+    const ex=hor?(ink?wrap.left+wrap.width/2:W+20):W/2, ey=hor?vh/2:(ink?wrap.top+wrap.height/2:vh+20);
+    const ab=ink?clamp(zP/.05):0,ae=ab*ab*(3-2*ab);
+    const fx=hor?-20+(ex+20)*ae:W/2, fy=hor?vh/2:-20+(ey+20)*ae;
+    const len=Math.max(1,Math.hypot(ex-fx,ey-fy)),ux=(ex-fx)/len,uy=(ey-fy)/len,nx=-uy,ny=ux,w=24;
+    const L=(a,b,o)=>(fx+ux*a+nx*o).toFixed(1)+' '+(fy+uy*a+ny*o).toFixed(1);
+    let o='<defs><pattern id="sigH" width="4.6" height="4.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="4.6" height="4.6" fill="#15140f"/><line x1="0" y1="0" x2="0" y2="4.6" stroke="#efe9dc" stroke-width="1.1"/></pattern></defs>';
+    o+='<path d="M'+L(0,0,-w)+' L'+L(len,0,-w)+' L'+L(len,0,w)+' L'+L(0,0,w)+' Z" fill="url(#sigH)"/>';
+    o+='<path d="M'+L(0,0,-w)+' L'+L(len,0,-w)+' M'+L(0,0,w)+' L'+L(len,0,w)+'" stroke="#efe9dc" stroke-width="1.5" fill="none"/>';
+    for(let k=0;k<4;k++){const f=((t*.00045+k/4)%1),a=f*len;o+='<circle cx="'+(fx+ux*a).toFixed(1)+'" cy="'+(fy+uy*a).toFixed(1)+'" r="9" fill="#c98260"/>'}
+    if(ink){const g=1-clamp(zP/.06);o+='<circle cx="'+ex.toFixed(1)+'" cy="'+ey.toFixed(1)+'" r="'+(10+30*(1-g)).toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="3" stroke-opacity="'+g.toFixed(2)+'"/>'}
+    signalSvg.innerHTML=o;
+  }
+
   // inherited sorter
   const tally=document.getElementById('tally');
   document.getElementById('sorter').addEventListener('click',e=>{
@@ -1627,8 +1658,13 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const SOCIAL=5;
   let touched=false;
   const areaOf=ls=>ls.reduce((a,l,i)=>a+l*ls[(i+1)%6],0);
+  let personUnit=null;
+  function personPts(){if(!personUnit)personUnit=personD(-.5,-.5,1).slice(1).replace('Z','').split('L').map(q=>q.trim().split(' ').map(Number));return personUnit}
+  function levelAt(th,lv){let d=(th*180/Math.PI+90+360)%360;const i=Math.floor(d/60),f=(d-i*60)/60;return lv[i%6]+(lv[(i+1)%6]-lv[i%6])*f}
+  function bodyShape(lv){return personPts().map(([x,y])=>{const k=(12+levelAt(Math.atan2(y,x),lv)*14)/.62;return [x*k,y*k]})}
   function paintEnergy(ls,shown){
-    shape.setAttribute('points',ls.map((l,i)=>pt(i,i<shown?l:0)).join(' '));
+    const lv=ls.map((l,i)=>i<shown?l:0);
+    shape.setAttribute('points',bodyShape(lv).map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' '));
     dimBtns.forEach((b,i)=>{const l=Math.round(ls[i]);b.querySelector('.lv').textContent='●'.repeat(l)+'○'.repeat(5-l);b.setAttribute('aria-label',b.querySelector('.n').textContent+': '+l+' out of 5. Activate to change.')});
     dimLis.forEach((li,i)=>li.classList.toggle('on',i<shown));
   }
@@ -1654,19 +1690,11 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // the end of energy: the six-sided shape becomes a figure, the one who dances next
   let dancerAnchor=null;
   function energyMorph(p){
-    const m=clamp((p-.9)/.06),wrap=shape.ownerSVGElement;
-    const r=wrap.getBoundingClientRect();
+    const m=clamp((p-.9)/.06),wrap=shape.ownerSVGElement,r=wrap.getBoundingClientRect();
     if(p<.98)dancerAnchor={x:r.left+r.width/2,y:r.top+r.height/2,px:r.width/200};
-    if(m<=0){shape.style.fill='';return}
-    const ls=touched?dimBtns.map(b=>+b.dataset.l):scrollLevels,N=72;
-    const hexP=[];for(let i=0;i<6;i++){const q=pt(i,ls[i]).split(',').map(Number);hexP.push(q)}
-    const along=[];for(let i=0;i<N;i++){const t=i/N*6,k=Math.floor(t),f=t-k,a=hexP[k],b=hexP[(k+1)%6];along.push([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f])}
-    const S=dancerTileScreen()/(r.width/200);
-    const per=personD(-S/2,-S/2,S).slice(1).split('L').map(q=>q.trim().split(' ').map(Number));
-    const tgt=[];for(let i=0;i<N;i++){const q=per[Math.floor(i/N*per.length)];tgt.push(q)}
-    // align starts: begin both at the top-most point
-    const top=a=>a.reduce((bi,q,i)=>q[1]<a[bi][1]?i:bi,0),ra=a=>{const t=top(a);return a.slice(t).concat(a.slice(0,t))};
-    const A=ra(along),B=ra(tgt),e=m*m*(3-2*m);
+    if(m<=0){shape.style.fill='';dimLis.forEach(li=>li.style.opacity='');return}
+    const ls=touched?dimBtns.map(b=>+b.dataset.l):scrollLevels,A=bodyShape(ls);
+    const S=dancerTileScreen()/(r.width/200),B=personPts().map(([x,y])=>[x*S,y*S]),e=m*m*(3-2*m);
     shape.setAttribute('points',A.map((q,i)=>(q[0]+(B[i][0]-q[0])*e).toFixed(1)+','+(q[1]+(B[i][1]-q[1])*e).toFixed(1)).join(' '));
     shape.style.fill=e>.5?'#c98260':'';
     dimLis.forEach(li=>li.style.opacity=(1-e).toFixed(2));
