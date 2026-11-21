@@ -165,11 +165,11 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 .c-ink{fill:#15140f;stroke:#15140f;stroke-width:.9}
 .c-paper{fill:#efe9dc;stroke:#efe9dc;stroke-width:.9}
 .c-me{fill:#c98260;stroke:#c98260;stroke-width:.9}
-#inherited .big{font-size:clamp(28px,3.4vw,48px);max-width:17ch}
+#inherited .big{font-size:clamp(30px,4vw,60px);max-width:16ch}
 #inherited .lede{margin-top:.8em}
 #inherited .sorter{margin-top:1.2em;gap:7px;max-width:560px}
 #inherited .sorter li{padding:7px 10px 7px 14px}
-#inherited .sorter li .phrase{font-size:clamp(17px,1.6vw,21px)}
+#inherited .sorter li .phrase{font-size:clamp(18px,1.75vw,24px)}
 #inherited .tally{margin-top:.8em}
 [data-mode="film"] #inherited>.frame{padding-top:88px;padding-bottom:64px;min-height:100svh;justify-content:center}
 [data-mode="film"] .hands-fig{width:min(40vw,64vh)}
@@ -1560,7 +1560,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     dancersSvg.setAttribute('viewBox','0 0 '+W+' '+H);dancersSvg.setAttribute('preserveAspectRatio','xMidYMid slice');
     const cols=Math.ceil(W/S)+2,rows=Math.ceil(H/S)+2,mc=Math.floor(cols*(mob?.5:.24)),mr=Math.floor(rows*(mob?.8:.56));
     let mx=mc*S-S+S/2,my=mr*S-S+S/2,gx=0,gy=0;
-    if(dancerAnchor){const k=Math.max(innerWidth/W,innerHeight/H),ox=(innerWidth-W*k)/2,oy=(innerHeight-H*k)/2,ax=(dancerAnchor.x-ox)/k,ay=(dancerAnchor.y-oy)/k;gx=ax-mx;gy=ay-my;mx=ax;my=ay}
+    const anc=dancerAnchor||{x:innerWidth*(mob?.5:.665),y:innerHeight*(mob?.78:.5)};
+    if(anc){const dancerAnchor=anc;const k=Math.max(innerWidth/W,innerHeight/H),ox=(innerWidth-W*k)/2,oy=(innerHeight-H*k)/2,ax=(dancerAnchor.x-ox)/k,ay=(dancerAnchor.y-oy)/k;gx=ax-mx;gy=ay-my;mx=ax;my=ay}
     let o='';
     o+='<g transform="translate('+gx.toFixed(1)+' '+gy.toFixed(1)+')">';
     const c0=-Math.ceil(gx/S)-2,c1=cols-Math.floor(gx/S)+2,r0=-Math.ceil(gy/S)-2,r1=rows-Math.floor(gy/S)+2;
