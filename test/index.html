@@ -1323,7 +1323,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const SKETCH='M0 34 C-22 29 -44 33 -64 44 M2 128 C-20 133 -44 129 -66 118 M-6 50 L-40 58 M-8 70 L-46 76 M-8 90 L-48 94 M-6 110 L-44 110';
   function hatch(id,ang,sp,bend){let d='';for(let y=-90;y<240;y+=sp)d+='M-120 '+y+' Q150 '+(y+bend)+' 420 '+y;return '<g transform="rotate('+ang+' 150 70)"><path d="'+d+'" fill="none" stroke-width=".75"/></g>'}
   function pencil(col){
-    const tx=270,ty=112,ex=176,ey=-14,dx=ex-tx,dy=ey-ty,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,nx=-uy,ny=ux,w=5;
+    const tx=262,ty=232,ex=226,ey=8,dx=ex-tx,dy=ey-ty,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,nx=-uy,ny=ux,w=5;
     const P=(t,o)=>(tx+ux*t+nx*o).toFixed(1)+' '+(ty+uy*t+ny*o).toFixed(1);
     return '<g stroke="'+col+'" stroke-linejoin="round"><path d="M'+P(22,-w)+' L'+P(L,-w)+' L'+P(L,w)+' L'+P(22,w)+' Z" fill="#f6f1e6" stroke-width="1.3"/>'+
       '<path d="M'+P(24,0)+' L'+P(L-2,0)+'" stroke-width=".7"/><path d="M'+P(L-14,-w)+' L'+P(L-14,w)+' M'+P(L-10,-w)+' L'+P(L-10,w)+'" stroke-width=".8"/>'+
@@ -1331,18 +1331,24 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       '<path d="M'+P(0,0)+' L'+P(7,-1.6)+' L'+P(7,1.6)+' Z" fill="'+col+'"/></g>';
   }
   function hand(pre,states,withPencil,penCol){
-    // states: piece -> 'ink' | 'me' | 'sketch'
+    // states: piece -> 'ink' | 'me' | 'sketch'. The cuff stays a flat line drawing; the hand comes out of the page
     const order=['curled','back','cuff','PENCIL','index','thumb'];
-    let o='<defs>'+Object.keys(HP).map(k=>'<clipPath id="'+pre+k+'"><path d="'+HP[k]+'"/></clipPath><clipPath id="'+pre+k+'s"><path d="'+HSH[k]+'"/></clipPath>').join('')+'</defs>';
-    o+='<path d="'+SKETCH+'" fill="none" stroke="#15140f" stroke-width=".8" stroke-opacity=".45" stroke-linecap="round"/>';
+    let o='<defs>'+Object.keys(HP).map(k=>'<clipPath id="'+pre+k+'"><path d="'+HP[k]+'"/></clipPath><clipPath id="'+pre+k+'s"><path d="'+HSH[k]+'"/></clipPath>').join('')+
+      '<linearGradient id="'+pre+'g" gradientUnits="userSpaceOnUse" x1="52" y1="0" x2="132" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="1"/></linearGradient>'+
+      '<mask id="'+pre+'m" maskUnits="userSpaceOnUse" x="-100" y="-100" width="500" height="400"><rect x="-100" y="-100" width="500" height="400" fill="url(#'+pre+'g)"/></mask>'+
+      '<filter id="'+pre+'b" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="7"/></filter></defs>';
+    const real=['back','curled','index','thumb'].some(k=>states[k]!=='sketch');
+    if(real)o+='<ellipse cx="178" cy="156" rx="92" ry="13" fill="#15140f" opacity=".16" filter="url(#'+pre+'b)" mask="url(#'+pre+'m)"/>';
+    o+='<path d="'+SKETCH+'" fill="none" stroke="#15140f" stroke-width=".8" stroke-opacity=".5" stroke-linecap="round"/>';
     for(const k of order){
       if(k==='PENCIL'){if(withPencil)o+=pencil(penCol);continue}
       const st=states[k],col=st==='me'?'#c98260':'#15140f';
-      if(st==='sketch'){o+='<path d="'+HP[k]+'" fill="#f6f1e6" stroke="#15140f" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="3 5" stroke-linejoin="round"/>';continue}
-      o+='<path d="'+HP[k]+'" fill="#f6f1e6"/>';
-      o+='<g clip-path="url(#'+pre+k+')" stroke="'+col+'" stroke-opacity=".75">'+hatch(pre+k,{cuff:80,back:-24,curled:-40,index:34,thumb:-14}[k],3.4,{cuff:4,back:10,curled:8,index:6,thumb:-8}[k])+
-        '<g clip-path="url(#'+pre+k+'s)">'+hatch(pre+k+'x',{cuff:-10,back:52,curled:46,index:-48,thumb:62}[k],2.6,-6)+'</g></g>';
-      o+='<path d="'+HP[k]+'" fill="none" stroke="'+col+'" stroke-width="1.8" stroke-linejoin="round"/><path d="'+DET[k]+'" fill="none" stroke="'+col+'" stroke-width="1.05" stroke-linecap="round"/>';
+      if(st==='sketch'){o+='<path d="'+HP[k]+'" fill="none" stroke="#15140f" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="3 5" stroke-linejoin="round"/>';continue}
+      if(k==='cuff'){o+='<path d="'+HP[k]+'" fill="none" stroke="'+col+'" stroke-width="1.2" stroke-linejoin="round"/><path d="'+DET[k]+'" fill="none" stroke="'+col+'" stroke-width=".9" stroke-linecap="round"/>';continue}
+      o+='<path d="'+HP[k]+'" fill="#f6f1e6" mask="url(#'+pre+'m)"/>';
+      o+='<g mask="url(#'+pre+'m)"><g clip-path="url(#'+pre+k+')" stroke="'+col+'" stroke-opacity=".78">'+hatch(pre+k,{back:-24,curled:-40,index:34,thumb:-14}[k],3.2,{back:10,curled:8,index:6,thumb:-8}[k])+
+        '<g clip-path="url(#'+pre+k+'s)">'+hatch(pre+k+'x',{back:52,curled:46,index:-48,thumb:62}[k],2.5,-6)+'</g></g></g>';
+      o+='<path d="'+HP[k]+'" fill="none" stroke="'+col+'" stroke-width="1.7" stroke-linejoin="round"/><path d="'+DET[k]+'" fill="none" stroke="'+col+'" stroke-width="1" stroke-linecap="round"/>';
     }
     return o;
   }
@@ -1353,10 +1359,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const mine={};PIECE_OF_CHOICE.forEach((k,i)=>mine[k]=st[i]==='keep'?'ink':st[i]==='question'?'me':'sketch');
     const inh={cuff:'ink',back:'ink',curled:'ink',index:'ink',thumb:'ink'};
     let o='<defs><filter id="pshadow" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#15140f" flood-opacity=".18"/></filter></defs>';
-    o+='<g transform="translate(92 236)">'+hand('hA',inh,!all,'#15140f')+'</g>';
-    o+='<g transform="rotate(180 300 210) translate(92 236)">'+hand('hB',mine,all,'#c98260')+'</g>';
-    o+='<text x="40" y="388" font-family="JetBrains Mono,monospace" font-size="12" fill="#7d7666">inherited</text>';
-    o+='<text x="560" y="44" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="12" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · now drawing':' · '+done+'/5')+'</text>';
+    o+='<g transform="translate(154 74)">'+hand('hA',inh,true,'#15140f')+'</g>';
+    o+='<g transform="rotate(180 300 210) translate(154 74)">'+hand('hB',mine,all,'#c98260')+'</g>';
+    o+='<text x="60" y="70" font-family="JetBrains Mono,monospace" font-size="12" fill="#7d7666">inherited</text>';
+    o+='<text x="540" y="372" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="12" fill="'+(all?'#c98260':'#7d7666')+'">you'+(all?' · drawing each other':' · '+done+'/5')+'</text>';
     handsSvg.innerHTML=o;
   }
   drawHands();
