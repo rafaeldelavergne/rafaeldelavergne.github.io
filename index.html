@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>being.md — Rafaël de Lavergne</title>
+<title>being — Rafaël de Lavergne</title>
 <meta name="description" content="A working question, in plain text: what does it mean to be yourself?">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -493,7 +493,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <svg class="faller" id="faller" viewBox="-10 -30 20 31" aria-hidden="true"><path d="M-7 0L-3-19Q0-23 3-19L7 0Z" fill="#c98260"/><circle cy="-23" r="4.6" fill="#c98260"/></svg>
 
 <header class="filebar">
-  <a class="name" href="/"><span class="pre">rafaeldelavergne / </span><strong>being.md</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· a working draft</small></a>
+  <a class="name" href="/"><span class="pre">rafaeldelavergne / </span><strong>being</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· a working draft</small></a>
   <span class="fb-right"><button class="toggle" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu">≡ index</button><button class="toggle" type="button" id="mode-toggle" aria-pressed="false">read as text</button></span>
 </header>
 
@@ -503,11 +503,11 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <svg class="dancers film-only" id="dancers" viewBox="0 0 600 600" aria-hidden="true"></svg>
 
 <!-- 0 · title -->
-<section class="scene title-card in-helix" data-tone="ink" data-name="being.md" style="--len:200vh" id="top" data-fig="a double helix">
+<section class="scene title-card in-helix" data-tone="ink" data-name="being" style="--len:200vh" id="top" data-fig="a double helix">
   <div class="frame">
     <canvas class="cosmos film-only" id="cosmos" aria-hidden="true"></canvas>
-    <p class="label film-only"># being.md</p>
-    <h1 class="huge"><span class="md text-only">#</span>being<span class="caret film-only" aria-hidden="true"></span><span class="text-only">.md</span></h1>
+    <p class="label film-only"># being</p>
+    <h1 class="huge"><span class="md text-only">#</span>being<span class="caret film-only" aria-hidden="true"></span></h1>
     <p class="lede">A working question, in plain text. Notes to self, mostly — by Rafaël de Lavergne.</p>
     <p class="scroll-hint film-only"><span>scroll ↓</span><span>or</span><button type="button" data-to-text>read it as a plain file</button></p>
   </div>
@@ -752,7 +752,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </main>
 
 <footer class="statusbar">
-  <span><span class="pos">being.md · </span><span id="here">being.md</span></span>
+  <span><span class="pos">being · </span><span id="here">being</span></span>
   <span><span id="pct" class="pos">0%</span>&nbsp; <button class="chapters-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="chapters">≡ chapters</button></span>
 </footer>
 <nav class="menu" id="menu" hidden aria-label="Index">
@@ -1360,19 +1360,19 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   walkerEl.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:17;display:none';document.body.append(walkerEl);
   function updateWalker(){
     const vh=innerHeight,wr=document.getElementById('work').getBoundingClientRect(),film=root.dataset.mode==='film';
-    const w=clamp((vh-wr.top)/(vh*1.6));
+    const w=clamp((vh-wr.top)/(vh*1.15));
     if(!film||w<=0||wr.bottom<0||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];drawWork(0);return}
     walkerOn=true;walkerEl.style.display='block';walkerEl.setAttribute('viewBox','0 0 '+innerWidth+' '+vh);
     const ctm=workFig.getScreenCTM(),P=(x,y,z)=>{const q=ISO(x,y,z,36,160,90),pt=workFig.createSVGPoint();pt.x=q[0];pt.y=q[1];const r=pt.matrixTransform(ctm);return [r.x,r.y]};
     const k=ctm.a,small=36*k*.75;
-    blockRise=[sm(clamp((w-.32)/.14)),sm(clamp((w-.55)/.14)),sm(clamp((w-.78)/.12))];
+    blockRise=[sm(clamp((w-.78)/.12)),sm(clamp((w-.55)/.14)),sm(clamp((w-.3)/.14))];
     drawWork(1);
     const top=i=>{const c=WC[i];return P(c[0]+.5,.12+c[2]*blockRise[i],c[1]+.5)};
     const start=[dancerScreen.x,dancerScreen.y],ground=P(.5,.12,2.5);
-    const legs=[[0,.3,start,ground],[.3,.5,ground,top(0)],[.5,.74,top(0),top(1)],[.74,.96,top(1),top(2)]];
-    let pos=top(2),hop=0,size=small;
-    for(const [a,b,p0,p1] of legs)if(w<b){const t=clamp((w-a)/(b-a)),e=sm(t);pos=[p0[0]+(p1[0]-p0[0])*e,p0[1]+(p1[1]-p0[1])*e];hop=Math.abs(Math.sin(t*Math.PI*(a===0?6:3)))*small*.25;break}
-    if(w<.3)size=dancerScreen.s+(small-dancerScreen.s)*sm(clamp(w/.3));
+    const above=[top(2)[0],Math.min(start[1],top(2)[1]-vh*.35)],legs=[[0,.18,start,above],[.18,.34,above,top(2)],[.34,.6,top(2),top(1)],[.6,.92,top(1),top(0)]];
+    let pos=top(0),hop=0,size=small;
+    for(const [a,b,p0,p1] of legs)if(w<b){const t=clamp((w-a)/(b-a)),e=sm(t);pos=[p0[0]+(p1[0]-p0[0])*e,p0[1]+(p1[1]-p0[1])*e];hop=a===.18?0:Math.abs(Math.sin(t*Math.PI*(a===0?4:3)))*small*.25;if(a===.18){const e2=t*t;pos=[p0[0]+(p1[0]-p0[0])*e2,p0[1]+(p1[1]-p0[1])*e2]}break}
+    if(w<.34)size=dancerScreen.s+(small-dancerScreen.s)*sm(clamp(w/.34));
     walkerEl.innerHTML='<path d="'+personD(pos[0]-size/2,pos[1]-size-hop,size)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/>';
   }
 
