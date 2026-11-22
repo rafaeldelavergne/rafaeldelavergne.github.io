@@ -784,7 +784,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 'use strict';
 (function(){
   const root=document.documentElement;
-  let walkerOn=false,dancerScreen=null,blockRise=[0,0,0],povGrow=1,tessMeHidden=false,dancerCalm=0,mobK=1,antScreen=null,antHide=false,resHold=false,povSnap=null,povTone=1;
+  let antHideWalk=false,walkerOn=false,dancerScreen=null,blockRise=[0,0,0],povGrow=1,tessMeHidden=false,dancerCalm=0,mobK=1,antScreen=null,antHide=false,resHold=false,povSnap=null,povTone=1;
 
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scenes=[...document.querySelectorAll('.scene')];
@@ -1358,11 +1358,20 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // Reptiles: the orange dancer steps out of the tiling, walks down and climbs the three blocks; each rises as she reaches it
   const walkerEl=document.createElementNS('http://www.w3.org/2000/svg','svg');walkerEl.id='walker';walkerEl.setAttribute('aria-hidden','true');
   walkerEl.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:17;display:none';document.body.append(walkerEl);
-  let walkStart=null,walkRaf=false;
+  let walkStart=null,walkRaf=false,eofM=0;
   function updateWalker(){
     const vh=innerHeight,wr=document.getElementById('work').getBoundingClientRect(),film=root.dataset.mode==='film';
     const w=clamp((vh-wr.top)/(vh*1.15));
-    if(!film||w<=0||wr.bottom<0||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];walkStart=null;drawWork(0);return}
+    // the floor bends into a ring and twists into the Möbius strip; she walks onto it and becomes its orange point
+    const er=document.getElementById('eof').getBoundingClientRect();eofM=film?clamp((vh-er.top)/vh):0;
+    const mobEl=document.getElementById('mobius'),bend=sm(clamp((eofM-.05)/.5));
+    if(film&&eofM>0){const fr0=workFig.getBoundingClientRect(),mr=mobEl.getBoundingClientRect(),dx=(mr.left+mr.width/2)-(fr0.left+fr0.width/2),dy=(mr.top+mr.height/2)-(fr0.top+fr0.height/2);
+      workFig.style.transform='translate('+(dx*bend).toFixed(1)+'px,'+(dy*bend).toFixed(1)+'px) perspective(900px) rotateX('+(55*bend).toFixed(1)+'deg) scale('+(1-.25*bend).toFixed(3)+')';
+      workFig.style.opacity=(1-sm(clamp((eofM-.4)/.25))).toFixed(3);mobEl.style.opacity=sm(clamp((eofM-.35)/.25)).toFixed(3)}
+    else{workFig.style.transform='';workFig.style.opacity='';mobEl.style.opacity=''}
+    antHideWalk=film&&eofM>0&&eofM<.9;
+    if(film&&eofM>=.9){walkerOn=false;walkerEl.style.display='none';return}
+    if(!film||w<=0||(wr.bottom<0&&eofM<=0)||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];walkStart=null;drawWork(0);return}
     walkerOn=true;walkerEl.style.display='block';walkerEl.setAttribute('viewBox','0 0 '+innerWidth+' '+vh);
     const ctm=workFig.getScreenCTM(),P=(x,y,z)=>{const q=ISO(x,y,z,36,160,90),pt=workFig.createSVGPoint();pt.x=q[0];pt.y=q[1];const r=pt.matrixTransform(ctm);return [r.x,r.y]};
     const small=36*ctm.a*.75,fr=workFig.getBoundingClientRect();
@@ -1372,7 +1381,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const e1=sm(clamp(w/.45)),start=[dancerScreen.x,dancerScreen.y];
     let pos=[start[0]+(hover[0]-start[0])*e1,start[1]+(hover[1]-start[1])*e1],size=dancerScreen.s+(small-dancerScreen.s)*e1,hop=Math.abs(Math.sin(e1*Math.PI*4))*small*.25*(1-e1);
     // 2 · once the plane is on screen: she drops onto write, then climbs to coach and build (on its own, 4 s)
-    const visible=fr.top<vh*.8&&fr.bottom>vh*.2;
+    const tops=[top(0),top(1),top(2)],visible=tops.every(q=>q[1]<vh*.8&&q[1]>vh*.12);
     if(w<.3)walkStart=null;
     if(walkStart===null&&visible&&w>=.45)walkStart=performance.now();
     let t=walkStart===null?0:clamp((performance.now()-walkStart)/4200);
@@ -1383,6 +1392,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       for(const [a,b,p0,p1,k] of legs)if(t<b){const u=clamp((t-a)/(b-a)),e=k==='drop'?u*u:sm(u);pos=[p0[0]+(p1[0]-p0[0])*e,p0[1]+(p1[1]-p0[1])*e];hop=k==='drop'?0:Math.abs(Math.sin(u*Math.PI*3))*small*.25;break}
       if(t<1&&!walkRaf){walkRaf=true;requestAnimationFrame(()=>{walkRaf=false;updateWalker()})}
     }
+    if(eofM>0&&antScreen){const e=sm(clamp((eofM-.2)/.7)),tx=antScreen.x,ty=antScreen.y+antScreen.s;pos=[pos[0]+(tx-pos[0])*e,pos[1]+(ty-pos[1])*e-Math.sin(Math.PI*e)*vh*.06];size=size+(antScreen.s*2.4-size)*e;hop=0}
+    pos=[Math.max(size/2+4,Math.min(innerWidth-size/2-4,pos[0])),Math.max(size+hop+8,Math.min(vh-12,pos[1]))];
     walkerEl.innerHTML='<path d="'+personD(pos[0]-size/2,pos[1]-size-hop,size)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/>';
   }
 
@@ -1480,7 +1491,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       const a=P(u0,v0),b=P(u1,v0),cc=P(u1,v1),e=P(u0,v1);
       q.push({p:[a,b,cc,e],z:(a[2]+b[2]+cc[2]+e[2])/4,k:(Math.floor(iu/3)+iv)%2});
     }
-    const ua=(t*.0006)%(4*Math.PI),A=P(ua,0);{const mr=mob.getBoundingClientRect();antScreen={x:mr.left+A[0],y:mr.top+A[1],s:W*.018}}if(mobK>.95&&!antHide)q.push({ant:A,z:A[2]+.02});
+    const ua=(t*.0006)%(4*Math.PI),A=P(ua,0);{const mr=mob.getBoundingClientRect();antScreen={x:mr.left+A[0],y:mr.top+A[1],s:W*.018}}if(mobK>.95&&!antHide&&!antHideWalk)q.push({ant:A,z:A[2]+.02});
     q.sort((m,n)=>m.z-n.z);
     for(const it of q){
       if(it.ant){c.fillStyle='#c98260';c.beginPath();c.arc(it.ant[0],it.ant[1],W*.018,0,7);c.fill();continue}
@@ -1752,7 +1763,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     else{cg0.style.opacity='';const t0=cg0.querySelector('.cu-t');if(t0)t0.style.visibility=''}
     // 12 · the plane closes on itself
     const er=document.getElementById('eof').getBoundingClientRect(),ep=clamp((vh-er.top)/(vh*1.2));
-    mobK=sm(clamp((ep-.25)/.5));
+    mobK=sm(clamp((eofM-.5)/.38));
     // 13 · the orange point leaves the strip and becomes the single tile of the portrait
     const rrT=document.getElementById('real').getBoundingClientRect().top,tR=+resIn.value>0?1:clamp((vh-rrT)/(vh*.7));
     if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.55;
