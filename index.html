@@ -719,7 +719,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 9 · what I do with it -->
-<section class="scene free" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane">
+<section class="scene" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane" style="--len:300vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="work-fig" viewBox="0 0 320 300"></svg><p class="fig-cap">out of the flat plane · after M.C. Escher’s reptiles</p></div>
     <p class="label"><span class="md">##</span>what I do with it</p>
@@ -1404,6 +1404,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     if(w<.3)walkStart=null;
     if(walkStart===null&&visible&&w>=.45)walkStart=performance.now();
     let t=walkStart===null?0:clamp((performance.now()-walkStart)/4200);
+    {const pp=clamp(-wr.top/Math.max(1,wr.height-vh));t=Math.max(t,clamp((pp-.05)/.6));if(t>0&&walkStart===null)walkStart=performance.now()-t*4200}
     blockRise=[sm(clamp((t-.68)/.2)),sm(clamp((t-.36)/.2)),sm(clamp((t-.04)/.18))];
     drawWork(1);
     if(walkStart!==null){
