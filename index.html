@@ -193,6 +193,26 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 }
 @media (max-width:700px){#inherited .sorter li{flex-direction:row;align-items:center;padding:6px 8px 6px 12px}#inherited .sorter li .phrase{font-size:15px}#inherited .sorter button{padding:3px 8px;font-size:11px}#inherited .sorter li{background:color-mix(in srgb,var(--bg) 85%,transparent)}}
 @media (max-width:900px){[data-mode="film"] #inherited .hands-fig{position:static;transform:none;width:100%;max-width:420px;order:1;margin:1em 0 0}#inherited .sorter{order:2}#inherited .tally{order:3}}
+.site-nav{display:flex;align-items:center;gap:6px;font:13px var(--mono)}
+.site-nav a{color:var(--fg);text-decoration:none;padding:6px 10px;border-radius:20px}
+.site-nav a:hover{color:var(--accent)}
+.site-nav .nav-cta{background:#c98260;color:#fff;padding:6px 14px}
+.site-nav .nav-cta:hover{background:var(--fg);color:var(--bg)}
+.filebar .name small{color:var(--dim)}
+.statusbar{gap:10px}
+.story-btn{display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--bg) 80%,transparent);border:1px solid color-mix(in srgb,var(--fg) 25%,transparent);border-radius:20px;padding:5px 12px;font:12px var(--mono);color:var(--fg);max-width:min(560px,70vw)}
+.story-btn:hover{border-color:var(--accent)}
+.story-btn .sb-l{color:var(--accent);white-space:nowrap}
+.story-btn #here{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.story-btn .sb-n{color:var(--dim)}
+.story-btn .sb-bar{width:60px;height:2px;background:color-mix(in srgb,var(--fg) 20%,transparent);flex-shrink:0}
+.story-btn .sb-bar i{display:block;height:100%;width:0;background:var(--accent)}
+.home-doors{display:flex;flex-wrap:wrap;gap:10px;margin-top:2.4em}
+.door{font:13px var(--mono);color:var(--fg);text-decoration:none;border:1px solid color-mix(in srgb,var(--fg) 40%,transparent);border-radius:30px;padding:10px 18px}
+.door:hover{border-color:var(--accent);color:var(--accent)}
+.door-cta{background:#c98260;border-color:#c98260;color:#fff}
+.door-cta:hover{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+@media (max-width:700px){.site-nav .nav-more,.filebar .name small{display:none}.site-nav .nav-cta{padding:6px 11px}.story-btn .sb-bar{display:none}.story-btn{max-width:62vw}.statusbar #mode-toggle{font-size:11px}}
 .tile-mark{display:inline-block;width:12px;height:12px;margin-left:7px;vertical-align:-1px}
 .tile-mark svg{width:100%;height:100%;fill:var(--accent);overflow:visible}
 
@@ -493,8 +513,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <svg class="faller" id="faller" viewBox="-10 -30 20 31" aria-hidden="true"><path d="M-7 0L-3-19Q0-23 3-19L7 0Z" fill="#c98260"/><circle cy="-23" r="4.6" fill="#c98260"/></svg>
 
 <header class="filebar">
-  <a class="name" href="/"><span class="pre">rafaeldelavergne / </span><strong>being</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· a working draft</small></a>
-  <span class="fb-right"><button class="toggle" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu">≡ index</button><button class="toggle" type="button" id="mode-toggle" aria-pressed="false">read as text</button></span>
+  <a class="name" href="/"><strong>being</strong><span class="tile-mark" title="still being written"></span> <small>&nbsp;· Rafaël de Lavergne</small></a>
+  <nav class="site-nav" aria-label="Site"><a href="/coaching/">Coaching</a><a href="/writing/" class="nav-more">Writing</a><a href="/building/" class="nav-more">Building</a><a class="nav-cta" href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a call</a><button class="toggle nav-burger" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Menu">≡</button></nav>
 </header>
 
 <main id="text" tabindex="-1">
@@ -509,7 +529,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <p class="label film-only"># being</p>
     <h1 class="huge"><span class="md text-only">#</span>being<span class="caret film-only" aria-hidden="true"></span></h1>
     <p class="lede">A working question, in plain text. Notes to self, mostly — by Rafaël de Lavergne.</p>
-    <p class="scroll-hint film-only"><span>scroll ↓</span><span>or</span><button type="button" data-to-text>read it as a plain file</button></p>
+    <p class="home-doors film-only"><a href="#question" class="door">Watch the story ↓</a><a href="/coaching/" class="door door-cta">I’m here for coaching →</a></p>
   </div>
 </section>
 
@@ -752,16 +772,17 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </main>
 
 <footer class="statusbar">
-  <span><span class="pos">being · </span><span id="here">being</span></span>
-  <span><span id="pct" class="pos">0%</span>&nbsp; <button class="chapters-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="chapters">≡ chapters</button></span>
+  <button class="story-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="menu"><span class="sb-l">the story</span><span id="here">I. the question</span><span class="sb-n" id="pct">1/13</span><span class="sb-bar"><i id="sb-fill"></i></span></button>
+  <button class="toggle" type="button" id="mode-toggle" aria-pressed="false">read as text</button>
 </footer>
 <nav class="menu" id="menu" hidden aria-label="Index">
   <div class="menu-in">
-    <p class="menu-h"><span class="md">#</span>my path</p>
+    <p class="menu-h"><span class="md">#</span>the story</p>
     <div class="intents" role="group" aria-label="Shortcuts">
-      <a href="#next" data-intent>I’m here for coaching →</a>
-      <a href="#work" data-intent>I’m here for Compass →</a>
-      <button type="button" id="intent-text">just let me read it →</button>
+      <a href="/coaching/">Coaching →</a>
+      <a href="/writing/">Writing →</a>
+      <a href="/building/">Building →</a>
+      <button type="button" id="intent-text">read the story as text →</button>
     </div>
     <div class="trail">
       <svg class="trail-svg" id="trail-svg" aria-hidden="true"></svg>
@@ -770,7 +791,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     <p class="walked" id="walked"></p>
     <p class="menu-h"><span class="md">##</span>elsewhere</p>
     <ul class="toc-links">
-      <li><a href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">book a coaching conversation ↗</a></li>
       <li><a href="https://compass-me.ai" target="_blank" rel="noopener">Compass ↗</a></li>
       <li><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a></li>
       <li><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a></li>
@@ -867,7 +887,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const max=document.documentElement.scrollHeight-vh;
     const total=max>0?clamp(scrollY/max):0;
     root.style.setProperty('--total',total.toFixed(4));
-    pctEl.textContent=Math.round(total*100)+'%';
+    document.getElementById('sb-fill').style.width=(total*100).toFixed(1)+'%';
     let active=scenes[0];
     for(const s of scenes){
       const r=s.getBoundingClientRect();
@@ -943,7 +963,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       current=active;
       {const ai=scenes.indexOf(active);if(ai>reached){reached=ai;try{localStorage.setItem('being-reached',String(ai))}catch(e){}}}
       if(film)document.body.dataset.tone=active.dataset.tone;
-      here.textContent='¶ '+active.dataset.name;
+      {const ai=scenes.indexOf(active),act=ACTS.find(a=>a[2].includes(active.id));here.textContent=(act?act[0]+'. '+act[1]+' · ':'')+active.dataset.name;pctEl.textContent=(ai+1)+'/'+scenes.length}
       list.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',String(a.hash==='#'+active.id)));
     }
     if(!film)delete document.body.dataset.tone;
