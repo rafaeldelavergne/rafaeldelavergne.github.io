@@ -1362,16 +1362,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   function updateWalker(){
     const vh=innerHeight,wr=document.getElementById('work').getBoundingClientRect(),film=root.dataset.mode==='film';
     const w=clamp((vh-wr.top)/(vh*1.15));
-    // the floor bends into a ring and twists into the Möbius strip; she walks onto it and becomes its orange point
-    const er=document.getElementById('eof').getBoundingClientRect();eofM=film?clamp((vh-er.top)/vh):0;
-    const mobEl=document.getElementById('mobius'),bend=sm(clamp((eofM-.05)/.5));
-    if(film&&eofM>0){const fr0=workFig.getBoundingClientRect(),mr=mobEl.getBoundingClientRect(),dx=(mr.left+mr.width/2)-(fr0.left+fr0.width/2),dy=(mr.top+mr.height/2)-(fr0.top+fr0.height/2);
-      workFig.style.transform='translate('+(dx*bend).toFixed(1)+'px,'+(dy*bend).toFixed(1)+'px) perspective(900px) rotateX('+(55*bend).toFixed(1)+'deg) scale('+(1-.25*bend).toFixed(3)+')';
-      workFig.style.opacity=(1-sm(clamp((eofM-.4)/.25))).toFixed(3);mobEl.style.opacity=sm(clamp((eofM-.35)/.25)).toFixed(3)}
-    else{workFig.style.transform='';workFig.style.opacity='';mobEl.style.opacity=''}
-    antHideWalk=film&&eofM>0&&eofM<.9;
-    if(film&&eofM>=.9){walkerOn=false;walkerEl.style.display='none';return}
-    if(!film||w<=0||(wr.bottom<0&&eofM<=0)||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];walkStart=null;drawWork(0);return}
+    workFig.style.transform='';workFig.style.opacity='';antHideWalk=false;
+    if(!film||w<=0||wr.bottom<0||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];walkStart=null;drawWork(0);return}
     walkerOn=true;walkerEl.style.display='block';walkerEl.setAttribute('viewBox','0 0 '+innerWidth+' '+vh);
     const ctm=workFig.getScreenCTM(),P=(x,y,z)=>{const q=ISO(x,y,z,36,160,90),pt=workFig.createSVGPoint();pt.x=q[0];pt.y=q[1];const r=pt.matrixTransform(ctm);return [r.x,r.y]};
     const small=36*ctm.a*.75,fr=workFig.getBoundingClientRect();
@@ -1392,7 +1384,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       for(const [a,b,p0,p1,k] of legs)if(t<b){const u=clamp((t-a)/(b-a)),e=k==='drop'?u*u:sm(u);pos=[p0[0]+(p1[0]-p0[0])*e,p0[1]+(p1[1]-p0[1])*e];hop=k==='drop'?0:Math.abs(Math.sin(u*Math.PI*3))*small*.25;break}
       if(t<1&&!walkRaf){walkRaf=true;requestAnimationFrame(()=>{walkRaf=false;updateWalker()})}
     }
-    if(eofM>0&&antScreen){const e=sm(clamp((eofM-.2)/.7)),tx=antScreen.x,ty=antScreen.y+antScreen.s;pos=[pos[0]+(tx-pos[0])*e,pos[1]+(ty-pos[1])*e-Math.sin(Math.PI*e)*vh*.06];size=size+(antScreen.s*2.4-size)*e;hop=0}
     pos=[Math.max(size/2+4,Math.min(innerWidth-size/2-4,pos[0])),Math.max(size+hop+8,Math.min(vh-12,pos[1]))];
     walkerEl.innerHTML='<path d="'+personD(pos[0]-size/2,pos[1]-size-hop,size)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/>';
   }
@@ -1763,7 +1754,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     else{cg0.style.opacity='';const t0=cg0.querySelector('.cu-t');if(t0)t0.style.visibility=''}
     // 12 · the plane closes on itself
     const er=document.getElementById('eof').getBoundingClientRect(),ep=clamp((vh-er.top)/(vh*1.2));
-    mobK=sm(clamp((eofM-.5)/.38));
+    mobK=sm(clamp((ep-.25)/.5));
     // 13 · the orange point leaves the strip and becomes the single tile of the portrait
     const rrT=document.getElementById('real').getBoundingClientRect().top,tR=+resIn.value>0?1:clamp((vh-rrT)/(vh*.7));
     if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.55;
