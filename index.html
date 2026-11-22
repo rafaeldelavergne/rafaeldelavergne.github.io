@@ -684,7 +684,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 5b · the dancers -->
-<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="the one who hears" style="--len:240vh">
+<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="the one who hears" style="--len:170vh">
   <div class="frame dance-frame">
     <div class="dance-copy">
       <p class="label"><span class="md">##</span>the music</p>
@@ -1358,21 +1358,31 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // Reptiles: the orange dancer steps out of the tiling, walks down and climbs the three blocks; each rises as she reaches it
   const walkerEl=document.createElementNS('http://www.w3.org/2000/svg','svg');walkerEl.id='walker';walkerEl.setAttribute('aria-hidden','true');
   walkerEl.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:17;display:none';document.body.append(walkerEl);
+  let walkStart=null,walkRaf=false;
   function updateWalker(){
     const vh=innerHeight,wr=document.getElementById('work').getBoundingClientRect(),film=root.dataset.mode==='film';
     const w=clamp((vh-wr.top)/(vh*1.15));
-    if(!film||w<=0||wr.bottom<0||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];drawWork(0);return}
+    if(!film||w<=0||wr.bottom<0||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];walkStart=null;drawWork(0);return}
     walkerOn=true;walkerEl.style.display='block';walkerEl.setAttribute('viewBox','0 0 '+innerWidth+' '+vh);
     const ctm=workFig.getScreenCTM(),P=(x,y,z)=>{const q=ISO(x,y,z,36,160,90),pt=workFig.createSVGPoint();pt.x=q[0];pt.y=q[1];const r=pt.matrixTransform(ctm);return [r.x,r.y]};
-    const k=ctm.a,small=36*k*.75;
-    blockRise=[sm(clamp((w-.78)/.12)),sm(clamp((w-.55)/.14)),sm(clamp((w-.3)/.14))];
-    drawWork(1);
+    const small=36*ctm.a*.75,fr=workFig.getBoundingClientRect();
+    // 1 · scroll: she leaves the tiling and waits above write, always on screen
     const top=i=>{const c=WC[i];return P(c[0]+.5,.12+c[2]*blockRise[i],c[1]+.5)};
-    const start=[dancerScreen.x,dancerScreen.y],ground=P(.5,.12,2.5);
-    const above=[top(2)[0],Math.min(start[1],top(2)[1]-vh*.35)],legs=[[0,.18,start,above],[.18,.34,above,top(2)],[.34,.6,top(2),top(1)],[.6,.92,top(1),top(0)]];
-    let pos=top(0),hop=0,size=small;
-    for(const [a,b,p0,p1] of legs)if(w<b){const t=clamp((w-a)/(b-a)),e=sm(t);pos=[p0[0]+(p1[0]-p0[0])*e,p0[1]+(p1[1]-p0[1])*e];hop=a===.18?0:Math.abs(Math.sin(t*Math.PI*(a===0?4:3)))*small*.25;if(a===.18){const e2=t*t;pos=[p0[0]+(p1[0]-p0[0])*e2,p0[1]+(p1[1]-p0[1])*e2]}break}
-    if(w<.34)size=dancerScreen.s+(small-dancerScreen.s)*sm(clamp(w/.34));
+    const wt=top(2),hover=[wt[0],Math.max(vh*.14,Math.min(vh*.5,wt[1]-vh*.3))];
+    const e1=sm(clamp(w/.45)),start=[dancerScreen.x,dancerScreen.y];
+    let pos=[start[0]+(hover[0]-start[0])*e1,start[1]+(hover[1]-start[1])*e1],size=dancerScreen.s+(small-dancerScreen.s)*e1,hop=Math.abs(Math.sin(e1*Math.PI*4))*small*.25*(1-e1);
+    // 2 · once the plane is on screen: she drops onto write, then climbs to coach and build (on its own, 4 s)
+    const visible=fr.top<vh*.8&&fr.bottom>vh*.2;
+    if(w<.3)walkStart=null;
+    if(walkStart===null&&visible&&w>=.45)walkStart=performance.now();
+    let t=walkStart===null?0:clamp((performance.now()-walkStart)/4200);
+    blockRise=[sm(clamp((t-.68)/.2)),sm(clamp((t-.36)/.2)),sm(clamp((t-.04)/.18))];
+    drawWork(1);
+    if(walkStart!==null){
+      const legs=[[0,.28,hover,top(2),'drop'],[.28,.6,top(2),top(1)],[.6,.94,top(1),top(0)]];pos=top(0);hop=0;
+      for(const [a,b,p0,p1,k] of legs)if(t<b){const u=clamp((t-a)/(b-a)),e=k==='drop'?u*u:sm(u);pos=[p0[0]+(p1[0]-p0[0])*e,p0[1]+(p1[1]-p0[1])*e];hop=k==='drop'?0:Math.abs(Math.sin(u*Math.PI*3))*small*.25;break}
+      if(t<1&&!walkRaf){walkRaf=true;requestAnimationFrame(()=>{walkRaf=false;updateWalker()})}
+    }
     walkerEl.innerHTML='<path d="'+personD(pos[0]-size/2,pos[1]-size-hop,size)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/>';
   }
 
