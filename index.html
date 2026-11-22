@@ -733,8 +733,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <section class="scene eof" data-tone="paper" data-name="EOF" id="eof" data-fig="a möbius strip" style="--len:320vh">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true"><canvas id="mobius"></canvas><p class="fig-cap">one side, no end · after M.C. Escher’s Möbius strip</p></div>
-    <h2 class="big b" data-at=".62">I’m still figuring out what being myself means in practice.</h2>
-    <p class="lede b" data-at=".72">I dance and I climb. In climbing, I like trying a movement, understanding what went wrong, and trying again. Same here.</p>
+    <h2 class="big b" data-at=".78">I’m still figuring out what being myself means in practice.</h2>
+    <p class="lede b" data-at=".86">I dance and I climb. In climbing, I like trying a movement, understanding what went wrong, and trying again. Same here.</p>
   </div>
 </section>
 
@@ -1387,6 +1387,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const w=clamp((vh-wr.top)/(vh*1.15));
     workFig.style.transform='';workFig.style.opacity='';antHideWalk=false;
     const eofTop=document.getElementById('eof').getBoundingClientRect().top;
+    workFig.style.opacity=film?String(clamp(eofTop/(vh*.6))):'';
     if(!film||w<=0||wr.bottom<0||eofTop<vh*.35||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];walkStart=null;drawWork(0);return}
     walkerOn=true;walkerEl.style.display='block';walkerEl.setAttribute('viewBox','0 0 '+innerWidth+' '+vh);
     const ctm=workFig.getScreenCTM(),P=(x,y,z)=>{const q=ISO(x,y,z,36,160,90),pt=workFig.createSVGPoint();pt.x=q[0];pt.y=q[1];const r=pt.matrixTransform(ctm);return [r.x,r.y]};
@@ -1499,44 +1500,46 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const W=mob.clientWidth;if(!W)return;const H=W,d=Math.min(devicePixelRatio,2);
     if(mob.width!==Math.round(W*d)){mob.width=Math.round(W*d);mob.height=Math.round(H*d)}
     const c=mob.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,W,H);
-    const fg='#15140f',bg='#efe9dc',me='#c98260',p=eofP;
-    const peel=sm(clamp((p-.12)/.42)),floorOut=sm(clamp((p-.08)/.2)),spin=sm(clamp((p-.55)/.45));
-    const L=2*Math.PI,NU=40,NV=2,wd=.32;
-    // view: the floor's isometric angle, turning a little once the strip is closed
-    const yaw=Math.PI/4-spin*.35+(p>.55?Math.sin(t*.0004)*.18:0),pitch=lerpA(.62,.42,spin),sc=W*(.13+.07*peel);
-    function lerpA(a,b,e){return a+(b-a)*e}
+    const fg='#15140f',bg='#efe9dc',me='#c98260',grey='#8f897b',p=eofP;
+    const flat=sm(clamp(p/.14)),line=sm(clamp((p-.14)/.28)),bend=sm(clamp((p-.44)/.3)),done=p>.74;
+    const lp=(a,b,e)=>a+(b-a)*e;
+    // camera: the same isometric view as the floor of "what I do"
+    const yaw=Math.PI/4-bend*.3+(done?Math.sin(t*.0004)*.15:0),pitch=lp(.6155,.45,bend);
+    const sc=W*lp(lp(.105,.036,line),.085,bend);
     const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
-    const P=(x,y,z)=>{const x1=x*cy-z*sy,z1=x*sy+z*cy,y1=y*cp-z1*sp,z2=y*sp+z1*cp;return [W/2+x1*sc,H*(.58-.08*peel)-y1*sc,z2]};
-    // the strip: arc length u in [-π,π]; bend k (0 flat … 1 ring), twist follows the bend
-    const k=Math.max(.0001,peel),R=1/k;
-    const S=(u,v)=>{const th=u*k,cx=R*Math.sin(th),cyy=R*(1-Math.cos(th)),N=[-Math.sin(th),Math.cos(th),0],ph=th/2*1;
-      const Wv=[N[0]*Math.sin(ph),N[1]*Math.sin(ph),Math.cos(ph)];return P(cx+v*Wv[0],cyy+v*Wv[1],v*Wv[2])};
-    const q=[];
-    // the rest of the floor, fading as the row lifts
-    if(floorOut<1)for(let gx=-5;gx<5;gx++)for(let gz=-2;gz<=2;gz++){if(gz===0)continue;
-      const x0=gx*L/10,z0=gz*wd*2-wd,a=P(x0,0,z0),b=P(x0+L/10,0,z0),cc=P(x0+L/10,0,z0+wd*2),e=P(x0,0,z0+wd*2);
-      q.push({p:[a,b,cc,e],z:-9+(a[2]+cc[2])/2*.01,k:(gx+gz+20)%2,fade:1-floorOut})}
-    for(let iu=0;iu<NU;iu++)for(let iv=0;iv<NV;iv++){
-      const u0=-Math.PI+iu/NU*L,u1=u0+L/NU,v0=-wd+iv/NV*2*wd,v1=v0+2*wd/NV;
-      const a=S(u0,v0),b=S(u1,v0),cc=S(u1,v1),e=S(u0,v1);
-      const cell=Math.floor(iu/4),blk=cell===2?'build':cell===5?'coach':cell===7?'write':'';
-      q.push({p:[a,b,cc,e],z:(a[2]+b[2]+cc[2]+e[2])/4,k:(cell+iv)%2,blk})}
-    // the glue: an orange flash where the two ends meet
-    const glue=sm(clamp((p-.46)/.06))*(1-sm(clamp((p-.56)/.08)));
-    // the dancer: on build, then walking along the strip without end once it is closed
-    const walkU=p<.55?(-Math.PI+2.5*L/10):(-Math.PI+2.5*L/10+(t*.0006)%L);
-    const A=S(((walkU+Math.PI)%L)-Math.PI,0);antScreen={x:mob.getBoundingClientRect().left+A[0],y:mob.getBoundingClientRect().top+A[1],s:W*.018};
-    q.push({ant:A,z:A[2]+.05});
-    q.sort((m,n)=>n.z-m.z);
-    for(const it of q){
-      if(it.ant){if(antHide)continue;const s2=W*.045;c.save();c.translate(it.ant[0],it.ant[1]-s2*.2);c.fillStyle=me;c.strokeStyle=fg;c.lineWidth=1;
-        const pd=new Path2D(personD(-s2/2,-s2,s2));c.fill(pd);c.stroke(pd);c.restore();continue}
-      c.globalAlpha=it.fade===undefined?1:it.fade;
-      c.beginPath();c.moveTo(it.p[0][0],it.p[0][1]);for(let m=1;m<4;m++)c.lineTo(it.p[m][0],it.p[m][1]);c.closePath();
-      c.fillStyle=it.blk==='write'?me:it.blk?'#8f897b':(it.k?fg:bg);c.fill();c.strokeStyle=fg;c.lineWidth=.8;c.stroke();
-      c.globalAlpha=1;
+    const P=v=>{const x1=v[0]*cy-v[2]*sy,z1=v[0]*sy+v[2]*cy,y1=v[1]*cp-z1*sp,z2=v[1]*sp+z1*cp;return [W/2+x1*sc,H*.55-y1*sc,z2]};
+    // the strip: 25 cells long, one wide; bends into a ring with a half twist
+    const NL=25,k=Math.max(1e-4,bend*2*Math.PI/NL),R=1/k;
+    const S=(u,v)=>{const th=u*k,ph=th/2,nx=-Math.sin(th),ny=Math.cos(th);return [R*Math.sin(th)+v*nx*Math.sin(ph),R*(1-Math.cos(th))+v*ny*Math.sin(ph)-(bend*R),v*Math.cos(ph)]};
+    const BL={'1,1':['build',1.7],'3,1':['coach',1],'3,4':['write',.3]};
+    const q=[];let danc=null;
+    for(let z=0;z<5;z++)for(let x=0;x<5;x++){
+      const idx=z*5+(z%2?4-x:x),u0=idx-NL/2,key=x+','+z,blk=BL[key],h=blk?(.12+blk[1])*(1-flat):0;
+      const g=(dx,dz)=>[x-2.5+dx,0,z-2.5+dz];
+      const st=(du,dv)=>S(u0+du,dv-.5);
+      const corner=(dx,dz,du,dv,yy)=>{const a=g(dx,dz),b=st(du,dv),lift=Math.sin(Math.PI*line)*(1.2+((idx*7)%5)*.25);
+        return [lp(a[0],b[0],line),lp(a[1],b[1],line)+lift+(yy||0),lp(a[2],b[2],line)]};
+      const top=[corner(0,0,0,0,h),corner(1,0,1,0,h),corner(1,1,1,1,h),corner(0,1,0,1,h)].map(P);
+      const col=blk?(blk[0]==='write'?me:grey):((x+z)%2?fg:bg);
+      if(h>.01){const bot=[corner(0,0,0,0),corner(1,0,1,0),corner(1,1,1,1),corner(0,1,0,1)].map(P);
+        q.push({p:[top[1],top[2],bot[2],bot[1]],z:(top[1][2]+bot[2][2])/2-.01,f:'#d6cfbf'});
+        q.push({p:[top[3],top[2],bot[2],bot[3]],z:(top[3][2]+bot[2][2])/2-.01,f:'#b9b2a3'})}
+      q.push({p:top,z:(top[0][2]+top[2][2])/2-(h>.01?.02:0),f:col,lbl:blk&&line<.2?blk[0]:null});
+      if(blk&&blk[0]==='build'){const m=corner(.5,.5,.5,.5,h);danc={v:m,z:P(m)[2]-.05}}
     }
-    if(glue>0){const g=S(Math.PI-.001,0);c.fillStyle='rgba(201,130,96,'+glue.toFixed(2)+')';c.beginPath();c.arc(g[0],g[1],W*.03*(1+glue),0,7);c.fill()}
+    // after the glue, she walks along the strip without end
+    if(done){const u=((p-.74)*NL*2+t*.0018)%NL-NL/2,v=S(u,0);danc={v,z:P(v)[2]-.05}}
+    q.push({ant:P(danc.v),z:danc.z});
+    {const A=P(danc.v),mr=mob.getBoundingClientRect();antScreen={x:mr.left+A[0],y:mr.top+A[1],s:W*.018}}
+    q.sort((a,b)=>b.z-a.z);
+    for(const it of q){
+      if(it.ant){if(antHide)continue;const s2=W*lp(.05,.04,line);const pd=new Path2D(personD(it.ant[0]-s2/2,it.ant[1]-s2,s2));c.fillStyle=me;c.fill(pd);c.strokeStyle=fg;c.lineWidth=1;c.stroke(pd);continue}
+      c.beginPath();c.moveTo(it.p[0][0],it.p[0][1]);for(let m=1;m<4;m++)c.lineTo(it.p[m][0],it.p[m][1]);c.closePath();
+      c.fillStyle=it.f;c.fill();c.strokeStyle=fg;c.lineWidth=.8;c.stroke();
+      if(it.lbl){c.fillStyle=fg;c.font='11px JetBrains Mono,monospace';c.fillText(it.lbl,it.p[1][0]+4,it.p[1][1])}
+    }
+    const glue=sm(clamp((p-.72)/.04))*(1-sm(clamp((p-.78)/.08)));
+    if(glue>0){const g=P(S(NL/2-.01,0));c.fillStyle='rgba(201,130,96,'+glue.toFixed(2)+')';c.beginPath();c.arc(g[0],g[1],W*.035*(1+glue),0,7);c.fill()}
   }
   function animLoop(t){
     if(root.dataset.mode==='film'){
