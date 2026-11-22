@@ -784,7 +784,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 'use strict';
 (function(){
   const root=document.documentElement;
-  let povGrow=1,tessMeHidden=false,dancerCalm=0,mobK=1,antScreen=null,antHide=false,resHold=false,povSnap=null,povTone=1;
+  let walkerOn=false,dancerScreen=null,blockRise=[0,0,0],povGrow=1,tessMeHidden=false,dancerCalm=0,mobK=1,antScreen=null,antHide=false,resHold=false,povSnap=null,povTone=1;
 
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scenes=[...document.querySelectorAll('.scene')];
@@ -893,7 +893,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       if(s.id==='top')cosmosP=p;
       if(s.id==='totem')drawTotem(p);
       if(s.id==='covid')drawCovid(p);
-      if(s.id==='work')drawWork(p);
+
     }
     if(film){
       // the DNA leads into the question: it stops, we zoom into it, the scene opens from its centre
@@ -924,15 +924,15 @@ html:not([data-mode="film"]) .next{box-shadow:none}
         qMe.style.visibility='hidden';cl.style.visibility='hidden';
       }else{faller.style.display='none';if(qMe)qMe.style.visibility='';if(cl)cl.style.visibility=''}
     }
+    updateWalker();
     if(film){
       // one continuous darkness: the dancers' tiling fades in over the growing band and stays still into the next scene
       const wr=document.getElementById('zoom').getBoundingClientRect(),dr=document.getElementById('dance').getBoundingClientRect();
       const wp=clamp(-wr.top/Math.max(1,wr.height-vh)),gIn=clamp((wp-.93)/.05),dp=clamp(-dr.top/Math.max(1,dr.height-vh));
       let op=0,leave=0;if(dr.top<vh&&dr.bottom>0){op=1;if(dr.bottom<vh)leave=1-dr.bottom/vh}else if(wr.bottom>0&&wr.top<vh)op=gIn;
       const wkF=document.getElementById('work-fig').parentElement;
-      if(leave>0){const e=sm(leave),wf=document.getElementById('work-fig').getBoundingClientRect(),dx=(wf.left+wf.width/2-innerWidth/2)*e,dy=(wf.top+wf.height*.42-vh/2)*e,sc=1+(wf.width/innerWidth*1.5-1)*e;
-        dancersSvg.style.transform='translate('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px) perspective(1400px) rotateX('+(55*e).toFixed(1)+'deg) rotateZ('+(-45*e).toFixed(1)+'deg) scale('+sc.toFixed(3)+')';
-        op=1-sm(clamp((leave-.78)/.22));wkF.style.opacity=sm(clamp((leave-.6)/.35)).toFixed(3)}
+      if(leave>0){dancersSvg.style.transform='';
+        op=1-sm(clamp((leave-.1)/.3));wkF.style.opacity=sm(clamp((leave-.25)/.4)).toFixed(3)}
       else{dancersSvg.style.transform='';wkF.style.opacity=''}
       dancerCalm=leave;
       dancersSvg.style.opacity=op.toFixed(3);
@@ -1349,11 +1349,31 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const cells=[];for(let x=0;x<5;x++)for(let z=0;z<5;z++)cells.push([x,z]);
     cells.sort((a,b)=>(a[0]+a[1])-(b[0]+b[1]));
     for(const [x,z] of cells){
-      const w=WC.find(c=>c[0]===x&&c[1]===z),h=w?.12+w[2]*e:.12;
+      const w=WC.find(c=>c[0]===x&&c[1]===z),wi=WC.indexOf(w),h=w?.12+w[2]*blockRise[wi]:.12;
       out+=box(x,0,z,h,36,160,90,'wk',w&&w[3]==='write');
       if(w){const q=ISO(x+1,h+.2,z,36,160,90);out+='<text class="iso-lbl" x="'+(q[0]+6).toFixed(0)+'" y="'+q[1].toFixed(0)+'">'+w[4]+' '+w[3]+'</text>'}
     }
     workFig.innerHTML=out;
+  }
+  // Reptiles: the orange dancer steps out of the tiling, walks down and climbs the three blocks; each rises as she reaches it
+  const walkerEl=document.createElementNS('http://www.w3.org/2000/svg','svg');walkerEl.id='walker';walkerEl.setAttribute('aria-hidden','true');
+  walkerEl.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:17;display:none';document.body.append(walkerEl);
+  function updateWalker(){
+    const vh=innerHeight,wr=document.getElementById('work').getBoundingClientRect(),film=root.dataset.mode==='film';
+    const w=clamp((vh-wr.top)/(vh*1.6));
+    if(!film||w<=0||wr.bottom<0||!dancerScreen){walkerOn=false;walkerEl.style.display='none';blockRise=[0,0,0];drawWork(0);return}
+    walkerOn=true;walkerEl.style.display='block';walkerEl.setAttribute('viewBox','0 0 '+innerWidth+' '+vh);
+    const ctm=workFig.getScreenCTM(),P=(x,y,z)=>{const q=ISO(x,y,z,36,160,90),pt=workFig.createSVGPoint();pt.x=q[0];pt.y=q[1];const r=pt.matrixTransform(ctm);return [r.x,r.y]};
+    const k=ctm.a,small=36*k*.75;
+    blockRise=[sm(clamp((w-.32)/.14)),sm(clamp((w-.55)/.14)),sm(clamp((w-.78)/.12))];
+    drawWork(1);
+    const top=i=>{const c=WC[i];return P(c[0]+.5,.12+c[2]*blockRise[i],c[1]+.5)};
+    const start=[dancerScreen.x,dancerScreen.y],ground=P(.5,.12,2.5);
+    const legs=[[0,.3,start,ground],[.3,.5,ground,top(0)],[.5,.74,top(0),top(1)],[.74,.96,top(1),top(2)]];
+    let pos=top(2),hop=0,size=small;
+    for(const [a,b,p0,p1] of legs)if(w<b){const t=clamp((w-a)/(b-a)),e=sm(t);pos=[p0[0]+(p1[0]-p0[0])*e,p0[1]+(p1[1]-p0[1])*e];hop=Math.abs(Math.sin(t*Math.PI*(a===0?6:3)))*small*.25;break}
+    if(w<.3)size=dancerScreen.s+(small-dancerScreen.s)*sm(clamp(w/.3));
+    walkerEl.innerHTML='<path d="'+personD(pos[0]-size/2,pos[1]-size-hop,size)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/>';
   }
 
   // inherited: drawing hands. An engraving of my own hand, drawn twice: each pencil touches the other's wrist
@@ -1602,7 +1622,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     // music: rings that cross everyone; nobody else moves
     for(let k=0;k<5;k++){const f=((p*4+k/5)%1),R=40+f*Math.hypot(W,H);o+='<circle cx="'+mx+'" cy="'+my+'" r="'+R.toFixed(1)+'" fill="none" stroke="#c98260" stroke-width="'+(2.4*(1-f)+.4).toFixed(2)+'" stroke-opacity="'+(.7*(1-f)*(1-dancerCalm)).toFixed(2)+'"/>'}
     const calm=1-dancerCalm,beat=Math.sin(p*70)*calm,lift=(5+Math.abs(beat)*8)*calm;
-    o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*12).toFixed(1)+') translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mx-S/2,my-S/2,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
+    {const pt=dancersSvg.createSVGPoint();pt.x=mx;pt.y=my;const sp=pt.matrixTransform(dancersSvg.getScreenCTM());const kk=dancersSvg.getScreenCTM().a;dancerScreen={x:sp.x,y:sp.y,s:S*kk}}
+    if(!walkerOn)o+='<g transform="translate('+mx+' '+(my-lift)+') rotate('+(beat*12).toFixed(1)+') translate('+(-mx)+' '+(-my)+')"><path d="'+personD(mx-S/2,my-S/2,S)+'" fill="#c98260" stroke="#15140f" stroke-width="1.2"/></g>';
     for(let k=0;k<3;k++){const ph=(p*7+k/3)%1;o+='<text x="'+(mx+S*.6+ph*40).toFixed(1)+'" y="'+(my-S*.6-ph*70).toFixed(1)+'" fill="#c98260" fill-opacity="'+(1-ph).toFixed(2)+'" font-size="'+(16+k*4)+'" font-family="Georgia,serif">♪</text>'}
     dancersSvg.innerHTML=o;
   }
