@@ -1556,7 +1556,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const v=+resIn.value,k=Math.min(KMAX,Math.floor(v/100*(KMAX+.999))),n=1<<k,c=resCv.getContext('2d');
     c.setTransform(1,0,0,1,0,0);c.fillStyle='#efe9dc';c.fillRect(0,0,RW,RW);
     const cell=RW/n,{L,W}=PYR[k];
-    if(n===1){if(!resHold){const dd=new Path2D(danceD(-30,-30,60));c.save();c.translate(RW/2,RW/2);c.scale(RW/60*.55,RW/60*.55);c.rotate(-10*Math.PI/180);c.fillStyle='#c98260';c.fill(dd);c.restore()}}
+    if(n===1){if(!resHold){const dd=new Path2D(danceD(-30,-30,60));c.save();c.translate(RW/2,RW/2+RW*.093);c.scale(RW/60*.62,RW/60*.62);c.rotate(-10*Math.PI/180);c.fillStyle='#c98260';c.fill(dd);c.restore()}}
     else for(let y=0;y<n;y++)for(let x=0;x<n;x++){
       const i=y*n+x,dark=Math.pow(1-L[i],.9),step=Math.round(Math.min(1,dark*1.1)*15),warm=W[i]>.5;
       if(warm){c.fillStyle=W[i]>.85?'#d99a7a':'#e6b79e';c.fillRect(x*cell,y*cell,cell+.5,cell+.5)}
@@ -1851,9 +1851,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     mobK=sm(clamp((ep-.25)/.5));
     // 13 · the orange point leaves the strip and becomes the single tile of the portrait
     const rrT=document.getElementById('real').getBoundingClientRect().top,tR=+resIn.value>0?1:clamp((vh-rrT)/(vh*.7));
-    if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.55;
-      const src={x:antScreen.x-antScreen.s,y:antScreen.y-antScreen.s,w:antScreen.s*2,h:antScreen.s*2},dst={x:rc.left+rc.width/2-side/2,y:rc.top+rc.height/2-side/2,w:side,h:side};
-      svg+='<path d="'+shapeD(unitCircle,unitDancer,e,lerpR(src,dst,e))+'" fill="#c98260"/>';antHide=true;if(!resHold){resHold=true;drawRes()}}
+    if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.62;
+      const src={x:antScreen.x-antScreen.s,y:antScreen.y-antScreen.s,w:antScreen.s*2,h:antScreen.s*2},dst={x:rc.left+rc.width/2-side/2,y:rc.top+rc.height/2+rc.height*.093-side/2,w:side,h:side};
+      svg+='<path d="'+shapeD(unitDancer,unitDancer,e,lerpR(src,dst,e))+'" fill="#c98260"/>';antHide=true;if(!resHold){resHold=true;drawRes()}}
     else{antHide=false;if(resHold){resHold=false;drawRes()}}
     carrierSvg.innerHTML=svg;
   }
