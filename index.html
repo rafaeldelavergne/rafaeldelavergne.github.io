@@ -1750,7 +1750,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       for(let z=0;z<5;z++){const key=x+','+z,hb=UBL[key],grow=x<5?1:clamp((front-x)/4),h=hb?(.12+hb)*grow*(1-flat):0,y=.12+Math.max(0,h-.12);
         const top=ck(x,z);
         if(h>.13){addQ([[x+1,.12,z],[x+1,.12,z+1],[x+1,y,z+1],[x+1,y,z]],'#b9b2a3',a);addQ([[x,.12,z+1],[x+1,.12,z+1],[x+1,y,z+1],[x,y,z+1]],'#d6cfbf',a)}
-        addQ([[x,y,z],[x+1,y,z],[x+1,y,z+1],[x,y,z+1]],key==='3,4'?'#c98260':top,a);
+        addQ([[x,y,z],[x+1,y,z],[x+1,y,z+1],[x,y,z+1]],key==='3,4'&&bend<1?(bend<=0?'#c98260':mixC('#c98260',ck(x,z).startsWith('#')?ck(x,z):'#efe9dc',sm(clamp(bend*1.6)))):top,a);
         if(key==='1,1')danc=[1.5,y,1.5]}}
     if(done){const u=(1.5+(t*.0025))%UL;danc=[u,.12,2.5]}
     // camera: from the floor's own place and scale, to fit the growing universe, to the strip's frame
