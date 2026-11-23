@@ -1550,7 +1550,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const v=+resIn.value,k=Math.min(KMAX,Math.floor(v/100*(KMAX+.999))),n=1<<k,c=resCv.getContext('2d');
     c.setTransform(1,0,0,1,0,0);c.fillStyle='#efe9dc';c.fillRect(0,0,RW,RW);
     const cell=RW/n,{L,W}=PYR[k];
-    if(n===1){if(!resHold){resTile=resTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));c.save();c.translate(RW/2,RW/2);c.scale(RW/60*.55,RW/60*.55);c.fillStyle='#c98260';c.fill(resTile);c.restore()}}
+    if(n===1){if(!resHold){const dd=new Path2D(personD(-30,-30,60));c.save();c.translate(RW/2,RW/2);c.scale(RW/60*.55,RW/60*.55);c.rotate(-10*Math.PI/180);c.fillStyle='#c98260';c.fill(dd);c.restore()}}
     else for(let y=0;y<n;y++)for(let x=0;x<n;x++){
       const i=y*n+x,dark=Math.pow(1-L[i],.9),step=Math.round(Math.min(1,dark*1.1)*15),warm=W[i]>.5;
       if(warm){c.fillStyle=W[i]>.85?'#d99a7a':'#e6b79e';c.fillRect(x*cell,y*cell,cell+.5,cell+.5)}
@@ -1770,7 +1770,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     if(bend>.3){c.strokeStyle='#15140f';c.lineWidth=1.2+1.6*bend;c.lineCap='round';
       for(const zz of [0,5]){c.beginPath();for(let x=0;x<=Math.min(UL,front);x+=.5){const q=PR(M(x,.12,zz)),sx=X0+q[0]*S,sy=Y0+q[1]*S;x?c.lineTo(sx,sy):c.moveTo(sx,sy)}c.stroke()}}
     const glue=sm(clamp((g-.77)/.03))*(1-sm(clamp((g-.82)/.06)));
-    if(glue>0){const q=PR(M(0,.12,2.5));c.fillStyle='rgba(201,130,96,'+glue.toFixed(2)+')';c.beginPath();c.arc(X0+q[0]*S,Y0+q[1]*S,14+20*glue,0,7);c.fill()}
     if(danc){const q=PR(M(danc[0],danc[1],danc[2])),sx=X0+q[0]*S,sy=Y0+q[1]*S,sz=Math.max(12,S*.85);
       antScreen={x:sx,y:sy-sz*.5,s:sz*.4};
       if(!antHide){const pd=new Path2D(personD(sx-sz/2,sy-sz,sz));c.fillStyle='#c98260';c.fill(pd);c.strokeStyle='#15140f';c.lineWidth=1;c.stroke(pd)}}
@@ -1785,6 +1784,12 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     for(let i=0;i<N;i++){const v=1-i/N;P.push([e(v),v])}
     return P})();
   const unitDiamond=(()=>{const C=[[.5,0],[1,.5],[.5,1],[0,.5]],P=[];for(let k=0;k<4;k++)for(let i=0;i<14;i++){const a=C[k],b=C[(k+1)%4],f=i/14;P.push([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f])}return P})();
+  const unitDancer=(()=>{const g=(u,c,w)=>Math.exp(-(((u-c)/w)**2)),N=14,hd=u=>-.3*g(u,.5,.11),ar=v=>.2*(g(v,.38,.09)-g(v,.78,.09)),P=[];
+    for(let i=0;i<N;i++){const u=i/N;P.push([u,hd(u)])}
+    for(let i=0;i<N;i++){const v=i/N;P.push([1+ar(v),v])}
+    for(let i=0;i<N;i++){const u=1-i/N;P.push([u,1+hd(u)])}
+    for(let i=0;i<N;i++){const v=1-i/N;P.push([ar(v),v])}
+    const a=-10*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return P.map(([x,y])=>[.5+(x-.5)*c-(y-.5)*s,.5+(x-.5)*s+(y-.5)*c])})();
   const unitCircle=unitTile.map((_,i)=>{const a=i/56*2*Math.PI-Math.PI*.75;return [.5+.5*Math.cos(a),.5+.5*Math.sin(a)]});
   const rectOf=el=>{const r=el.getBoundingClientRect();return {x:r.left,y:r.top,w:r.width,h:r.height}};
   const lerpR=(a,b,e)=>({x:a.x+(b.x-a.x)*e,y:a.y+(b.y-a.y)*e,w:a.w+(b.w-a.w)*e,h:a.h+(b.h-a.h)*e});
@@ -1842,7 +1847,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const rrT=document.getElementById('real').getBoundingClientRect().top,tR=+resIn.value>0?1:clamp((vh-rrT)/(vh*.7));
     if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.55;
       const src={x:antScreen.x-antScreen.s,y:antScreen.y-antScreen.s,w:antScreen.s*2,h:antScreen.s*2},dst={x:rc.left+rc.width/2-side/2,y:rc.top+rc.height/2-side/2,w:side,h:side};
-      svg+='<path d="'+shapeD(unitCircle,unitTile,e,lerpR(src,dst,e))+'" fill="#c98260"/>';antHide=true;if(!resHold){resHold=true;drawRes()}}
+      svg+='<path d="'+shapeD(unitCircle,unitDancer,e,lerpR(src,dst,e))+'" fill="#c98260"/>';antHide=true;if(!resHold){resHold=true;drawRes()}}
     else{antHide=false;if(resHold){resHold=false;drawRes()}}
     carrierSvg.innerHTML=svg;
   }
