@@ -61,41 +61,30 @@ html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapter
 .menu{position:fixed;inset:0;z-index:60;overflow:auto;--bg:#15140f;--fg:#efe9dc;--dim:#8f897b;color:var(--fg);background:repeating-linear-gradient(118deg,rgba(239,233,220,.045) 0 1px,transparent 1px 6px),#15140f;opacity:0;transition:opacity .35s ease}
 .menu.open{opacity:1}
 .menu[hidden]{display:none}
-.menu-in{max-width:780px;margin:0 auto;padding:96px 22px 64px;transform:translateY(14px);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.menu-in{max-width:880px;margin:0 auto;padding:84px 22px 48px;transform:translateY(14px);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .menu.open .menu-in{transform:none}
 .menu-h{font:12px var(--mono);color:var(--dim);letter-spacing:.06em;margin:0 0 1.4em}
 .menu-h .md{color:var(--accent);font-size:1em;vertical-align:0}
 .toc{list-style:none;margin:0 0 1.2em;padding:0}
-.trail{position:relative}
-.trail-svg{position:absolute;left:0;top:0;width:64px;height:100%;overflow:visible;pointer-events:none}
-.trail-svg .walked-line{fill:none;stroke:var(--fg);stroke-width:1.6}
-.trail-svg .ahead-line{fill:none;stroke:color-mix(in srgb,var(--fg) 40%,transparent);stroke-width:1.3;stroke-dasharray:2 5;stroke-linecap:round}
-.trail-svg .n-done{fill:var(--fg);stroke:var(--bg);stroke-width:4}
-.trail-svg .n-now{fill:var(--accent);stroke:var(--bg);stroke-width:4}
-.trail-svg .n-next{fill:var(--bg);stroke:color-mix(in srgb,var(--fg) 55%,transparent);stroke-width:5}
-.toc li{padding-left:72px}
-.toc li.act{padding-top:1.4em;font:11px var(--mono);color:var(--dim);letter-spacing:.06em}
-.toc li.act:first-child{padding-top:.2em}
-.toc li.act b{color:var(--accent);font-weight:500;margin-right:.6em}
+.toc{list-style:none;padding:0;margin:0 0 1.6em}
+.act-row{display:grid;grid-template-columns:190px 1fr;gap:18px;align-items:baseline;padding:14px 0;border-top:1px solid color-mix(in srgb,var(--fg) 14%,transparent)}
+.act-row:last-child{border-bottom:1px solid color-mix(in srgb,var(--fg) 14%,transparent)}
+.act-l{margin:0;font:12px var(--mono);color:var(--dim);letter-spacing:.04em}
+.act-l b{color:var(--accent);font-weight:500}
+.act-s{display:flex;flex-wrap:wrap;gap:4px 22px}
+.act-s a{font:400 clamp(20px,2.2vw,26px)/1.25 var(--serif);color:color-mix(in srgb,var(--fg) 45%,transparent);text-decoration:none}
+.act-s a.seen{color:var(--fg)}
+.act-s a:hover,.act-s a[aria-current="true"]{color:var(--accent)}
+.walked{font:12px var(--mono);color:var(--dim);margin:0 0 2.4em}
+.walked b{color:var(--accent);font-weight:500}
 .intents{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 2.2em}
 .intents a,.intents button{font:12px var(--mono);color:var(--fg);text-decoration:none;border:1px solid color-mix(in srgb,var(--fg) 35%,transparent);border-radius:30px;padding:7px 14px;background:none}
 .intents a:hover,.intents button:hover{border-color:var(--accent);color:var(--accent)}
-.walked{font:12px var(--mono);color:var(--dim);margin:0 0 3em;padding-left:72px}
-.walked b{color:var(--accent);font-weight:500}
-.toc a{display:flex;align-items:baseline;gap:12px;padding:9px 0;text-decoration:none;color:var(--fg)}
-.toc .no{font:11px var(--mono);color:var(--dim);width:2.4ch;flex-shrink:0}
-.toc .ti{font:400 clamp(22px,3vw,32px)/1.1 var(--serif);white-space:nowrap}
-.toc .lead{flex:1;border-bottom:1px dotted color-mix(in srgb,var(--fg) 35%,transparent);transform:translateY(-6px);min-width:20px}
-.toc .fg{font:11px var(--mono);color:var(--dim);white-space:nowrap}
-.toc .mk{width:12px;height:12px;flex-shrink:0;opacity:0}
-.toc .mk svg{width:100%;height:100%;fill:var(--accent)}
-.toc a:hover .ti,.toc a[aria-current="true"] .ti{color:var(--accent)}
-.toc a[aria-current="true"] .mk{opacity:1}
 .toc-links{list-style:none;padding:0;margin:0 0 3em;display:flex;flex-wrap:wrap;gap:10px 22px;font:13px var(--mono)}
 .toc-links a{color:var(--fg)}
 .menu-foot{font:11px var(--mono);color:var(--dim)}
 .menu-foot button{background:none;border:0;padding:0;color:var(--fg);text-decoration:underline;text-underline-offset:3px;font:inherit}
-@media (max-width:700px){.toc li{padding-left:56px}.walked{padding-left:56px}.trail-svg{width:50px}.toc .fg{display:none}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
+@media (max-width:700px){.act-row{grid-template-columns:1fr;gap:4px;padding:12px 0}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
 .toggle{white-space:nowrap}
 
 /* ======================================================
@@ -790,7 +779,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       <button type="button" id="intent-text">read the story as text →</button>
     </div>
     <div class="trail">
-      <svg class="trail-svg" id="trail-svg" aria-hidden="true"></svg>
       <ol class="toc" id="chapters"></ol>
     </div>
     <p class="walked" id="walked"></p>
@@ -839,32 +827,23 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 
   // index menu: my path, in five acts
   const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn'),menu=document.getElementById('menu'),menuBtn=document.getElementById('menu-btn');
-  const trailSvg=document.getElementById('trail-svg'),walkedEl=document.getElementById('walked');
+  const walkedEl=document.getElementById('walked');
   const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','totem','covid']],['IV','the space',['space','zoom','dance']],['V','what I do with it',['work','eof','real']]];
   const sceneIdx=id=>scenes.findIndex(x=>x.id===id);
   let reached=0;try{reached=+localStorage.getItem('being-reached')||0}catch(e){}
   ACTS.forEach(([n,name,ids])=>{
-    const h=document.createElement('li');h.className='act';h.innerHTML='<b>'+n+'</b>'+name;list.append(h);
-    ids.forEach(id=>{const sc=scenes[sceneIdx(id)];if(!sc)return;const i=sceneIdx(id);
-      const li=document.createElement('li'),a=document.createElement('a');a.href='#'+id;a.dataset.i=i;
-      a.innerHTML='<span class="no">'+String(i).padStart(2,'0')+'</span><span class="ti">'+sc.dataset.name+'</span><span class="lead"></span><span class="fg">'+(sc.dataset.fig||'')+'</span>';
-      a.addEventListener('click',()=>closeMenu(false));li.append(a);list.append(li)});
+    const li=document.createElement('li');li.className='act-row';
+    const h=document.createElement('p');h.className='act-l';h.innerHTML='<b>'+n+'.</b> '+name;li.append(h);
+    const sc=document.createElement('div');sc.className='act-s';
+    ids.forEach(id=>{const el=scenes[sceneIdx(id)];if(!el)return;const i=sceneIdx(id);
+      const a=document.createElement('a');a.href='#'+id;a.dataset.i=i;a.textContent=el.dataset.name;
+      a.addEventListener('click',()=>closeMenu(false));sc.append(a)});
+    li.append(sc);list.append(li);
   });
-  let nodeD=null;
   function drawTrail(){
-    const rows=[...list.querySelectorAll('a')];if(!rows.length||menu.hidden)return;
-    nodeD=nodeD||tile4(-30,-30,.6,.6,.6,.6);
-    const cur=scenes.indexOf(current||scenes[0]),w=trailSvg.clientWidth;
-    const pts=rows.map((a,k)=>[k%2?w*.72:w*.28,a.parentElement.offsetTop+a.offsetHeight/2,+a.dataset.i]);
-    const seg=(a,b)=>'C'+a[0]+' '+(a[1]+(b[1]-a[1])/2)+' '+b[0]+' '+(b[1]-(b[1]-a[1])/2)+' '+b[0]+' '+b[1];
-    let done='M'+pts[0][0]+' '+pts[0][1],ahead='';
-    const last=Math.max(cur,0);
-    for(let k=1;k<pts.length;k++){if(pts[k][2]<=last)done+=seg(pts[k-1],pts[k]);else{if(!ahead)ahead='M'+pts[k-1][0]+' '+pts[k-1][1];ahead+=seg(pts[k-1],pts[k])}}
-    let o='<path class="walked-line" d="'+done+'"/>'+(ahead?'<path class="ahead-line" d="'+ahead+'"/>':'');
-    for(const [x,y,i] of pts){const cls=i===cur?'n-now':i<=Math.max(reached,cur)?'n-done':'n-next';
-      o+='<path class="'+cls+'" d="'+nodeD+'" transform="translate('+x+' '+y+') rotate('+(i*23%90)+') scale('+(i===cur?.36:.27)+')"/>'}
-    trailSvg.innerHTML=o;
-    const seen=Math.max(reached,cur)+1;
+    if(menu.hidden)return;
+    const cur=scenes.indexOf(current||scenes[0]),seen=Math.max(reached,cur)+1;
+    list.querySelectorAll('a').forEach(a=>{const i=+a.dataset.i;a.classList.toggle('seen',i<seen);a.toggleAttribute('aria-current',i===cur);if(i===cur)a.setAttribute('aria-current','true')});
     walkedEl.innerHTML='you’ve walked <b>'+seen+'</b> of '+scenes.length+(seen>=scenes.length?' · and back to the beginning, if you like':'');
   }
   addEventListener('resize',()=>{if(!menu.hidden)drawTrail()});
