@@ -1131,7 +1131,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     for(let i=0;i<NS;i++){const v=1-i/NS;pts.push([x+edge(v,aL),y+v*TS])}
     return 'M'+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')+'Z';
   }
-  document.querySelectorAll('.tile-mark').forEach(el=>{el.innerHTML='<svg viewBox="-10 -10 80 80" aria-hidden="true"><path d="'+tile4(0,0,1,1,1,1)+'"/></svg>'});
+  document.querySelectorAll('.tile-mark').forEach(el=>{el.innerHTML='<svg viewBox="-16 -22 92 92" aria-hidden="true"><path transform="rotate(-10 30 30)" d="'+personD(0,0,60)+'"/></svg>'});
 
   // ---- seams: each scene's figure becomes the next one's, point by point
   const seams=[...document.querySelectorAll('.seam')];
