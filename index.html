@@ -859,6 +859,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   function openMenu(){lastFocus=document.activeElement;menu.hidden=false;drawTrail();requestAnimationFrame(()=>menu.classList.add('open'));[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','true'));document.body.style.overflow='hidden';(list.querySelector('[aria-current="true"]')||list.querySelector('a')).focus()}
   function closeMenu(refocus=true){menu.classList.remove('open');[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','false'));document.body.style.overflow='';setTimeout(()=>{menu.hidden=true},300);if(refocus&&lastFocus)lastFocus.focus()}
   btn.addEventListener('click',()=>menu.hidden?openMenu():closeMenu());
+  if(location.hash==='#menu'){history.replaceState(null,'',location.pathname);setTimeout(openMenu,300)}
   menuBtn.addEventListener('click',()=>menu.hidden?openMenu():closeMenu());
   document.getElementById('menu-close').addEventListener('click',()=>closeMenu());
   menu.querySelectorAll('.toc-links a').forEach(a=>a.addEventListener('click',()=>closeMenu(false)));
