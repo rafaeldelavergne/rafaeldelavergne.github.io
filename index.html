@@ -333,7 +333,7 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 [data-mode="film"] .dance-copy{position:relative;z-index:1;max-width:min(560px,70vw)}
 [data-mode="film"] .dance-copy .big{font-style:italic;font-size:clamp(24px,3vw,44px);max-width:none}
 [data-mode="film"] .dance-copy .label{margin-bottom:1.4em}
-@media (max-width:700px){[data-mode="film"] .dance-copy{max-width:86vw;padding:20px}[data-mode="film"] .dance-copy .big{font-size:20px}}
+@media (max-width:700px){[data-mode="film"] .dance-frame{justify-content:flex-start}[data-mode="film"] .dance-copy{max-width:86vw;padding:18px 20px;margin-top:max(72px,10vh)}[data-mode="film"] .dance-copy .big{font-size:20px}[data-mode="film"] .dance-copy .cite{font-size:13px}[data-mode="film"] .dance-copy .lede{font-size:15px;margin-top:.8em}}
 
 /* point of view (3D) */
 [data-mode="film"] .pov-frame{padding:0}
@@ -722,12 +722,13 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 5b · the dancers -->
-<section class="scene" data-tone="ink" data-name="those who hear the music" id="dance" data-fig="the one who hears" style="--len:170vh">
+<section class="scene" data-tone="ink" data-name="listening for your music" id="dance" data-fig="the one who hears" style="--len:170vh">
   <div class="frame dance-frame">
     <div class="dance-copy">
-      <p class="label"><span class="md">##</span>those who hear the music</p>
+      <p class="label"><span class="md">##</span>your music</p>
       <blockquote class="big b" data-at=".1" style="margin:0">“And those who were dancing were thought to be insane by those who could not hear the music.”</blockquote>
       <p class="cite b" data-at=".3">— often attributed to Friedrich Nietzsche</p>
+      <p class="lede b" data-at=".45">Everyone has their own music. As a person and as a coach, I love to listen for yours.</p>
     </div>
   </div>
 </section>
