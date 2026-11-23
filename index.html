@@ -86,7 +86,9 @@ html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapter
 .blk b{display:block;font:400 22px/1.1 var(--serif)}
 .blk small{display:block;font:11px var(--mono);color:var(--dim);margin-top:3px}
 .blk-on b{color:var(--accent)}
-.menu-go{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 2.4em}
+.menu-go{display:flex;flex-wrap:wrap;gap:10px;margin:0}
+.menu-x{position:fixed;top:14px;right:18px;width:44px;height:44px;border-radius:50%;border:1px solid color-mix(in srgb,var(--fg) 30%,transparent);background:none;color:var(--fg);font:20px/1 var(--mono);cursor:pointer}
+.menu-x:hover{border-color:var(--accent);color:var(--accent)}
 .menu-go a,.menu-go button{font:12px var(--mono);color:var(--fg);text-decoration:none;border:1px solid color-mix(in srgb,var(--fg) 35%,transparent);border-radius:30px;padding:9px 16px;background:none;cursor:pointer}
 .menu-go a{background:var(--accent);border-color:var(--accent);color:#fff}
 .toc-links{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font:12px var(--mono);margin:0 0 1.6em}
@@ -792,9 +794,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     </div>
     <p class="menu-h"><span class="md">##</span>the story · 5 questions</p>
     <ol class="toc" id="chapters"></ol>
-    <p class="menu-go"><a id="continue" href="#top">continue where you left off →</a><button type="button" id="intent-text">read as text →</button></p>
-    <p class="toc-links"><span>elsewhere</span><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></p>
-    <p class="menu-foot">esc to close · m to open · <button type="button" id="menu-close">close ×</button></p>
+    <p class="menu-go"><a id="continue" href="#top">continue where you left off →</a></p>
+    <button type="button" class="menu-x" id="menu-close" aria-label="Close">×</button>
   </div>
 </nav>
 
@@ -854,7 +855,6 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   contEl.addEventListener('click',()=>closeMenu(false));
   addEventListener('resize',()=>{if(!menu.hidden)drawTrail()});
   menu.querySelectorAll('[data-intent]').forEach(a=>a.addEventListener('click',()=>closeMenu(false)));
-  document.getElementById('intent-text').addEventListener('click',()=>{closeMenu(false);setMode('text',true);scrollTo(0,0)});
   let lastFocus=null;
   function openMenu(){lastFocus=document.activeElement;menu.hidden=false;drawTrail();requestAnimationFrame(()=>menu.classList.add('open'));[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','true'));document.body.style.overflow='hidden';(list.querySelector('[aria-current="true"]')||list.querySelector('a')).focus()}
   function closeMenu(refocus=true){menu.classList.remove('open');[btn,menuBtn].forEach(b=>b.setAttribute('aria-expanded','false'));document.body.style.overflow='';setTimeout(()=>{menu.hidden=true},300);if(refocus&&lastFocus)lastFocus.focus()}
