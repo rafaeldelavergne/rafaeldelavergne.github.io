@@ -1538,10 +1538,16 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // sprites: one pre-drawn tile per size step and colour, stamped many times
   const RW=1024;resCv.width=RW;resCv.height=RW;
   let resTile=null;const spriteCache={};
+  const danceD=(x,y,S)=>{const g=(u,c,w)=>Math.exp(-(((u-c)/w)**2)),N=60,P=[],hd=u=>-S*.3*g(u,.5,.11),ar=v=>S*.2*(g(v,.38,.09)-g(v,.78,.09));
+    for(let i=0;i<N;i++){const u=i/N;P.push([x+u*S,y+hd(u)])}
+    for(let i=0;i<N;i++){const v=i/N;P.push([x+S+ar(v),y+v*S])}
+    for(let i=0;i<N;i++){const u=1-i/N;P.push([x+u*S,y+S+hd(u)])}
+    for(let i=0;i<N;i++){const v=1-i/N;P.push([x+ar(v),y+v*S])}
+    return 'M'+P.map(q=>q[0].toFixed(2)+' '+q[1].toFixed(2)).join('L')+'Z'};
   function sprite(cell,step,col){
     const key=cell+'|'+step+'|'+col;if(spriteCache[key])return spriteCache[key];
-    const sz=Math.max(2,Math.ceil(cell*1.1)),cv=document.createElement('canvas');cv.width=cv.height=sz;
-    const c=cv.getContext('2d');resTile=resTile||new Path2D(tile4(-30,-30,.6,.6,.6,.6));
+    const sz=Math.max(2,Math.ceil(cell*1.7)),cv=document.createElement('canvas');cv.width=cv.height=sz;
+    const c=cv.getContext('2d');resTile=resTile||new Path2D(danceD(-30,-30,60));
     const f=.12+step/15*.95;c.translate(sz/2,sz/2);c.scale(cell/60*f,cell/60*f);c.fillStyle=col;c.fill(resTile);
     return spriteCache[key]=cv;
   }
@@ -1550,7 +1556,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const v=+resIn.value,k=Math.min(KMAX,Math.floor(v/100*(KMAX+.999))),n=1<<k,c=resCv.getContext('2d');
     c.setTransform(1,0,0,1,0,0);c.fillStyle='#efe9dc';c.fillRect(0,0,RW,RW);
     const cell=RW/n,{L,W}=PYR[k];
-    if(n===1){if(!resHold){const dd=new Path2D(personD(-30,-30,60));c.save();c.translate(RW/2,RW/2);c.scale(RW/60*.55,RW/60*.55);c.rotate(-10*Math.PI/180);c.fillStyle='#c98260';c.fill(dd);c.restore()}}
+    if(n===1){const S=RW*.27,x0=RW/2-S/2,y0=RW/2-S/2;c.lineJoin='round';
+      for(let r=-3;r<=3;r++)for(let q=-3;q<=3;q++){if(!r&&!q)continue;const pd=new Path2D(danceD(x0+q*S,y0+r*S,S));c.fillStyle=(r+q)&1?'#e4ddcd':'#efe9dc';c.fill(pd);c.strokeStyle='rgba(21,20,15,.35)';c.lineWidth=2;c.stroke(pd)}
+      if(!resHold){c.save();c.translate(RW/2,RW/2-S*.07);c.rotate(-10*Math.PI/180);c.scale(1.12,1.12);const pd=new Path2D(danceD(-S/2,-S/2,S));c.fillStyle='#c98260';c.fill(pd);c.strokeStyle='#15140f';c.lineWidth=4;c.stroke(pd);c.restore()}}
     else for(let y=0;y<n;y++)for(let x=0;x<n;x++){
       const i=y*n+x,dark=Math.pow(1-L[i],.9),step=Math.round(Math.min(1,dark*1.1)*15),warm=W[i]>.5;
       if(warm){c.fillStyle=W[i]>.85?'#d99a7a':'#e6b79e';c.fillRect(x*cell,y*cell,cell+.5,cell+.5)}
@@ -1845,8 +1853,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     mobK=sm(clamp((ep-.25)/.5));
     // 13 · the orange point leaves the strip and becomes the single tile of the portrait
     const rrT=document.getElementById('real').getBoundingClientRect().top,tR=+resIn.value>0?1:clamp((vh-rrT)/(vh*.7));
-    if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.55;
-      const src={x:antScreen.x-antScreen.s,y:antScreen.y-antScreen.s,w:antScreen.s*2,h:antScreen.s*2},dst={x:rc.left+rc.width/2-side/2,y:rc.top+rc.height/2-side/2,w:side,h:side};
+    if(tR>0&&tR<1&&antScreen){const e=sm(tR),rc=resCv.getBoundingClientRect(),side=rc.width*.27*1.12;
+      const src={x:antScreen.x-antScreen.s,y:antScreen.y-antScreen.s,w:antScreen.s*2,h:antScreen.s*2},dst={x:rc.left+rc.width/2-side/2,y:rc.top+rc.height/2-rc.height*.27*.07-side/2,w:side,h:side};
       svg+='<path d="'+shapeD(unitCircle,unitDancer,e,lerpR(src,dst,e))+'" fill="#c98260"/>';antHide=true;if(!resHold){resHold=true;drawRes()}}
     else{antHide=false;if(resHold){resHold=false;drawRes()}}
     carrierSvg.innerHTML=svg;
