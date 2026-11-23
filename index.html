@@ -66,25 +66,38 @@ html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapter
 .menu-h{font:12px var(--mono);color:var(--dim);letter-spacing:.06em;margin:0 0 1.4em}
 .menu-h .md{color:var(--accent);font-size:1em;vertical-align:0}
 .toc{list-style:none;margin:0 0 1.2em;padding:0}
-.toc{list-style:none;padding:0;margin:0 0 1.6em}
-.act-row{display:grid;grid-template-columns:190px 1fr;gap:18px;align-items:baseline;padding:14px 0;border-top:1px solid color-mix(in srgb,var(--fg) 14%,transparent)}
-.act-row:last-child{border-bottom:1px solid color-mix(in srgb,var(--fg) 14%,transparent)}
-.act-l{margin:0;font:12px var(--mono);color:var(--dim);letter-spacing:.04em}
-.act-l b{color:var(--accent);font-weight:500}
-.act-s{display:flex;flex-wrap:wrap;gap:4px 22px}
-.act-s a{font:400 clamp(20px,2.2vw,26px)/1.25 var(--serif);color:color-mix(in srgb,var(--fg) 45%,transparent);text-decoration:none}
-.act-s a.seen{color:var(--fg)}
-.act-s a:hover,.act-s a[aria-current="true"]{color:var(--accent)}
-.walked{font:12px var(--mono);color:var(--dim);margin:0 0 2.4em}
-.walked b{color:var(--accent);font-weight:500}
-.intents{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 2.2em}
-.intents a,.intents button{font:12px var(--mono);color:var(--fg);text-decoration:none;border:1px solid color-mix(in srgb,var(--fg) 35%,transparent);border-radius:30px;padding:7px 14px;background:none}
-.intents a:hover,.intents button:hover{border-color:var(--accent);color:var(--accent)}
-.toc-links{list-style:none;padding:0;margin:0 0 3em;display:flex;flex-wrap:wrap;gap:10px 22px;font:13px var(--mono)}
+.toc{list-style:none;padding:0;margin:0 0 1.4em;border-top:1px solid color-mix(in srgb,var(--fg) 14%,transparent)}
+.toc a{display:flex;align-items:center;gap:14px;min-height:48px;padding:6px 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 14%,transparent);text-decoration:none;color:color-mix(in srgb,var(--fg) 50%,transparent)}
+.toc a.seen{color:var(--fg)}
+.toc a:hover,.toc a.now{color:var(--accent)}
+.q-tile{width:22px;height:22px;flex-shrink:0;overflow:visible}
+.q-tile path{fill:none;stroke:currentColor;stroke-width:5}
+.toc a.seen .q-tile path{fill:color-mix(in srgb,var(--fg) 80%,transparent);stroke:none}
+.toc a.now .q-tile path{fill:var(--accent);stroke:none}
+.q-n{font:11px var(--mono);color:var(--dim);width:2.6ch;flex-shrink:0}
+.q-t{font:400 clamp(20px,2.4vw,28px)/1.2 var(--serif)}
+.q-here{margin-left:auto;font:11px var(--mono);color:var(--accent);opacity:0;white-space:nowrap}
+.toc a.now .q-here{opacity:1}
+.offer{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 2.4em}
+.blk{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;border:1px solid color-mix(in srgb,var(--fg) 25%,transparent);border-radius:14px;text-decoration:none;color:var(--fg)}
+.blk:hover{border-color:var(--accent)}
+.blk svg{width:40px;height:44px;flex-shrink:0}
+.blk .cs1{fill:color-mix(in srgb,var(--fg) 22%,var(--bg))}.blk .cs2{fill:color-mix(in srgb,var(--fg) 40%,var(--bg))}.blk .ce{fill:none;stroke:var(--bg);stroke-width:1.2;stroke-linejoin:round}
+.blk b{display:block;font:400 22px/1.1 var(--serif)}
+.blk small{display:block;font:11px var(--mono);color:var(--dim);margin-top:3px}
+.blk-on b{color:var(--accent)}
+.menu-go{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 2.4em}
+.menu-go a,.menu-go button{font:12px var(--mono);color:var(--fg);text-decoration:none;border:1px solid color-mix(in srgb,var(--fg) 35%,transparent);border-radius:30px;padding:9px 16px;background:none;cursor:pointer}
+.menu-go a{background:var(--accent);border-color:var(--accent);color:#fff}
+.toc-links{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font:12px var(--mono);margin:0 0 1.6em}
+.toc-links span{color:var(--dim)}
+.act-cue{position:fixed;left:50%;top:58px;transform:translate(-50%,-6px);z-index:24;margin:0;font:12px var(--mono);color:var(--fg);background:color-mix(in srgb,var(--bg) 85%,transparent);border:1px solid color-mix(in srgb,var(--fg) 20%,transparent);border-radius:20px;padding:6px 14px;opacity:0;pointer-events:none;transition:opacity .4s,transform .4s;white-space:nowrap}
+.act-cue b{color:var(--accent);font-weight:500}
+.act-cue.on{opacity:1;transform:translate(-50%,0)}
 .toc-links a{color:var(--fg)}
 .menu-foot{font:11px var(--mono);color:var(--dim)}
 .menu-foot button{background:none;border:0;padding:0;color:var(--fg);text-decoration:underline;text-underline-offset:3px;font:inherit}
-@media (max-width:700px){.act-row{grid-template-columns:1fr;gap:4px;padding:12px 0}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
+@media (max-width:700px){.offer{grid-template-columns:1fr;gap:8px}.blk{min-height:54px}.q-here{display:none}.act-cue{font-size:11px;top:54px}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
 .toggle{white-space:nowrap}
 
 /* ======================================================
@@ -624,10 +637,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 5 · totem -->
-<section class="scene" data-tone="paper" data-name="2017 · TOTEM" id="totem" data-fig="a totem of cubes" style="--len:280vh">
+<section class="scene" data-tone="paper" data-name="a place to be yourself" id="totem" data-fig="a totem of cubes" style="--len:280vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="totem-fig" viewBox="0 0 300 340"></svg><p class="fig-cap">a totem of cubes · after M.C. Escher’s cubic space</p></div>
-    <p class="label"><span class="md">##</span>2017</p>
+    <p class="label"><span class="md">##</span>a place to be yourself</p>
     <h2 class="big b" data-at=".02">I co-founded TOTEM with a question: how could I create a place where people could be <em>themselves</em>?</h2>
     <p class="lede b" data-at=".15">For our customers, it started around the coffee machine. For our employees, it meant the culture we built together. Eight years.</p>
     <div class="stats b" data-at=".3">
@@ -640,10 +653,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 6 · covid -->
-<section class="scene" data-tone="ink" data-name="2020" id="covid" data-fig="what remains" style="--len:240vh">
+<section class="scene" data-tone="ink" data-name="what remains" id="covid" data-fig="what remains" style="--len:240vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="covid-fig" viewBox="0 0 300 340" style="overflow:hidden"></svg><p class="fig-cap">what remains: the question</p></div>
-    <p class="label"><span class="md">##</span>2020</p>
+    <p class="label"><span class="md">##</span>what remains</p>
     <p class="drop b" data-at=".05">−95%</p>
     <h2 class="big b" data-at=".2" style="font-size:clamp(26px,3.6vw,52px);max-width:22ch">Covid. Revenue fell by 95%. Restructuring meant difficult decisions, for people I knew well.</h2>
     <p class="lede b" data-at=".55">Being coached through that period changed how I approached responsibility — and my own choices.</p>
@@ -722,7 +735,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 10 · eof -->
-<section class="scene eof" data-tone="paper" data-name="EOF" id="eof" data-fig="a möbius strip" style="--len:320vh">
+<section class="scene eof" data-tone="paper" data-name="the loop" id="eof" data-fig="a möbius strip" style="--len:320vh">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true"><canvas id="mobius"></canvas><p class="fig-cap">one side, no end · after M.C. Escher’s Möbius strip</p></div>
     <h2 class="big b" data-at=".78">I’m still figuring out what being myself means in practice.</h2>
@@ -766,29 +779,21 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </main>
 
 <footer class="statusbar">
-  <button class="story-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="menu"><span class="sb-l">the story</span><span id="here">I. the question</span><span class="sb-n" id="pct">1/13</span><span class="sb-bar"><i id="sb-fill"></i></span></button>
+  <button class="story-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="menu"><span class="sb-l">the story</span><span id="here">What is your question?</span><span class="sb-n" id="pct" hidden></span><span class="sb-bar"><i id="sb-fill"></i></span></button>
   <button class="toggle" type="button" id="mode-toggle" aria-pressed="false">read as text</button>
 </footer>
 <nav class="menu" id="menu" hidden aria-label="Index">
   <div class="menu-in">
-    <p class="menu-h"><span class="md">#</span>the story</p>
-    <div class="intents" role="group" aria-label="Shortcuts">
-      <a href="/coaching/">Coaching →</a>
-      <a href="/writing/">Writing →</a>
-      <a href="/building/">Building →</a>
-      <button type="button" id="intent-text">read the story as text →</button>
+    <p class="menu-h"><span class="md">#</span>being.md</p>
+    <div class="offer" role="group" aria-label="What you can find here">
+      <a class="blk blk-on" href="/coaching/"><svg viewBox="-24 -26 48 52" aria-hidden="true"><path d="M0 -22 L20 -11 L0 0 L-20 -11Z" fill="var(--accent)"/><path d="M-20 -11 L0 0 L0 22 L-20 11Z" class="cs1"/><path d="M20 -11 L0 0 L0 22 L20 11Z" class="cs2"/><path d="M0 -22 L20 -11 L20 11 L0 22 L-20 11 L-20 -11Z M-20 -11 L0 0 L20 -11 M0 0 L0 22" class="ce"/></svg><span><b>Coach</b><small>talk it through</small></span></a>
+      <a class="blk" href="/writing/"><svg viewBox="-24 -26 48 52" aria-hidden="true"><path d="M0 -22 L20 -11 L0 0 L-20 -11Z" fill="var(--fg)"/><path d="M-20 -11 L0 0 L0 22 L-20 11Z" class="cs1"/><path d="M20 -11 L0 0 L0 22 L20 11Z" class="cs2"/><path d="M0 -22 L20 -11 L20 11 L0 22 L-20 11 L-20 -11Z M-20 -11 L0 0 L20 -11 M0 0 L0 22" class="ce"/></svg><span><b>Write</b><small>read what I learn</small></span></a>
+      <a class="blk" href="/building/"><svg viewBox="-24 -26 48 52" aria-hidden="true"><path d="M0 -22 L20 -11 L0 0 L-20 -11Z" fill="var(--fg)"/><path d="M-20 -11 L0 0 L0 22 L-20 11Z" class="cs1"/><path d="M20 -11 L0 0 L0 22 L20 11Z" class="cs2"/><path d="M0 -22 L20 -11 L20 11 L0 22 L-20 11 L-20 -11Z M-20 -11 L0 0 L20 -11 M0 0 L0 22" class="ce"/></svg><span><b>Build</b><small>see what I build</small></span></a>
     </div>
-    <div class="trail">
-      <ol class="toc" id="chapters"></ol>
-    </div>
-    <p class="walked" id="walked"></p>
-    <p class="menu-h"><span class="md">##</span>elsewhere</p>
-    <ul class="toc-links">
-      <li><a href="https://compass-me.ai" target="_blank" rel="noopener">Compass ↗</a></li>
-      <li><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a></li>
-      <li><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a></li>
-      <li><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></li>
-    </ul>
+    <p class="menu-h"><span class="md">##</span>the story · 5 questions</p>
+    <ol class="toc" id="chapters"></ol>
+    <p class="menu-go"><a id="continue" href="#top">continue where you left off →</a><button type="button" id="intent-text">read as text →</button></p>
+    <p class="toc-links"><span>elsewhere</span><a href="https://www.linkedin.com/in/rafa%C3%ABl-de-lavergne-874a18b5/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://x.com/Rafdldl" target="_blank" rel="noopener">X ↗</a><a href="https://github.com/rafaeldelavergne" target="_blank" rel="noopener">GitHub ↗</a></p>
     <p class="menu-foot">esc to close · m to open · <button type="button" id="menu-close">close ×</button></p>
   </div>
 </nav>
@@ -827,25 +832,26 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 
   // index menu: my path, in five acts
   const list=document.getElementById('chapters'),btn=document.getElementById('chapters-btn'),menu=document.getElementById('menu'),menuBtn=document.getElementById('menu-btn');
-  const walkedEl=document.getElementById('walked');
-  const ACTS=[['I','the question',['top','question']],['II','the program',['program','pov','inherited']],['III','the path',['where','totem','covid']],['IV','the space',['space','zoom','dance']],['V','what I do with it',['work','eof','real']]];
+  
+  const ACTS=[['I','the question',['top','question'],'What is your question?'],['II','the program',['program','pov','inherited'],'Whose program are you running?'],['III','the path',['where','totem','covid'],'What path brought you here?'],['IV','the space',['space','zoom','dance'],'Where is your space?'],['V','what I do with it',['work','eof','real'],'What will you do with it?']];
   const sceneIdx=id=>scenes.findIndex(x=>x.id===id);
   let reached=0;try{reached=+localStorage.getItem('being-reached')||0}catch(e){}
-  ACTS.forEach(([n,name,ids])=>{
-    const li=document.createElement('li');li.className='act-row';
-    const h=document.createElement('p');h.className='act-l';h.innerHTML='<b>'+n+'.</b> '+name;li.append(h);
-    const sc=document.createElement('div');sc.className='act-s';
-    ids.forEach(id=>{const el=scenes[sceneIdx(id)];if(!el)return;const i=sceneIdx(id);
-      const a=document.createElement('a');a.href='#'+id;a.dataset.i=i;a.textContent=el.dataset.name;
-      a.addEventListener('click',()=>closeMenu(false));sc.append(a)});
-    li.append(sc);list.append(li);
+  let tileD=null;const contEl=document.getElementById('continue');
+  ACTS.forEach(([n,name,ids,q],k)=>{
+    const li=document.createElement('li'),a=document.createElement('a');a.href='#'+ids[0];a.dataset.k=k;
+    a.innerHTML='<svg class="q-tile" viewBox="-14 -14 88 88" aria-hidden="true"><path/></svg><span class="q-n">'+n+'</span><span class="q-t">'+q+'</span><span class="q-here">you are here</span>';
+    a.addEventListener('click',()=>closeMenu(false));li.append(a);list.append(li);
   });
+  const actOf=sc=>ACTS.findIndex(a=>a[2].includes(sc.id));
   function drawTrail(){
     if(menu.hidden)return;
-    const cur=scenes.indexOf(current||scenes[0]),seen=Math.max(reached,cur)+1;
-    list.querySelectorAll('a').forEach(a=>{const i=+a.dataset.i;a.classList.toggle('seen',i<seen);a.toggleAttribute('aria-current',i===cur);if(i===cur)a.setAttribute('aria-current','true')});
-    walkedEl.innerHTML='you’ve walked <b>'+seen+'</b> of '+scenes.length+(seen>=scenes.length?' · and back to the beginning, if you like':'');
+    if(!tileD){tileD=tile4(0,0,.6,.6,.6,.6);list.querySelectorAll('.q-tile path').forEach(p=>p.setAttribute('d',tileD))}
+    const cur=current||scenes[0],ci=scenes.indexOf(cur),ck=actOf(cur),seen=Math.max(reached,ci);
+    list.querySelectorAll('a').forEach(a=>{const k=+a.dataset.k,first=sceneIdx(ACTS[k][2][0]);a.classList.toggle('seen',first<=seen);a.classList.toggle('now',k===ck);a.setAttribute('aria-current',String(k===ck))});
+    const go=scenes[Math.max(ci,0)];contEl.href='#'+go.id;
+    contEl.textContent=ci<=0?'start the story →':'continue where you left off →';
   }
+  contEl.addEventListener('click',()=>closeMenu(false));
   addEventListener('resize',()=>{if(!menu.hidden)drawTrail()});
   menu.querySelectorAll('[data-intent]').forEach(a=>a.addEventListener('click',()=>closeMenu(false)));
   document.getElementById('intent-text').addEventListener('click',()=>{closeMenu(false);setMode('text',true);scrollTo(0,0)});
@@ -865,6 +871,8 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const ease=t=>1-Math.pow(1-t,3);
   const fmt=(n,sep)=>sep?n.toLocaleString('en-US'):String(n);
   const here=document.getElementById('here'),pctEl=document.getElementById('pct');
+  let lastAct=null,cueT=0;const cue=document.createElement('p');cue.className='act-cue';cue.setAttribute('aria-hidden','true');document.body.append(cue);
+  function showCue(act){cue.innerHTML='<b>'+act[0]+'</b> · '+act[3];cue.classList.add('on');clearTimeout(cueT);cueT=setTimeout(()=>cue.classList.remove('on'),2200)}
 
   function frame(){
     const vh=innerHeight,film=root.dataset.mode==='film';
@@ -948,8 +956,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       current=active;
       {const ai=scenes.indexOf(active);if(ai>reached){reached=ai;try{localStorage.setItem('being-reached',String(ai))}catch(e){}}}
       if(film)document.body.dataset.tone=active.dataset.tone;
-      {const ai=scenes.indexOf(active),act=ACTS.find(a=>a[2].includes(active.id));here.textContent=(act?act[0]+'. '+act[1]+' · ':'')+active.dataset.name;pctEl.textContent=(ai+1)+'/'+scenes.length}
-      list.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',String(a.hash==='#'+active.id)));
+      {const act=ACTS.find(a=>a[2].includes(active.id));if(act){here.textContent=act[3];if(act!==lastAct){if(lastAct&&film)showCue(act);lastAct=act}}}
     }
     if(!film)delete document.body.dataset.tone;
   }
