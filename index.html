@@ -76,6 +76,13 @@ html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapter
 .toc a.now .q-tile path{fill:var(--accent);stroke:none}
 .q-n{font:11px var(--mono);color:var(--dim);width:2.6ch;flex-shrink:0}
 .q-t{font:400 clamp(20px,2.4vw,28px)/1.2 var(--serif)}
+.toc li{border-bottom:1px solid color-mix(in srgb,var(--fg) 14%,transparent);padding-bottom:10px}
+.toc li>a{border-bottom:0!important}
+.q-sub{margin:-2px 0 0 calc(22px + 2.6ch + 28px);display:flex;flex-wrap:wrap;gap:2px 0;font:13px/1.5 var(--sans)}
+.toc .q-sub a{display:inline;min-height:0;padding:0;border:0!important;color:color-mix(in srgb,var(--fg) 42%,transparent);text-decoration:none}
+.q-sub a+a::before{content:'·';margin:0 8px;color:color-mix(in srgb,var(--fg) 30%,transparent)}
+.toc .q-sub a.seen{color:color-mix(in srgb,var(--fg) 75%,transparent)}
+.toc .q-sub a.now,.toc .q-sub a:hover{color:var(--accent)}
 .q-here{margin-left:auto;font:11px var(--mono);color:var(--accent);opacity:0;white-space:nowrap}
 .toc a.now .q-here{opacity:1}
 .offer{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 2.4em}
@@ -99,7 +106,7 @@ html:not([data-mode="film"]) .toggle:hover,html:not([data-mode="film"]) .chapter
 .toc-links a{color:var(--fg)}
 .menu-foot{font:11px var(--mono);color:var(--dim)}
 .menu-foot button{background:none;border:0;padding:0;color:var(--fg);text-decoration:underline;text-underline-offset:3px;font:inherit}
-@media (max-width:700px){.offer{grid-template-columns:1fr;gap:8px}.blk{min-height:54px}.q-here{display:none}.act-cue{font-size:11px;top:54px}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
+@media (max-width:700px){.q-sub{margin-left:calc(22px + 2.6ch + 28px);flex-direction:column}.q-sub a+a::before{display:none}.toc .q-sub a{display:block;padding:3px 0}.offer{grid-template-columns:1fr;gap:8px}.blk{min-height:54px}.q-here{display:none}.act-cue{font-size:11px;top:54px}.fb-right .toggle{padding:4px 9px}.filebar .name .pre{display:none}}
 .toggle{white-space:nowrap}
 
 /* ======================================================
@@ -532,7 +539,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 <svg class="dancers film-only" id="dancers" viewBox="0 0 600 600" aria-hidden="true"></svg>
 
 <!-- 0 · title -->
-<section class="scene title-card in-helix" data-tone="ink" data-name="being.md" style="--len:200vh" id="top" data-fig="a double helix">
+<section class="scene title-card in-helix" data-tone="ink" data-name="a question that won’t let go" style="--len:200vh" id="top" data-fig="a double helix">
   <div class="frame">
     <canvas class="cosmos film-only" id="cosmos" aria-hidden="true"></canvas>
     <p class="label film-only"># being.md</p>
@@ -543,7 +550,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 1 · the question -->
-<section class="scene in-helix" data-tone="ink" data-name="the question" id="question" data-fig="a reflecting sphere" style="--len:340vh">
+<section class="scene in-helix" data-tone="ink" data-name="what does it mean to be yourself?" id="question" data-fig="a reflecting sphere" style="--len:340vh">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true">
       <svg viewBox="-110 -110 220 220">
@@ -567,13 +574,13 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       </svg>
       <p class="fig-cap">the one asking is inside the answer · after M.C. Escher’s reflecting sphere</p>
     </div>
-    <p class="label"><span class="md">##</span>the question</p>
+    <p class="label"><span class="md">##</span>what does it mean to be yourself?</p>
     <h2 class="big words" data-words>What does it mean to be <em>yourself</em>?</h2>
   </div>
 </section>
 
 <!-- 2 · the stairs -->
-<section class="scene" data-tone="ink" data-name="someone else’s program" id="program" data-fig="an endless staircase" style="--len:400vh">
+<section class="scene" data-tone="ink" data-name="the stairs we climb without choosing" id="program" data-fig="an endless staircase" style="--len:400vh">
   <div class="frame stairs-frame" id="stairs-frame">
     <div>
       <h2 class="big"><span class="b" data-at=".02">Am I living the life I want,</span><br><span class="b" data-at=".08">or running someone else’s program?</span></h2>
@@ -591,11 +598,11 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 2b · point of view (3D) -->
-<section class="scene" data-tone="paper" data-name="point of view" id="pov" data-fig="an impossible loop" style="--len:360vh">
+<section class="scene" data-tone="paper" data-name="change the angle, change the story" id="pov" data-fig="an impossible loop" style="--len:360vh">
   <div class="frame pov-frame">
     <div class="pov-stage film-only" id="pov-stage" aria-hidden="true"></div>
     <div class="pov-copy">
-      <p class="label"><span class="md">##</span>point of view</p>
+      <p class="label"><span class="md">##</span>change the angle, change the story</p>
       <div class="phases">
         <div class="phase b" data-at="0" data-out=".38"><h2 class="big">Seen from here, it’s a loop you can climb forever.</h2></div>
         <div class="phase b" data-at=".38" data-out=".74"><h2 class="big">Turn it a little. The loop was never closed.</h2><p class="lede">Drawn in two dimensions, a staircase can rise forever. In three, it can’t. The trap was in the representation.</p></div>
@@ -607,9 +614,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 3 · inherited (interactive) -->
-<section class="scene free" data-tone="paper" data-name="inherited" id="inherited" data-fig="drawing hands">
+<section class="scene free" data-tone="paper" data-name="what you keep, what you question" id="inherited" data-fig="drawing hands">
   <div class="frame has-fig">
-    <p class="label"><span class="md">##</span>inherited</p>
+    <p class="label"><span class="md">##</span>what you keep, what you question</p>
     <h2 class="big">Some of what I’ve inherited is a gift. Some of it I want to question.</h2>
     <p class="lede">From my parents, from the world around me. Most of it I keep. One thing I rewrote.</p>
     <ul class="sorter" id="sorter">
@@ -625,9 +632,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 4 · metamorphosis -->
-<section class="scene" data-tone="paper" data-name="three stages" id="where" data-fig="a metamorphosis" style="--len:460vh">
+<section class="scene" data-tone="paper" data-name="adapting, becoming, being" id="where" data-fig="a metamorphosis" style="--len:460vh">
   <div class="frame meta-frame">
-    <p class="label"><span class="md">##</span>three stages of a life</p>
+    <p class="label"><span class="md">##</span>adapting, becoming, being</p>
     <div class="phases">
       <div class="phase b" data-at="0" data-out=".36"><h2 class="big">1 · Adapting</h2><p class="lede">Growing up, we build adaptation software: to our parents, our siblings, our friends, society. Like a sponge, the brain optimises other people’s energy. Each of us takes the shape our neighbours leave us.</p></div>
       <div class="phase b" data-at=".3" data-out=".6"><h2 class="big">2 · Becoming yourself</h2><p class="lede">Often after a shock, you rewrite what is good and bad for you, across all six dimensions. For me that meant entrepreneurship, philosophy, coaching, neuroscience, wisdom traditions — even shamanism. You become yourself, but mostly among your own.</p></div>
@@ -639,10 +646,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 5 · totem -->
-<section class="scene" data-tone="paper" data-name="a place to be yourself" id="totem" data-fig="a totem of cubes" style="--len:280vh">
+<section class="scene" data-tone="paper" data-name="building a place to be ourselves" id="totem" data-fig="a totem of cubes" style="--len:280vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="totem-fig" viewBox="0 0 300 340"></svg><p class="fig-cap">a totem of cubes · after M.C. Escher’s cubic space</p></div>
-    <p class="label"><span class="md">##</span>a place to be yourself</p>
+    <p class="label"><span class="md">##</span>building a place to be ourselves</p>
     <h2 class="big b" data-at=".02">I co-founded TOTEM with a question: how could I create a place where people could be <em>themselves</em>?</h2>
     <p class="lede b" data-at=".15">For our customers, it started around the coffee machine. For our employees, it meant the culture we built together. Eight years.</p>
     <div class="stats b" data-at=".3">
@@ -655,10 +662,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 6 · covid -->
-<section class="scene" data-tone="ink" data-name="what remains" id="covid" data-fig="what remains" style="--len:240vh">
+<section class="scene" data-tone="ink" data-name="what’s left when everything falls" id="covid" data-fig="what remains" style="--len:240vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="covid-fig" viewBox="0 0 300 340" style="overflow:hidden"></svg><p class="fig-cap">what remains: the question</p></div>
-    <p class="label"><span class="md">##</span>what remains</p>
+    <p class="label"><span class="md">##</span>what’s left when everything falls</p>
     <p class="drop b" data-at=".05">−95%</p>
     <h2 class="big b" data-at=".2" style="font-size:clamp(26px,3.6vw,52px);max-width:22ch">Covid. Revenue fell by 95%. Restructuring meant difficult decisions, for people I knew well.</h2>
     <p class="lede b" data-at=".55">Being coached through that period changed how I approached responsibility — and my own choices.</p>
@@ -666,9 +673,9 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 7 · the space: two neurons -->
-<section class="scene" data-tone="ink" data-name="the space" id="space" data-fig="the synapse" style="--len:420vh">
+<section class="scene" data-tone="ink" data-name="between stimulus and response" id="space" data-fig="the synapse" style="--len:420vh">
   <div class="frame syn-frame">
-    <p class="label"><span class="md">##</span>the space</p>
+    <p class="label"><span class="md">##</span>between stimulus and response</p>
     <svg class="synapse film-only" id="synapse" aria-hidden="true"></svg>
     <div class="g-notes">
       <p class="b" data-at=".03" data-out=".22">A stimulus arrives. A signal runs down the nerve.</p>
@@ -685,10 +692,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 8 · energy -->
-<section class="scene" data-tone="ink" data-name="energy" id="zoom" data-fig="six energies" style="--len:560vh">
+<section class="scene" data-tone="ink" data-name="six energies, 1% at a time" id="zoom" data-fig="six energies" style="--len:560vh">
   <div class="frame energy">
     <div>
-      <p class="label"><span class="md">##</span>energy</p>
+      <p class="label"><span class="md">##</span>six energies, 1% at a time</p>
       <div class="phases">
         <div class="phase b" data-at="0" data-out=".3"><h2 class="big">Everything is <em>energy</em>.</h2><p class="lede">In coaching, I look at six dimensions of it: physical, emotional, mental, aesthetic, spiritual, social.</p></div>
         <div class="phase b" data-at=".3" data-out=".5"><h2 class="big">Many of us live on two.</h2><p class="lede">Usually the mind and the work. They run full, and the other four wait quietly. Nothing is wrong with you: it is just where the energy has been going.</p></div>
@@ -713,10 +720,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 5b · the dancers -->
-<section class="scene" data-tone="ink" data-name="the dancers" id="dance" data-fig="the one who hears" style="--len:170vh">
+<section class="scene" data-tone="ink" data-name="those who hear the music" id="dance" data-fig="the one who hears" style="--len:170vh">
   <div class="frame dance-frame">
     <div class="dance-copy">
-      <p class="label"><span class="md">##</span>the music</p>
+      <p class="label"><span class="md">##</span>those who hear the music</p>
       <blockquote class="big b" data-at=".1" style="margin:0">“And those who were dancing were thought to be insane by those who could not hear the music.”</blockquote>
       <p class="cite b" data-at=".3">— often attributed to Friedrich Nietzsche</p>
     </div>
@@ -724,10 +731,10 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 9 · what I do with it -->
-<section class="scene" data-tone="paper" data-name="what I do with it" id="work" data-fig="out of the plane" style="--len:300vh">
+<section class="scene" data-tone="paper" data-name="coach, write, build" id="work" data-fig="out of the plane" style="--len:300vh">
   <div class="frame has-fig">
     <div class="side-fig backdrop-m" aria-hidden="true"><svg id="work-fig" viewBox="0 0 320 300"></svg><p class="fig-cap">out of the flat plane · after M.C. Escher’s reptiles</p></div>
-    <p class="label"><span class="md">##</span>what I do with it</p>
+    <p class="label"><span class="md">##</span>coach, write, build</p>
     <ul class="todo">
       <li><span class="box">[x]</span><div><h3><a class="h3-link" href="/building/">Build →</a></h3><p>As an entrepreneur, I want to build a culture where people can be themselves.</p><p class="links"><a href="https://compass-me.ai" target="_blank" rel="noopener">Compass ↗</a><span class="tag">in development</span> &nbsp; A game about being yourself<span class="tag">concept</span></p></div></li>
       <li><span class="box">[~]</span><div><h3><a class="h3-link" href="/coaching/">Coach →</a></h3><p>One-to-one coaching for founders and leaders who want to lead as themselves.</p><p class="links"><a href="https://calendly.com/rafael-delavergne" target="_blank" rel="noopener">Book a conversation ↗</a><a href="#zoom">How it works</a></p></div></li>
@@ -737,7 +744,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 10 · eof -->
-<section class="scene eof" data-tone="paper" data-name="the loop" id="eof" data-fig="a möbius strip" style="--len:320vh">
+<section class="scene eof" data-tone="paper" data-name="still figuring it out" id="eof" data-fig="a möbius strip" style="--len:320vh">
   <div class="frame has-fig">
     <div class="side-fig" aria-hidden="true"><canvas id="mobius"></canvas><p class="fig-cap">one side, no end · after M.C. Escher’s Möbius strip</p></div>
     <h2 class="big b" data-at=".78">I’m still figuring out what being myself means in practice.</h2>
@@ -746,7 +753,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </section>
 
 <!-- 12 · meet the original -->
-<section class="scene free real" data-tone="paper" data-name="meet the original" id="real" data-fig="a portrait in tiles">
+<section class="scene free real" data-tone="paper" data-name="the person behind the tiles" id="real" data-fig="a portrait in tiles">
   <div class="frame real-frame">
     <div class="real-grid">
       <div class="real-left">
@@ -781,7 +788,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
 </main>
 
 <footer class="statusbar">
-  <button class="story-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="menu"><span class="sb-l">the story</span><span id="here">What is your question?</span><span class="sb-n" id="pct" hidden></span><span class="sb-bar"><i id="sb-fill"></i></span></button>
+  <button class="story-btn" type="button" id="chapters-btn" aria-expanded="false" aria-controls="menu"><span class="sb-l">the story</span><span id="here">I · a question that won’t let go</span><span class="sb-n" id="pct" hidden></span><span class="sb-bar"><i id="sb-fill"></i></span></button>
   <button class="toggle" type="button" id="mode-toggle" aria-pressed="false">read as text</button>
 </footer>
 <nav class="menu" id="menu" hidden aria-label="Index">
@@ -841,14 +848,18 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   ACTS.forEach(([n,name,ids,q],k)=>{
     const li=document.createElement('li'),a=document.createElement('a');a.href='#'+ids[0];a.dataset.k=k;
     a.innerHTML='<svg class="q-tile" viewBox="-14 -14 88 88" aria-hidden="true"><path/></svg><span class="q-n">'+n+'</span><span class="q-t">'+q+'</span><span class="q-here">you are here</span>';
-    a.addEventListener('click',()=>closeMenu(false));li.append(a);list.append(li);
+    a.addEventListener('click',()=>closeMenu(false));li.append(a);
+    const sub=document.createElement('p');sub.className='q-sub';
+    ids.forEach(id=>{const el=scenes[sceneIdx(id)];if(!el)return;const b=document.createElement('a');b.href='#'+id;b.dataset.i=sceneIdx(id);b.textContent=el.dataset.name;b.addEventListener('click',()=>closeMenu(false));sub.append(b)});
+    li.append(sub);list.append(li);
   });
   const actOf=sc=>ACTS.findIndex(a=>a[2].includes(sc.id));
   function drawTrail(){
     if(menu.hidden)return;
     if(!tileD){tileD=tile4(0,0,.6,.6,.6,.6);list.querySelectorAll('.q-tile path').forEach(p=>p.setAttribute('d',tileD))}
     const cur=current||scenes[0],ci=scenes.indexOf(cur),ck=actOf(cur),seen=Math.max(reached,ci);
-    list.querySelectorAll('a').forEach(a=>{const k=+a.dataset.k,first=sceneIdx(ACTS[k][2][0]);a.classList.toggle('seen',first<=seen);a.classList.toggle('now',k===ck);a.setAttribute('aria-current',String(k===ck))});
+    list.querySelectorAll('.q-sub a').forEach(b=>{const i=+b.dataset.i;b.classList.toggle('seen',i<=seen);b.classList.toggle('now',i===ci)});
+    list.querySelectorAll('li>a').forEach(a=>{const k=+a.dataset.k,first=sceneIdx(ACTS[k][2][0]);a.classList.toggle('seen',first<=seen);a.classList.toggle('now',k===ck);a.setAttribute('aria-current',String(k===ck))});
     const go=scenes[Math.max(ci,0)];contEl.href='#'+go.id;
     contEl.textContent=ci<=0?'start the story →':'continue where you left off →';
   }
@@ -957,7 +968,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
       current=active;
       {const ai=scenes.indexOf(active);if(ai>reached){reached=ai;try{localStorage.setItem('being-reached',String(ai))}catch(e){}}}
       if(film)document.body.dataset.tone=active.dataset.tone;
-      {const act=ACTS.find(a=>a[2].includes(active.id));if(act){here.textContent=act[3];if(act!==lastAct){if(lastAct&&film)showCue(act);lastAct=act}}}
+      {const act=ACTS.find(a=>a[2].includes(active.id));if(act){here.textContent=act[0]+' · '+active.dataset.name;if(act!==lastAct){lastAct=act}}}
     }
     if(!film)delete document.body.dataset.tone;
   }
