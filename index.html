@@ -1556,7 +1556,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const v=+resIn.value,k=Math.min(KMAX,Math.floor(v/100*(KMAX+.999))),n=1<<k,c=resCv.getContext('2d');
     c.setTransform(1,0,0,1,0,0);c.fillStyle='#efe9dc';c.fillRect(0,0,RW,RW);
     const cell=RW/n,{L,W}=PYR[k];
-    if(n===1){if(!resHold){const dd=new Path2D(danceD(-30,-30,60));c.save();c.translate(RW/2,RW/2+RW*.093);c.scale(RW/60*.62,RW/60*.62);c.rotate(-10*Math.PI/180);c.fillStyle='#c98260';c.fill(dd);c.restore()}}
+    if(n===1){if(!resHold){const dd=new Path2D(danceD(-30,-30,60));c.save();c.translate(RW/2,RW/2+RW*.093);c.scale(RW/60*.62,RW/60*.62);c.fillStyle='#c98260';c.fill(dd);c.restore()}}
     else for(let y=0;y<n;y++)for(let x=0;x<n;x++){
       const i=y*n+x,dark=Math.pow(1-L[i],.9),step=Math.round(Math.min(1,dark*1.1)*15),warm=W[i]>.5;
       if(warm){c.fillStyle=W[i]>.85?'#d99a7a':'#e6b79e';c.fillRect(x*cell,y*cell,cell+.5,cell+.5)}
@@ -1795,7 +1795,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     for(let i=0;i<N;i++){const v=i/N;P.push([1+ar(v),v])}
     for(let i=0;i<N;i++){const u=1-i/N;P.push([u,1+hd(u)])}
     for(let i=0;i<N;i++){const v=1-i/N;P.push([ar(v),v])}
-    const a=-10*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return P.map(([x,y])=>[.5+(x-.5)*c-(y-.5)*s,.5+(x-.5)*s+(y-.5)*c])})();
+    const a=0,c=Math.cos(a),s=Math.sin(a);return P.map(([x,y])=>[.5+(x-.5)*c-(y-.5)*s,.5+(x-.5)*s+(y-.5)*c])})();
   const unitCircle=unitTile.map((_,i)=>{const a=i/56*2*Math.PI-Math.PI*.75;return [.5+.5*Math.cos(a),.5+.5*Math.sin(a)]});
   const rectOf=el=>{const r=el.getBoundingClientRect();return {x:r.left,y:r.top,w:r.width,h:r.height}};
   const lerpR=(a,b,e)=>({x:a.x+(b.x-a.x)*e,y:a.y+(b.y-a.y)*e,w:a.w+(b.w-a.w)*e,h:a.h+(b.h-a.h)*e});
