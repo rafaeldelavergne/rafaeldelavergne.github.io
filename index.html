@@ -180,7 +180,9 @@ html:not([data-mode="film"]) .gap{display:flex;gap:1em;align-items:baseline;flex
 #inherited .lede{margin-top:.8em}
 #inherited .sorter{margin-top:1.2em;gap:7px;max-width:560px}
 #inherited .sorter li{padding:7px 10px 7px 14px}
-#inherited .sorter button{pointer-events:none}
+#inherited .sorter button{cursor:pointer;color:var(--fg)}
+#inherited .sorter button:hover{border-color:var(--accent);color:var(--accent)}
+#inherited .sorter button[aria-pressed="true"],#inherited .sorter button[aria-pressed="true"]:hover{color:var(--bg)}
 #inherited .sorter li .phrase{font-size:clamp(18px,1.75vw,24px)}
 #inherited .tally{margin-top:.8em}
 [data-mode="film"] #inherited>.frame{padding-top:88px;padding-bottom:64px;min-height:100svh;justify-content:center}
@@ -1840,7 +1842,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   const AUTO=['keep','keep','question','keep','keep'];let autoDone=false;
   const autoObs=new IntersectionObserver(es=>{for(const e of es){if(!e.isIntersecting||autoDone)continue;autoDone=true;autoObs.disconnect();
     const lis=[...document.querySelectorAll('#sorter li')];
-    AUTO.forEach((v,i)=>setTimeout(()=>{const b=lis[i]&&lis[i].querySelector('button[data-v="'+v+'"]');if(b){b.dataset.auto='1';b.click()}},700+i*1500));}},{threshold:.45});
+    AUTO.forEach((v,i)=>setTimeout(()=>{const b=lis[i]&&!lis[i].dataset.user&&lis[i].querySelector('button[data-v="'+v+'"]');if(b){b.dataset.auto='1';b.click()}},700+i*1500));}},{threshold:.45});
   autoObs.observe(document.getElementById('inherited'));
 
   // inherited sorter
@@ -1848,6 +1850,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   document.getElementById('sorter').addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     const li=b.closest('li');
+    if(b.dataset.auto)delete b.dataset.auto;else li.dataset.user='1';
     li.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
     li.classList.toggle('kept',b.dataset.v==='keep');
     li.classList.toggle('questioned',b.dataset.v==='question');
