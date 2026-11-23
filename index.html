@@ -1715,7 +1715,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
   // ---- what I do → EOF: the floor grows into a universe of blocks to the right, then curls into the Möbius strip
   const uniCv=document.getElementById('universe'),UL=90;let uniStart=null,uniHatch=null,uniActive=false;
   const UBL={};{UBL['1,1']=1.7;UBL['3,1']=1;UBL['3,4']=.3;let r=7;const rnd=()=>{r=(r*16807)%2147483647;return r/2147483647};
-    for(let x=6;x<UL;x++)for(let z=0;z<5;z++)if(rnd()<.34)UBL[x+','+z]=.4+rnd()*(1+x/14)}
+    for(let x=6;x<UL;x+=2)for(let z=0;z<5;z++)if(rnd()<.34){const h=.4+rnd()*(1+x/14);UBL[x+','+z]=h;UBL[(x+1)+','+z]=h}}
   const hexRGB=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
   const mixC=(a,b,e)=>{const A=hexRGB(a),B=hexRGB(b);return 'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*e)).join(',')+')'};
   function drawUniverse(t){
@@ -1736,7 +1736,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const M=(x,y,z)=>{let q;
       if(k<1e-5)q=[x,y,z];else{const th=(x-xc)*k,ph=th/2,N=[-Math.sin(th),Math.cos(th),0],v=(z-2.5)*(1+1.4*bend);
         const C=[xc+R*Math.sin(th),R*(1-Math.cos(th)),0],Wd=[N[0]*Math.sin(ph),N[1]*Math.sin(ph),Math.cos(ph)],Up=[N[0]*Math.cos(ph),N[1]*Math.cos(ph),-Math.sin(ph)];
-        q=[C[0]+Wd[0]*v+Up[0]*y,C[1]+Wd[1]*v+Up[1]*y,2.5+Wd[2]*v+Up[2]*y]}
+        const yy=y-.12*bend;q=[C[0]+Wd[0]*v+Up[0]*yy,C[1]+Wd[1]*v+Up[1]*yy,2.5+Wd[2]*v+Up[2]*yy]}
       if(spinA){const cx=xc,cz=2.5,dx=q[0]-cx,dz=q[2]-cz;q=[cx+dx*cs-dz*sn,q[1],cz+dx*sn+dz*cs]}
       return q};
     const PR=q=>[(q[0]-q[2])*.866,(q[0]+q[2])*.5-q[1],(q[0]+q[2])*.5+q[1]*.866];
@@ -1765,7 +1765,7 @@ html:not([data-mode="film"]) .next{box-shadow:none}
     const thin=Math.max(.3,Math.min(1,S/36))*(1-.6*bend);
     for(const f of faces){c.globalAlpha=f.alpha;c.beginPath();const sp=f.P.map(p=>[X0+p[0]*S,Y0+p[1]*S]);sp.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.closePath();
       const area=(sp[1][0]-sp[0][0])*(sp[2][1]-sp[0][1])-(sp[2][0]-sp[0][0])*(sp[1][1]-sp[0][1]);
-      c.fillStyle=(bend>.35&&area<0&&f.fill==='#efe9dc')?'#d3cbb9':f.fill;c.fill();c.strokeStyle='#15140f';c.lineWidth=thin;c.stroke()}
+      c.fillStyle=f.fill;c.fill();c.strokeStyle='#15140f';c.lineWidth=thin;c.stroke()}
     c.globalAlpha=1;
     if(bend>.3){c.strokeStyle='#15140f';c.lineWidth=1.2+1.6*bend;c.lineCap='round';
       for(const zz of [0,5]){c.beginPath();for(let x=0;x<=Math.min(UL,front);x+=.5){const q=PR(M(x,.12,zz)),sx=X0+q[0]*S,sy=Y0+q[1]*S;x?c.lineTo(sx,sy):c.moveTo(sx,sy)}c.stroke()}}
